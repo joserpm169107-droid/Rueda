@@ -265,19 +265,136 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
   .auth p{margin-bottom:10px}
 }
 
+
+/* v1.6.4 — identidad visual premium */
+.auth{
+  background:
+    radial-gradient(circle at 50% 12%, rgba(255,204,0,.10), transparent 34%),
+    linear-gradient(180deg,#070707 0%,#101114 58%,#17130a 100%);
+}
+.auth-card{
+  background:rgba(11,11,12,.96);
+  color:#fff;
+  border:1.5px solid rgba(255,204,0,.72);
+  box-shadow:0 30px 70px rgba(0,0,0,.52),0 0 32px rgba(255,204,0,.10);
+  border-radius:28px;
+}
+.auth-brand{
+  text-align:center;
+  margin:-4px auto 18px;
+}
+.auth-brand img{
+  width:min(370px,92%);
+  max-height:205px;
+  object-fit:contain;
+  display:block;
+  margin:0 auto;
+  border-radius:20px;
+}
+.auth-brand p{
+  margin:8px 0 0;
+  color:#f3f3f3;
+  font-size:20px;
+  font-weight:800;
+}
+.auth-brand p strong{color:#ffca05}
+.auth-tabs{
+  background:#18191c !important;
+  border:1px solid rgba(255,255,255,.10);
+  padding:5px;
+  border-radius:17px !important;
+}
+.auth-tab{
+  color:#d9d9dc !important;
+  border-radius:13px !important;
+}
+.auth-tab.active{
+  background:#fff !important;
+  color:#0e86f7 !important;
+  box-shadow:0 8px 18px rgba(0,0,0,.24);
+}
+.auth input,
+.auth select{
+  background:#f9f9fa !important;
+  color:#111 !important;
+  border:1px solid #dedee3 !important;
+  border-radius:16px !important;
+  min-height:58px;
+}
+.auth input::placeholder{color:#8b8b92}
+.auth .primary,
+.auth button[type="submit"],
+#loginBtn,
+#registerBtn{
+  background:linear-gradient(180deg,#ffd314,#f4bb00) !important;
+  color:#101010 !important;
+  font-weight:950 !important;
+  border:none !important;
+  border-radius:17px !important;
+  min-height:60px;
+  box-shadow:0 12px 28px rgba(255,195,0,.22);
+}
+.auth .secondary,
+.auth .social-btn{
+  background:#fff !important;
+  color:#087ef0 !important;
+  border:1px solid #dedee3 !important;
+  border-radius:17px !important;
+  min-height:56px;
+}
+.auth label,
+.auth .field-label,
+.auth .hint{color:#d8d8dc !important}
+.auth .role-card{
+  background:#16171a !important;
+  border-color:#35363a !important;
+  color:#fff !important;
+}
+.auth .role-card.active,
+.auth .role-card.selected{
+  background:#211d08 !important;
+  border-color:#ffcc00 !important;
+  box-shadow:0 0 0 3px rgba(255,204,0,.12);
+}
+.auth .role-card h3{color:#fff !important}
+.auth .role-card p{color:#bfc0c5 !important}
+.upload-box{
+  background:#111216 !important;
+  border-color:#4b4c52 !important;
+}
+.upload-box h3{color:#fff !important}
+.upload-box p{color:#b8b9bf !important}
+.upload-box button{
+  background:#f7f7f8 !important;
+  color:#111 !important;
+}
+.splash img{
+  width:min(430px,88vw) !important;
+  max-height:390px;
+  object-fit:contain;
+  border-radius:24px;
+}
+@media(max-width:480px){
+  .auth-card{width:calc(100% - 28px);padding:22px 18px}
+  .auth-brand img{width:100%;max-height:180px}
+  .auth-brand p{font-size:18px}
+}
+
 </style>
 </head>
 <body>
   <div class="splash" id="brandSplash">
-    <img src="brand-logo.jpg" alt="Sobre Ruedas">
+    <img src="logo-completo.jpg" alt="Sobre Ruedas">
     <strong>Tu viaje, tu camino</strong>
     <small>Ciego de Ávila</small>
   </div>
 <div class="app">
   <section class="auth" id="auth">
     <div class="auth-card">
-      <div class="auth-logo"><img src="icon-96.png" alt="Sobre Ruedas" style="width:100%;height:100%;border-radius:22px;object-fit:cover"></div>
-      <h1>Sobre Ruedas</h1><p>Tu viaje, tu camino.</p>
+      <div class="auth-brand">
+         <img src="logo-login.jpg" alt="Sobre Ruedas">
+         <p>Tu viaje, <strong>tu camino.</strong></p>
+       </div>
       <div class="tabs"><button class="active" data-auth="login">Entrar</button><button data-auth="register">Crear cuenta</button></div>
       <div id="loginForm">
         <input id="loginEmail" type="email" placeholder="Correo electrónico">
@@ -332,7 +449,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
   <div id="mapConfirm" class="map-confirm hidden"><button class="cancel" id="cancelPin">Cancelar</button><button class="confirm" id="confirmPin">Confirmar destino</button></div>
   <div class="top">
     <button class="round glass" id="menuBtn">☰</button>
-    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS<small>CIEGO DE ÁVILA 1.6.3</small></div></div>
+    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS<small>CIEGO DE ÁVILA 1.6.4</small></div></div>
     <button class="round glass" id="profileBtn">👤</button>
   </div>
 
@@ -1046,7 +1163,7 @@ setTimeout(()=>{
   startMarker.setLatLng(currentStart).bindPopup('Ubicación de prueba: Parque José Martí, Ciego de Ávila');
   map.setView(currentStart,16);
 },400);
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=163').then(r=>r.update()).catch(()=>{}))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=164').then(r=>r.update()).catch(()=>{}))}
 </script>
 
 <script>
