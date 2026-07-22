@@ -231,6 +231,40 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
   border-radius:999px;padding:7px 10px;font-size:11px;font-weight:900;margin-top:7px
 }
 
+
+/* v1.6.1 — corrección del registro en pantallas pequeñas */
+.auth{
+  overflow-y:auto;
+  overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-y:contain;
+  align-items:flex-start;
+  padding-top:max(22px, env(safe-area-inset-top));
+  padding-bottom:max(28px, env(safe-area-inset-bottom));
+}
+.auth-card{
+  flex:0 0 auto;
+  margin:auto;
+  min-height:min-content;
+}
+#registerForm{
+  padding-bottom:24px;
+}
+#registerBtn{
+  position:sticky;
+  bottom:0;
+  z-index:5;
+  margin-top:14px;
+  box-shadow:0 -10px 22px rgba(255,255,255,.92), 0 8px 20px rgba(0,0,0,.12);
+}
+@media (max-height:760px){
+  .auth{padding-left:14px;padding-right:14px}
+  .auth-card{padding:17px}
+  .auth-logo{width:58px;height:58px;font-size:31px;margin-bottom:8px}
+  .auth h1{font-size:24px}
+  .auth p{margin-bottom:10px}
+}
+
 </style>
 </head>
 <body>
@@ -242,8 +276,8 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
 <div class="app">
   <section class="auth" id="auth">
     <div class="auth-card">
-      <div class="auth-logo">R</div>
-      <h1>Rueda</h1><p>Tu transporte en Ciego de Ávila.</p>
+      <div class="auth-logo"><img src="icon-96.png" alt="Sobre Ruedas" style="width:100%;height:100%;border-radius:22px;object-fit:cover"></div>
+      <h1>Sobre Ruedas</h1><p>Tu viaje, tu camino.</p>
       <div class="tabs"><button class="active" data-auth="login">Entrar</button><button data-auth="register">Crear cuenta</button></div>
       <div id="loginForm">
         <input id="loginEmail" type="email" placeholder="Correo electrónico">
@@ -284,7 +318,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
           </div>
           <label class="check-row">
             <input id="driverTerms" type="checkbox">
-            <span>Confirmo que la información es correcta y acepto que Rueda revise esta identificación para aprobar mi cuenta.</span>
+            <span>Confirmo que la información es correcta y acepto que Sobre Ruedas revise esta identificación para aprobar mi cuenta.</span>
           </label>
           <p class="muted" style="text-align:left;font-size:12px;margin-top:8px">La cuenta quedará pendiente hasta que un administrador revise la foto.</p>
         </div>
@@ -294,11 +328,11 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
   </section>
 
   <div id="map"></div>
-  <div id="pinMode" class="pin-mode hidden"><div class="pin">📍</div><small>Mueve el mapa hasta el destino</small></div>
+  <div id="pinMode" class="pin-mode hidden"><div class="pin">📍</div><small id="pinModeText">Mueve el mapa hasta el destino</small></div>
   <div id="mapConfirm" class="map-confirm hidden"><button class="cancel" id="cancelPin">Cancelar</button><button class="confirm" id="confirmPin">Confirmar destino</button></div>
   <div class="top">
     <button class="round glass" id="menuBtn">☰</button>
-    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS<small>CIEGO DE ÁVILA 1.6</small></div></div>
+    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS<small>CIEGO DE ÁVILA 1.6.2</small></div></div>
     <button class="round glass" id="profileBtn">👤</button>
   </div>
 
@@ -327,12 +361,15 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
           <button class="use" id="useLocationBtn">Usar este punto</button>
         </div>
       </div>
-      <div class="gps-warning" id="gpsWarning">Modo de prueba activo: salida fija en Parque José Martí, Ciego de Ávila.</div>
-      <div class="live-banner"><div><span class="live-dot"></span><strong>Modo de prueba activo</strong><small style="display:block;color:#4d7b65;margin-top:2px">Salida fija para probar direcciones en Ciego de Ávila</small></div><button id="refreshLocation" class="chip">Restaurar</button></div>
+      <div class="gps-warning" id="gpsWarning">Modo de prueba: puedes cambiar el punto de salida manualmente sin activar el GPS.</div>
+      <div class="live-banner"><div><span class="live-dot"></span><strong>Modo de prueba activo</strong><small style="display:block;color:#4d7b65;margin-top:2px">Salida temporal editable dentro de Ciego de Ávila</small></div><button id="refreshLocation" class="chip">Restaurar</button></div>
       <div class="dev-pill">🧪 Modo desarrollo · GPS real desactivado</div>
       <div class="demo-location">
-        <div><strong>📍 Ubicación de prueba</strong><small>Parque José Martí, Ciego de Ávila</small></div>
-        <button id="resetDemoLocation">Centrar</button>
+        <div><strong>📍 Ubicación de prueba</strong><small id="demoLocationText">Parque José Martí, Ciego de Ávila</small></div>
+        <div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end">
+          <button id="changeDemoLocation">Cambiar</button>
+          <button id="resetDemoLocation">Restaurar</button>
+        </div>
       </div>
       <div class="quick"><button class="chip" data-dest="Casa">🏠 Casa</button><button class="chip" data-dest="Trabajo">💼 Trabajo</button><button class="chip" data-dest="Terminal de Ómnibus">🚌 Terminal</button><button class="chip" data-dest="Hospital Provincial">🏥 Hospital</button></div>
       <div class="hero"><div><strong>Tu primer viaje tiene 20%</strong><small>Promoción SOBRE RUEDAS20</small></div><button id="promoBtn">Aplicar</button></div>
@@ -394,7 +431,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
-const AUTH='rueda_v1_user'; let user=null, registerRole='passenger', selected={type:'Motorina',price:180,eta:3}, promo=false, tripTimer=null, driverTimer=null, routeLine=null, driverMarker=null, tripPhase=0, gpsWatch=null, destinationMarker=null, destinationPoint=null, currentStart=[21.84206,-78.76000], pinPicking=false, pendingDestination=null, gpsReady=true;
+const AUTH='rueda_v1_user'; let user=null, registerRole='passenger', selected={type:'Motorina',price:180,eta:3}, promo=false, tripTimer=null, driverTimer=null, routeLine=null, driverMarker=null, tripPhase=0, gpsWatch=null, destinationMarker=null, destinationPoint=null, currentStart=[21.84206,-78.76000], pinPicking=false, pinPurpose='destination', pendingDestination=null, gpsReady=true;
 function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
 
 function setNotice(msg){$('#lastNotice').textContent=msg;localStorage.setItem('rueda_last_notice',msg)}
@@ -429,7 +466,7 @@ function openApp(){
   $$('[data-mode]').forEach(b=>b.style.display=(role==='passenger'&&b.dataset.mode==='driver')?'none':'');
   if(role==='driver'){$$('[data-mode]').forEach(x=>x.classList.toggle('active',x.dataset.mode==='driver'));$('#homePanel').classList.add('hidden');$('#driverPanel').classList.remove('hidden');}
 }
-function logout(){if(!confirm('¿Deseas cerrar sesión en Rueda?'))return;localStorage.removeItem(AUTH);sessionStorage.clear();user=null;$('#auth').classList.remove('hidden');$('#drawer').classList.remove('open');$('#backdrop').classList.add('hidden');$('#loginEmail').value='';$('#loginPass').value='';toast('Sesión cerrada correctamente')}
+function logout(){if(!confirm('¿Deseas cerrar sesión en Sobre Ruedas?'))return;localStorage.removeItem(AUTH);sessionStorage.clear();user=null;$('#auth').classList.remove('hidden');$('#drawer').classList.remove('open');$('#backdrop').classList.add('hidden');$('#loginEmail').value='';$('#loginPass').value='';toast('Sesión cerrada correctamente')}
 $$('[data-auth]').forEach(b=>b.onclick=()=>{$$('[data-auth]').forEach(x=>x.classList.remove('active'));b.classList.add('active');const login=b.dataset.auth==='login';$('#loginForm').classList.toggle('hidden',!login);$('#registerForm').classList.toggle('hidden',login)})
 $$('[data-register-role]').forEach(b=>b.onclick=()=>{
   registerRole=b.dataset.registerRole;
@@ -562,6 +599,22 @@ window.addEventListener('resize',()=>setSheetHeight(sheetLimits().mid,false));
 const map=L.map('map',{zoomControl:false}).setView([21.84206,-78.76000],15);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
 let startMarker=L.marker(currentStart).addTo(map).bindPopup('Ubicación de prueba: Parque José Martí, Ciego de Ávila');
+
+try{
+  const savedTestLocation=JSON.parse(localStorage.getItem('sobre_ruedas_test_location')||'null');
+  if(Array.isArray(savedTestLocation) && savedTestLocation.length===2 &&
+     Number.isFinite(+savedTestLocation[0]) && Number.isFinite(+savedTestLocation[1]) &&
+     insideCiego([+savedTestLocation[0],+savedTestLocation[1]])){
+    currentStart=[+savedTestLocation[0],+savedTestLocation[1]];
+    startMarker.setLatLng(currentStart).bindPopup('Ubicación temporal de prueba');
+    map.setView(currentStart,16);
+    $('#demoLocationText').textContent=`Punto personalizado · ${currentStart[0].toFixed(5)}, ${currentStart[1].toFixed(5)}`;
+    $('#pickupText').textContent='Ubicación temporal seleccionada en el mapa';
+  }
+}catch(e){
+  localStorage.removeItem('sobre_ruedas_test_location');
+}
+
 
 function setRouteStatus(title,text,type='loading'){
   const box=$('#routeStatus');
@@ -834,11 +887,20 @@ async function prepareRealRoute(forceConfirmed=false){
     return false;
   }
 }
-function startPinMode(){
+function startPinMode(purpose='destination'){
+  pinPurpose=purpose;
   pinPicking=true;
   setSheetHeight(sheetLimits().min,true);
   $('#pinMode').classList.remove('hidden');
   $('#mapConfirm').classList.remove('hidden');
+  if(purpose==='pickup'){
+    $('#pinModeText').textContent='Mueve el mapa hasta tu ubicación temporal de prueba';
+    $('#confirmPin').textContent='Usar como salida';
+    map.setView(currentStart,16);
+  }else{
+    $('#pinModeText').textContent='Mueve el mapa hasta el destino';
+    $('#confirmPin').textContent='Confirmar destino';
+  }
   map.invalidateSize();
 }
 function stopPinMode(){
@@ -848,20 +910,26 @@ function stopPinMode(){
 }
 
 $('#locateBtn').onclick=()=>{map.setView(currentStart,16);toast('Ubicación centrada')}
+$('#changeDemoLocation').onclick=()=>startPinMode('pickup');
 $('#resetDemoLocation').onclick=()=>{
   currentStart=[21.84206,-78.76000];
   gpsReady=true;
-  startMarker.setLatLng(currentStart);
+  localStorage.removeItem('sobre_ruedas_test_location');
+  startMarker.setLatLng(currentStart).bindPopup('Ubicación de prueba: Parque José Martí, Ciego de Ávila');
   map.setView(currentStart,16);
-  toast('Centrado en Parque Central');
+  $('#demoLocationText').textContent='Parque José Martí, Ciego de Ávila';
+  $('#demoLocationText').textContent='Parque José Martí, Ciego de Ávila';
+  $('#pickupText').textContent='Parque José Martí, Ciego de Ávila';
+  clearRoute();
+  toast('Ubicación restaurada al Parque José Martí');
 }
 $('#searchAddressBtn').onclick=async()=>{
   destinationPoint=null;
   const ok=await prepareRealRoute();
   if(ok)toast('Dirección y ruta listas');
 }
-$('#pickMapBtn').onclick=startPinMode;
-$('#fixLocationBtn').onclick=()=>{ $('#confirmLocation').classList.remove('show'); startPinMode(); }
+$('#pickMapBtn').onclick=()=>startPinMode('destination');
+$('#fixLocationBtn').onclick=()=>{ $('#confirmLocation').classList.remove('show'); startPinMode('destination'); }
 $('#useLocationBtn').onclick=async()=>{
   if(pendingDestination){
     destinationPoint=pendingDestination.point;
@@ -874,6 +942,23 @@ $('#useLocationBtn').onclick=async()=>{
 $('#cancelPin').onclick=()=>{stopPinMode();setSheetHeight(sheetLimits().mid,true)}
 $('#confirmPin').onclick=async()=>{
   const center=map.getCenter();
+
+  if(pinPurpose==='pickup'){
+    currentStart=[center.lat,center.lng];
+    gpsReady=true;
+    localStorage.setItem('sobre_ruedas_test_location',JSON.stringify(currentStart));
+    startMarker.setLatLng(currentStart).bindPopup('Ubicación temporal de prueba');
+    $('#demoLocationText').textContent=`Punto personalizado · ${center.lat.toFixed(5)}, ${center.lng.toFixed(5)}`;
+    $('#pickupText').textContent='Ubicación temporal seleccionada en el mapa';
+    clearRoute();
+    stopPinMode();
+    map.setView(currentStart,16);
+    toast('Ubicación temporal actualizada');
+    setNotice('Punto de salida temporal guardado. El GPS real sigue desactivado.');
+    setSheetHeight(sheetLimits().mid,true);
+    return;
+  }
+
   setDestinationPoint([center.lat,center.lng],$('#destination').value.trim()||'Destino marcado en el mapa');
   pendingDestination=null;
   $('#confirmLocation').classList.remove('show');
@@ -886,6 +971,7 @@ $('#destination').addEventListener('input',()=>{destinationPoint=null;clearRoute
 $('#refreshLocation').onclick=()=>{
   currentStart=[21.84206,-78.76000];
   gpsReady=true;
+  localStorage.removeItem('sobre_ruedas_test_location');
   startMarker.setLatLng(currentStart).bindPopup('Ubicación de prueba: Parque José Martí, Ciego de Ávila');
   map.setView(currentStart,16);
   $('#pickupText').textContent='Parque José Martí, Ciego de Ávila';
@@ -960,7 +1046,7 @@ setTimeout(()=>{
   startMarker.setLatLng(currentStart).bindPopup('Ubicación de prueba: Parque José Martí, Ciego de Ávila');
   map.setView(currentStart,16);
 },400);
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=160').then(r=>r.update()).catch(()=>{}))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=162').then(r=>r.update()).catch(()=>{}))}
 </script>
 </body>
 </html>
