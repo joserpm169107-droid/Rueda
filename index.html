@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111111" />
+  <title>Rueda v0.1</title>
+  <style>
+    :root{
+      --bg:#0f0f10;
+      --card:#19191c;
+      --card2:#222226;
+      --text:#ffffff;
+      --muted:#b8b8bd;
+      --yellow:#ffd400;
+      --danger:#ff5b5b;
+      --ok:#3ddc84;
+      --line:#34343a;
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+    body{min-height:100vh}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    .app{max-width:520px;margin:0 auto;min-height:100vh;padding:env(safe-area-inset-top) 18px calc(24px + env(safe-area-inset-bottom))}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 2px 10px}
+    .brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:24px}
+    .logo{width:44px;height:44px;border-radius:14px;background:var(--yellow);color:#111;display:grid;place-items:center;font-size:24px;box-shadow:0 8px 25px rgba(255,212,0,.18)}
+    .version{font-size:12px;color:var(--muted);background:var(--card2);padding:7px 10px;border-radius:999px}
+    .hero{padding:26px 6px 18px}
+    .hero h1{font-size:38px;line-height:1.05;margin:0 0 12px;letter-spacing:-1px}
+    .hero p{color:var(--muted);font-size:17px;line-height:1.45;margin:0}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-top:16px;box-shadow:0 12px 28px rgba(0,0,0,.22)}
+    .tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:var(--card2);padding:6px;border-radius:16px;margin-bottom:16px}
+    .tab{border:0;background:transparent;color:var(--muted);padding:12px;border-radius:12px;font-weight:800}
+    .tab.active{background:var(--yellow);color:#111}
+    .field{margin:12px 0}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:7px;font-weight:700}
+    input,select{width:100%;background:#101012;color:var(--text);border:1px solid var(--line);border-radius:14px;padding:14px 15px;outline:none}
+    input:focus,select:focus{border-color:var(--yellow);box-shadow:0 0 0 3px rgba(255,212,0,.12)}
+    .primary{width:100%;border:0;border-radius:15px;background:var(--yellow);color:#111;padding:15px 18px;font-weight:900;margin-top:10px}
+    .secondary{width:100%;border:1px solid var(--line);border-radius:15px;background:var(--card2);color:var(--text);padding:14px 18px;font-weight:800;margin-top:10px}
+    .danger{background:transparent;border:1px solid #5c2c2c;color:#ff8e8e}
+    .message{display:none;margin:12px 0 0;padding:12px 14px;border-radius:14px;font-size:14px;line-height:1.35}
+    .message.ok{display:block;background:rgba(61,220,132,.12);color:#8af0b5;border:1px solid rgba(61,220,132,.3)}
+    .message.error{display:block;background:rgba(255,91,91,.12);color:#ff9e9e;border:1px solid rgba(255,91,91,.3)}
+    .hidden{display:none!important}
+    .welcome{padding:12px 0}
+    .welcome h2{margin:0 0 6px;font-size:28px}
+    .pill{display:inline-flex;align-items:center;gap:7px;background:var(--card2);color:var(--muted);padding:8px 11px;border-radius:999px;font-size:13px;margin:8px 6px 0 0}
+    .trip-box{margin-top:18px;background:#111;border:1px dashed #4b4b52;border-radius:18px;padding:18px}
+    .trip-box h3{margin:0 0 8px}
+    .foot{color:#7e7e86;font-size:12px;text-align:center;padding:22px 8px}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand"><div class="logo">R</div><span>Rueda</span></div>
+      <div class="version">v0.1</div>
+    </header>
+
+    <section id="authScreen">
+      <div class="hero">
+        <h1>Muévete fácil por Ciego de Ávila.</h1>
+        <p>Prototipo privado para pasajeros y conductores de motorinas, motos y triciclos.</p>
+      </div>
+
+      <div class="card">
+        <div class="tabs">
+          <button id="loginTab" class="tab active" type="button">Entrar</button>
+          <button id="registerTab" class="tab" type="button">Crear cuenta</button>
+        </div>
+
+        <form id="loginForm">
+          <div class="field">
+            <label for="loginEmail">Correo</label>
+            <input id="loginEmail" type="email" autocomplete="email" placeholder="nombre@correo.com" required />
+          </div>
+          <div class="field">
+            <label for="loginPassword">Contraseña</label>
+            <input id="loginPassword" type="password" autocomplete="current-password" minlength="4" placeholder="Mínimo 4 caracteres" required />
+          </div>
+          <button class="primary" type="submit">Iniciar sesión</button>
+          <div id="loginMessage" class="message"></div>
+        </form>
+
+        <form id="registerForm" class="hidden">
+          <div class="field">
+            <label for="fullName">Nombre completo</label>
+            <input id="fullName" type="text" autocomplete="name" placeholder="Tu nombre" required />
+          </div>
+          <div class="field">
+            <label for="registerEmail">Correo</label>
+            <input id="registerEmail" type="email" autocomplete="email" placeholder="nombre@correo.com" required />
+          </div>
+          <div class="field">
+            <label for="registerPassword">Contraseña</label>
+            <input id="registerPassword" type="password" autocomplete="new-password" minlength="4" placeholder="Mínimo 4 caracteres" required />
+          </div>
+          <div class="field">
+            <label for="role">Tipo de cuenta</label>
+            <select id="role" required>
+              <option value="pasajero">Pasajero</option>
+              <option value="conductor">Conductor</option>
+            </select>
+          </div>
+          <div id="vehicleField" class="field hidden">
+            <label for="vehicle">Vehículo</label>
+            <select id="vehicle">
+              <option value="motorina">Motorina</option>
+              <option value="moto">Moto</option>
+              <option value="triciclo">Triciclo</option>
+            </select>
+          </div>
+          <button class="primary" type="submit">Crear cuenta</button>
+          <div id="registerMessage" class="message"></div>
+        </form>
+      </div>
+    </section>
+
+    <section id="homeScreen" class="hidden">
+      <div class="card welcome">
+        <h2 id="welcomeName">Hola</h2>
+        <p id="welcomeText" style="color:var(--muted);margin:0"></p>
+        <div>
+          <span id="rolePill" class="pill"></span>
+          <span id="vehiclePill" class="pill hidden"></span>
+          <span class="pill">📍 Ciego de Ávila</span>
+        </div>
+
+        <div class="trip-box">
+          <h3>Versión de prueba</h3>
+          <p style="color:var(--muted);margin:0 0 14px">El registro y el inicio de sesión ya funcionan. La solicitud de viajes llegará en la próxima versión.</p>
+          <button id="demoButton" class="secondary" type="button">Probar botón</button>
+          <div id="demoMessage" class="message"></div>
+        </div>
+
+        <button id="logoutButton" class="secondary danger" type="button">Cerrar sesión</button>
+      </div>
+    </section>
+
+    <div class="foot">Los datos se guardan solamente en este dispositivo mediante Local Storage.</div>
+  </main>
+
+<script>
+(function(){
+  "use strict";
+
+  const $ = (id) => document.getElementById(id);
+  const USERS_KEY = "rueda_users_v01";
+  const SESSION_KEY = "rueda_session_v01";
+
+  const authScreen = $("authScreen");
+  const homeScreen = $("homeScreen");
+  const loginTab = $("loginTab");
+  const registerTab = $("registerTab");
+  const loginForm = $("loginForm");
+  const registerForm = $("registerForm");
+  const role = $("role");
+  const vehicleField = $("vehicleField");
+
+  function getUsers(){
+    try{
+      return JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
+    }catch(e){
+      return [];
+    }
+  }
+
+  function saveUsers(users){
+    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+  }
+
+  function showMessage(element, text, type){
+    element.textContent = text;
+    element.className = "message " + type;
+  }
+
+  function clearMessage(element){
+    element.textContent = "";
+    element.className = "message";
+  }
+
+  function switchTab(tab){
+    const isLogin = tab === "login";
+    loginTab.classList.toggle("active", isLogin);
+    registerTab.classList.toggle("active", !isLogin);
+    loginForm.classList.toggle("hidden", !isLogin);
+    registerForm.classList.toggle("hidden", isLogin);
+    clearMessage($("loginMessage"));
+    clearMessage($("registerMessage"));
+  }
+
+  function updateVehicleVisibility(){
+    vehicleField.classList.toggle("hidden", role.value !== "conductor");
+  }
+
+  function openHome(user){
+    authScreen.classList.add("hidden");
+    homeScreen.classList.remove("hidden");
+    $("welcomeName").textContent = "Hola, " + user.name;
+    $("welcomeText").textContent = user.role === "conductor"
+      ? "Tu cuenta de conductor está lista para las pruebas."
+      : "Tu cuenta de pasajero está lista para las pruebas.";
+    $("rolePill").textContent = user.role === "conductor" ? "🛵 Conductor" : "👤 Pasajero";
+    const vehiclePill = $("vehiclePill");
+    if(user.role === "conductor"){
+      vehiclePill.textContent = "Vehículo: " + (user.vehicle || "Sin definir");
+      vehiclePill.classList.remove("hidden");
+    }else{
+      vehiclePill.classList.add("hidden");
+    }
+  }
+
+  function openAuth(){
+    homeScreen.classList.add("hidden");
+    authScreen.classList.remove("hidden");
+    switchTab("login");
+  }
+
+  loginTab.addEventListener("click", () => switchTab("login"));
+  registerTab.addEventListener("click", () => switchTab("register"));
+  role.addEventListener("change", updateVehicleVisibility);
+
+  registerForm.addEventListener("submit", function(event){
+    event.preventDefault();
+    const name = $("fullName").value.trim();
+    const email = $("registerEmail").value.trim().toLowerCase();
+    const password = $("registerPassword").value;
+    const selectedRole = role.value;
+    const selectedVehicle = selectedRole === "conductor" ? $("vehicle").value : "";
+
+    if(name.length < 2){
+      showMessage($("registerMessage"), "Escribe un nombre válido.", "error");
+      return;
+    }
+    if(password.length < 4){
+      showMessage($("registerMessage"), "La contraseña debe tener al menos 4 caracteres.", "error");
+      return;
+    }
+
+    const users = getUsers();
+    if(users.some(u => u.email === email)){
+      showMessage($("registerMessage"), "Ya existe una cuenta con ese correo.", "error");
+      return;
+    }
+
+    const user = {
+      id: Date.now(),
+      name,
+      email,
+      password,
+      role: selectedRole,
+      vehicle: selectedVehicle
+    };
+
+    users.push(user);
+    saveUsers(users);
+    localStorage.setItem(SESSION_KEY, String(user.id));
+    registerForm.reset();
+    updateVehicleVisibility();
+    openHome(user);
+  });
+
+  loginForm.addEventListener("submit", function(event){
+    event.preventDefault();
+    const email = $("loginEmail").value.trim().toLowerCase();
+    const password = $("loginPassword").value;
+    const user = getUsers().find(u => u.email === email && u.password === password);
+
+    if(!user){
+      showMessage($("loginMessage"), "Correo o contraseña incorrectos.", "error");
+      return;
+    }
+
+    localStorage.setItem(SESSION_KEY, String(user.id));
+    openHome(user);
+  });
+
+  $("logoutButton").addEventListener("click", function(){
+    localStorage.removeItem(SESSION_KEY);
+    openAuth();
+  });
+
+  $("demoButton").addEventListener("click", function(){
+    showMessage($("demoMessage"), "¡Todo está funcionando correctamente en este dispositivo!", "ok");
+  });
+
+  updateVehicleVisibility();
+
+  const sessionId = localStorage.getItem(SESSION_KEY);
+  const sessionUser = getUsers().find(u => String(u.id) === sessionId);
+  if(sessionUser){
+    openHome(sessionUser);
+  }else{
+    openAuth();
+  }
+})();
+</script>
+</body>
+</html>
