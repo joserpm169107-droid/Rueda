@@ -1,11 +1,11 @@
 {
-  "name": "Rueda — Transporte Cuba",
+  "name": "Rueda v0.8 Plus — Transporte Cuba",
   "short_name": "Rueda",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#111214",
   "theme_color": "#F8C400",
-  "description": "Solicita motorinas, motos y triciclos en Ciego de Ávila.",
+  "description": "Solicita, programa y comparte viajes en Ciego de Ávila.",
   "icons": [
     {
       "src": "icon.svg",

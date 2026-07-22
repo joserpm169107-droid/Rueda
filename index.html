@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#F8C400" />
   <meta name="description" content="Rueda — transporte urbano para Cuba." />
-  <title>Rueda v0.7 Pro</title>
+  <title>Rueda v0.8 Plus</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="preconnect" href="https://unpkg.com" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -67,6 +67,19 @@
     .history-item{display:grid;grid-template-columns:42px 1fr auto;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}.history-item .circle{width:42px;height:42px;border-radius:14px;background:#f0f1f3;display:grid;place-items:center}.history-item small{color:var(--muted)}
     .toast{position:absolute;z-index:900;left:18px;right:18px;bottom:25px;background:#111;color:#fff;padding:13px 15px;border-radius:15px;font-weight:750;transform:translateY(120px);opacity:0;transition:.3s}.toast.show{transform:none;opacity:1}
     @media(min-width:700px){body{padding:16px}.app{height:calc(100dvh - 32px);border-radius:32px}}
+
+    .promo-banner{margin-top:12px;background:linear-gradient(135deg,#fff7c7,#f8c400);border-radius:18px;padding:13px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+    .promo-banner strong{display:block}.promo-banner small{color:#5d5319}.promo-banner button{border:0;background:#111;color:#fff;border-radius:12px;padding:9px 11px;font-weight:850}
+    .fare-box{margin-top:12px;border:1px solid var(--line);border-radius:18px;padding:13px;background:#fafafa}
+    .fare-row{display:flex;justify-content:space-between;margin:7px 0;font-size:13px}.fare-row.total{border-top:1px solid var(--line);padding-top:10px;font-weight:900;font-size:15px}
+    .schedule-row{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:11px}.schedule-row button{border:1px solid var(--line);background:#fff;border-radius:14px;padding:11px;font-weight:800}
+    .modal{position:absolute;z-index:1000;inset:0;background:rgba(0,0,0,.46);display:grid;place-items:end center;padding:18px}.modal-card{width:100%;background:#fff;border-radius:26px;padding:18px;box-shadow:var(--shadow)}
+    .modal-card input,.modal-card select{width:100%;border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:9px}
+    .stars{display:flex;justify-content:center;gap:9px;font-size:34px;margin:16px 0}.stars button{border:0;background:transparent;font-size:34px}
+    .sos{background:#fff0f0!important;color:#c92d2d!important}
+    .doc-card{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:16px;padding:12px;margin-top:9px}
+    .badge{font-size:11px;font-weight:900;border-radius:999px;padding:6px 9px;background:#e8fff4;color:#087b4c}
+
   </style>
 </head>
 <body>
@@ -96,6 +109,8 @@
         <button class="chip" data-dest="Terminal de Ómnibus">🚌 Terminal</button>
         <button class="chip" data-dest="Hospital Provincial">🏥 Hospital</button>
       </div>
+      <div class="promo-banner"><div><strong>20% en tu próximo viaje</strong><small>Usa el código RUEDA20</small></div><button id="promoBtn">Aplicar</button></div>
+      <div class="schedule-row"><button id="scheduleBtn">🗓️ Programar</button><button id="favoriteBtn">♡ Guardar destino</button></div>
 
       <div class="section-title"><h3>Elige cómo ir</h3><button>Precios estimados</button></div>
       <div class="vehicles">
@@ -109,6 +124,12 @@
           <div class="veh-icon">🛺</div><div><strong>Triciclo</strong><small>Hasta 3 · llega en 7 min</small></div><div class="price">$350<small>CUP</small></div>
         </article>
       </div>
+      <div class="fare-box">
+        <div class="fare-row"><span>Tarifa base</span><strong id="baseFare">$120</strong></div>
+        <div class="fare-row"><span>Distancia estimada</span><strong id="distanceFare">$60</strong></div>
+        <div class="fare-row hidden" id="discountRow"><span>Descuento RUEDA20</span><strong id="discountValue">-$36</strong></div>
+        <div class="fare-row total"><span>Total estimado</span><strong id="fareTotal">$180 CUP</strong></div>
+      </div>
       <div class="payment"><div class="pay-left"><span class="pay-icon">CUP</span><div><strong>Efectivo</strong><small style="display:block;color:var(--muted)">Paga al finalizar</small></div></div><span>›</span></div>
       <button class="primary" id="requestBtn">Pedir Motorina · $180 CUP</button>
     </div>
@@ -119,7 +140,7 @@
       <div class="driver-card"><div class="avatar">👨🏽</div><div><strong>Daniel R.</strong><small>Motorina azul · CA-218</small></div><div class="rating">⭐ 4.9</div></div>
       <div class="progress"><div id="progressBar"></div></div>
       <div class="route-info"><div class="metric"><strong id="distance">1.4 km</strong><small>Distancia</small></div><div class="metric"><strong id="tripTime">8 min</strong><small>Viaje</small></div><div class="metric"><strong id="tripPrice">$180</strong><small>CUP</small></div></div>
-      <div class="trip-actions"><button>💬 Chat</button><button>📞 Llamar</button><button>🛡️ Seguridad</button></div>
+      <div class="trip-actions"><button>💬 Chat</button><button>📞 Llamar</button><button class="sos" id="sosBtn">🆘 SOS</button></div>
       <button class="primary" id="cancelBtn" style="background:#f0f1f3;box-shadow:none">Cancelar viaje</button>
     </div>
 
@@ -149,6 +170,15 @@
       <div class="history-item"><div class="circle">🛺</div><div><strong>Terminal de Ómnibus</strong><small>Ayer · Triciclo</small></div><strong>$350</strong></div>
       <div class="history-item"><div class="circle">🏍️</div><div><strong>Hospital Provincial</strong><small>18 jul · Moto</small></div><strong>$220</strong></div>
     </div>
+    <div id="accountPanel" class="hidden">
+      <h2>Mi cuenta</h2>
+      <div class="driver-card" style="margin-top:12px"><div class="avatar">👤</div><div><strong>José Ramón</strong><small>Pasajero verificado</small></div><div class="rating">⭐ 4.9</div></div>
+      <div class="section-title"><h3>Datos y seguridad</h3><button>Editar</button></div>
+      <div class="doc-card"><span>📱 Teléfono</span><span class="badge">Verificado</span></div>
+      <div class="doc-card"><span>🪪 Identidad</span><span class="badge">Verificada</span></div>
+      <div class="doc-card"><span>🔔 Notificaciones</span><span>Activadas ›</span></div>
+      <div class="doc-card"><span>🌙 Modo oscuro</span><span>Próximamente</span></div>
+    </div>
 
     <nav class="nav">
       <button class="active" data-page="home"><span>⌂</span>Inicio</button>
@@ -157,13 +187,17 @@
       <button data-page="account"><span>☻</span>Cuenta</button>
     </nav>
   </section>
+
+  <div class="modal hidden" id="scheduleModal"><div class="modal-card"><h2>Programar viaje</h2><p style="color:var(--muted);margin-top:5px">Reserva una motorina, moto o triciclo.</p><input id="scheduleDate" type="date"><input id="scheduleTime" type="time"><button class="primary" id="confirmSchedule">Confirmar reserva</button><button class="primary" style="background:#eef0f2;box-shadow:none" data-close="scheduleModal">Cerrar</button></div></div>
+  <div class="modal hidden" id="ratingModal"><div class="modal-card"><h2 style="text-align:center">¿Cómo estuvo tu viaje?</h2><p style="text-align:center;color:var(--muted);margin-top:5px">Tu opinión ayuda a mejorar Rueda.</p><div class="stars" id="stars"><button>☆</button><button>☆</button><button>☆</button><button>☆</button><button>☆</button></div><button class="primary" id="sendRating">Enviar calificación</button></div></div>
+  <div class="modal hidden" id="sosModal"><div class="modal-card"><h2>Centro de seguridad</h2><p style="color:var(--muted);margin-top:6px">Comparte el viaje o solicita ayuda.</p><button class="primary" id="shareTrip">📍 Compartir viaje</button><button class="primary" style="background:#e04444;color:#fff;box-shadow:none" id="emergencyBtn">📞 Llamada de emergencia</button><button class="primary" style="background:#eef0f2;box-shadow:none" data-close="sosModal">Cerrar</button></div></div>
   <div class="toast" id="toast"></div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
-let selected={type:'Motorina',price:180,eta:3}, tripTimer, requestTimer, driverCountdown;
+let selected={type:'Motorina',price:180,eta:3}, tripTimer, requestTimer, driverCountdown, promoApplied=false, rating=0;
 let map, driverMarker, routeLine;
 const start=[21.8467,-78.7636], end=[21.8407,-78.7602];
 
@@ -177,17 +211,33 @@ function initMap(){
 }
 initMap();
 
+
+function updateFare(){
+  const base=Math.round(selected.price*.67), dist=selected.price-base;
+  const discount=promoApplied?Math.round(selected.price*.20):0;
+  const total=selected.price-discount;
+  $('#baseFare').textContent='$'+base;$('#distanceFare').textContent='$'+dist;
+  $('#discountRow').classList.toggle('hidden',!promoApplied);$('#discountValue').textContent='-$'+discount;
+  $('#fareTotal').textContent='$'+total+' CUP';
+  $('#requestBtn').textContent=`Pedir ${selected.type} · $${total} CUP`;
+}
+$('#promoBtn').onclick=()=>{promoApplied=true;updateFare();toast('Código RUEDA20 aplicado')};
+$('#favoriteBtn').onclick=()=>{const d=$('#destination').value.trim();if(!d)return toast('Escribe un destino');localStorage.setItem('rueda_favorite',d);$('#favoriteBtn').textContent='♥ Destino guardado';toast('Destino guardado en favoritos')};
+$('#scheduleBtn').onclick=()=>$('#scheduleModal').classList.remove('hidden');
+$('#confirmSchedule').onclick=()=>{const d=$('#scheduleDate').value,t=$('#scheduleTime').value;if(!d||!t)return toast('Selecciona fecha y hora');localStorage.setItem('rueda_schedule',JSON.stringify({d,t,dest:$('#destination').value,type:selected.type}));$('#scheduleModal').classList.add('hidden');toast('Viaje programado correctamente')};
+$$('[data-close]').forEach(b=>b.onclick=()=>$('#'+b.dataset.close).classList.add('hidden'));
+
 $$('.vehicle').forEach(v=>v.onclick=()=>{
   $$('.vehicle').forEach(x=>x.classList.remove('active'));v.classList.add('active');
   selected={type:v.dataset.type,price:+v.dataset.price,eta:+v.dataset.eta};
-  $('#requestBtn').textContent=`Pedir ${selected.type} · $${selected.price} CUP`;
+  updateFare();
 });
 $$('.chip').forEach(c=>c.onclick=()=>{$('#destination').value=c.dataset.dest;toast('Destino seleccionado')});
 
 $('#requestBtn').onclick=()=>{
   if(!$('#destination').value.trim()) return toast('Escribe un destino');
   $('#passengerHome').classList.add('hidden');$('#tripPanel').classList.remove('hidden');
-  $('#etaText').textContent=selected.eta+' min';$('#tripPrice').textContent='$'+selected.price;
+  $('#etaText').textContent=selected.eta+' min';const finalPrice=selected.price-(promoApplied?Math.round(selected.price*.20):0);$('#tripPrice').textContent='$'+finalPrice;
   $('#statusPill').style.display='block';$('#statusPill').textContent='Conductor confirmado ✓';
   if(map){
     routeLine=L.polyline([start,[21.844,-78.7618],end],{color:'#2578f5',weight:6,opacity:.9}).addTo(map);
@@ -200,7 +250,7 @@ $('#requestBtn').onclick=()=>{
     p=Math.min(100,p+4);$('#progressBar').style.width=p+'%';
     const mins=Math.max(0,Math.ceil((100-p)/28));$('#etaText').textContent=mins?mins+' min':'¡Llegó!';
     if(driverMarker){const t=p/100;driverMarker.setLatLng([start[0]+(end[0]-start[0])*t,start[1]+(end[1]-start[1])*t])}
-    if(p>=100){clearInterval(tripTimer);$('#statusPill').textContent='Tu conductor llegó';toast('Daniel ya está en el punto de recogida')}
+    if(p>=100){clearInterval(tripTimer);$('#statusPill').textContent='Tu conductor llegó';toast('Daniel ya está en el punto de recogida');setTimeout(()=>$('#ratingModal').classList.remove('hidden'),1800)}
   },700);
 };
 $('#cancelBtn').onclick=()=>{clearInterval(tripTimer);if(map){if(driverMarker)map.removeLayer(driverMarker);if(routeLine)map.removeLayer(routeLine);map.setView(start,15)}$('#tripPanel').classList.add('hidden');$('#passengerHome').classList.remove('hidden');$('#statusPill').style.display='none';$('#progressBar').style.width='10%';toast('Viaje cancelado')};
@@ -227,12 +277,20 @@ $('#acceptBtn').onclick=()=>{clearInterval(driverCountdown);$('#driverRequest').
 $$('.nav button').forEach(b=>b.onclick=()=>{
   $$('.nav button').forEach(x=>x.classList.remove('active'));b.classList.add('active');
   const page=b.dataset.page;
-  if(page==='home'){ $('#historyPanel').classList.add('hidden'); const driver=$('[data-mode="driver"]').classList.contains('active'); $('#driverHome').classList.toggle('hidden',!driver); $('#passengerHome').classList.toggle('hidden',driver); }
-  else if(page==='history'){ $('#passengerHome,#tripPanel,#driverHome').classList.add('hidden');$('#historyPanel').classList.remove('hidden'); }
-  else toast(page==='saved'?'Guardados estará conectado en la próxima versión':'Perfil y documentos: próxima versión');
+  if(page==='home'){ $('#historyPanel,#accountPanel').classList.add('hidden'); const driver=$('[data-mode="driver"]').classList.contains('active'); $('#driverHome').classList.toggle('hidden',!driver); $('#passengerHome').classList.toggle('hidden',driver); }
+  else if(page==='history'){ $('#passengerHome,#tripPanel,#driverHome,#accountPanel').classList.add('hidden');$('#historyPanel').classList.remove('hidden'); }
+  else if(page==='account'){ $('#passengerHome,#tripPanel,#driverHome,#historyPanel').classList.add('hidden');$('#accountPanel').classList.remove('hidden'); }
+  else {const fav=localStorage.getItem('rueda_favorite');toast(fav?'Favorito: '+fav:'Todavía no tienes destinos guardados')}
 });
 $('#locateBtn').onclick=()=>{if(map)map.setView(start,16);toast('Ubicación centrada')};
 $('#profileBtn').onclick=()=>toast('Perfil de José');
+
+$('#sosBtn').onclick=()=>$('#sosModal').classList.remove('hidden');
+$('#shareTrip').onclick=()=>{const text='Estoy viajando con Rueda hacia '+$('#destination').value+'. Conductor: Daniel R., CA-218.';if(navigator.share)navigator.share({title:'Mi viaje en Rueda',text});else navigator.clipboard?.writeText(text);toast('Datos del viaje compartidos')};
+$('#emergencyBtn').onclick=()=>toast('En una versión real, este botón llamará al número de emergencia configurado.');
+$$('#stars button').forEach((b,i)=>b.onclick=()=>{rating=i+1;$$('#stars button').forEach((x,j)=>x.textContent=j<rating?'★':'☆')});
+$('#sendRating').onclick=()=>{if(!rating)return toast('Selecciona una calificación');localStorage.setItem('rueda_last_rating',rating);$('#ratingModal').classList.add('hidden');toast('Gracias por calificar con '+rating+' estrellas')};
+updateFare();
 if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script>
 </body>

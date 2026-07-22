@@ -1,25 +1,24 @@
-# Rueda v0.7 Pro
+# Rueda v0.8 Plus
 
-Versión web progresiva (PWA) del proyecto Rueda para Ciego de Ávila.
+Nueva versión de la PWA de Rueda.
 
 ## Novedades
-- Rediseño completo negro, blanco y amarillo.
-- Mapa real con OpenStreetMap.
-- Flujo de pasajero y conductor en la misma demo.
-- Selección de motorina, moto y triciclo.
-- Tarifas estimadas en CUP.
-- Simulación de conductor acercándose.
-- Panel del conductor, ganancias y solicitud con cuenta regresiva.
-- Historial de viajes.
-- Instalable como aplicación web (PWA).
-- Compatible con GitHub Pages.
+- Código promocional RUEDA20 y cálculo del descuento.
+- Desglose completo de la tarifa.
+- Programación de viajes por fecha y hora.
+- Guardado de destinos favoritos en el dispositivo.
+- Centro de seguridad con compartir viaje y botón SOS.
+- Calificación del conductor con estrellas.
+- Perfil del pasajero con verificaciones simuladas.
+- Mejor navegación entre Inicio, Viajes, Guardados y Cuenta.
+- Conserva mapa, modos pasajero/conductor, solicitudes y ganancias de v0.7.
+- Compatible con GitHub Pages e instalación como PWA.
 
-## Publicar en GitHub Pages
+## Actualizar en GitHub
 1. Descomprime el ZIP.
-2. Sube todos los archivos a la raíz del repositorio `Rueda`.
-3. En GitHub abre **Settings → Pages**.
-4. Selecciona **Deploy from a branch**, rama `main`, carpeta `/root`.
-5. Guarda y espera unos minutos.
+2. Reemplaza todos los archivos de la raíz del repositorio.
+3. Confirma los cambios.
+4. Espera unos minutos y abre la página con recarga completa.
 
-## Nota
-Es una demo funcional. El GPS compartido, usuarios reales, base de datos, notificaciones y pagos requieren backend.
+## Importante
+Los datos se guardan localmente para la demostración. Usuarios reales, GPS compartido, notificaciones, pagos y emergencias requieren backend y configuración legal.
