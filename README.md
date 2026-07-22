@@ -1,15 +1,25 @@
-# Rueda v0.6
+# Rueda v0.7 Pro
+
+Versión web progresiva (PWA) del proyecto Rueda para Ciego de Ávila.
 
 ## Novedades
-- Ruta azul desde el conductor hasta el pasajero
-- Vehículo animado acercándose
-- Cuenta regresiva visual del tiempo de llegada
-- Notificaciones internas tipo toast
-- Resumen del viaje con distancia, tiempo y precio
-- Flujo de iniciar y finalizar viaje
-- Pantalla de calificación de 1 a 5 estrellas
-- Historial con calificación
-- Solicitudes de conductor con cuenta regresiva visual
-- Diseño refinado inspirado en la facilidad de Uber y Lyft, con identidad propia
+- Rediseño completo negro, blanco y amarillo.
+- Mapa real con OpenStreetMap.
+- Flujo de pasajero y conductor en la misma demo.
+- Selección de motorina, moto y triciclo.
+- Tarifas estimadas en CUP.
+- Simulación de conductor acercándose.
+- Panel del conductor, ganancias y solicitud con cuenta regresiva.
+- Historial de viajes.
+- Instalable como aplicación web (PWA).
+- Compatible con GitHub Pages.
 
-Reemplaza `index.html` y `README.md` en GitHub.
+## Publicar en GitHub Pages
+1. Descomprime el ZIP.
+2. Sube todos los archivos a la raíz del repositorio `Rueda`.
+3. En GitHub abre **Settings → Pages**.
+4. Selecciona **Deploy from a branch**, rama `main`, carpeta `/root`.
+5. Guarda y espera unos minutos.
+
+## Nota
+Es una demo funcional. El GPS compartido, usuarios reales, base de datos, notificaciones y pagos requieren backend.
