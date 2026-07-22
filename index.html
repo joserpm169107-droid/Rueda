@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#F8C400" />
   <meta name="description" content="Rueda — transporte urbano para Cuba." />
-  <title>Rueda v0.9 Login</title>
+  <title>Rueda v0.9.1 Logout Fix</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="preconnect" href="https://unpkg.com" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -218,7 +218,7 @@
       <div class="doc-card"><span>🪪 Identidad</span><span class="badge">Verificada</span></div>
       <div class="doc-card"><span>🔔 Notificaciones</span><span>Activadas ›</span></div>
       <div class="doc-card"><span>🌙 Modo oscuro</span><span>Próximamente</span></div>
-      <button class="logout-btn" id="logoutBtn">Cerrar sesión</button>
+      <button class="logout-btn" id="logoutBtn" type="button">🚪 Cerrar sesión</button><p style="text-align:center;color:var(--muted);font-size:11px;margin-top:9px">Versión 0.9.1 · corrección de sesión</p>
     </div>
 
     <nav class="nav">
@@ -383,15 +383,45 @@ $$('#stars button').forEach((b,i)=>b.onclick=()=>{rating=i+1;$$('#stars button')
 $('#sendRating').onclick=()=>{if(!rating)return toast('Selecciona una calificación');localStorage.setItem('rueda_last_rating',rating);$('#ratingModal').classList.add('hidden');toast('Gracias por calificar con '+rating+' estrellas')};
 updateFare();
 
-$('#logoutBtn').onclick=()=>$('#logoutModal').classList.remove('hidden');
-$('#cancelLogout').onclick=()=>$('#logoutModal').classList.add('hidden');
-$('#confirmLogout').onclick=()=>{
-  localStorage.removeItem(AUTH_KEY);sessionStorage.removeItem(AUTH_KEY);
+
+function cerrarSesionRueda(){
+  const aceptar = window.confirm('¿Deseas cerrar sesión en Rueda?');
+  if(!aceptar) return;
+
+  try{
+    localStorage.removeItem(AUTH_KEY);
+    sessionStorage.removeItem(AUTH_KEY);
+    localStorage.removeItem('rueda_user');
+    sessionStorage.removeItem('rueda_user');
+  }catch(e){}
+
+  $('#accountName').textContent='Usuario';
+  $('#accountEmail').textContent='Sesión cerrada';
   $('#logoutModal').classList.add('hidden');
-  showAuth();
+  $('#authScreen').classList.remove('hidden');
+
+  // Limpia los campos para confirmar visualmente que la sesión terminó.
+  $('#loginEmail').value='';
+  $('#loginPassword').value='';
   toast('Sesión cerrada correctamente');
-};
-if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+
+  // Recarga limpia para evitar que una copia antigua de la app mantenga la pantalla.
+  setTimeout(()=>location.replace(location.pathname+'?v=091&t='+Date.now()),500);
+}
+$('#logoutBtn').addEventListener('click', cerrarSesionRueda);
+$('#confirmLogout').addEventListener('click', cerrarSesionRueda);
+$('#cancelLogout').addEventListener('click', ()=>$('#logoutModal').classList.add('hidden'));
+
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', async ()=>{
+    try{
+      const reg = await navigator.serviceWorker.register('./sw.js?v=091');
+      await reg.update();
+    }catch(e){}
+  });
+}
+
 </script>
 </body>
 </html>
