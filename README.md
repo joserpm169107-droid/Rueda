@@ -1,17 +1,15 @@
-# Rueda v0.5
-
-Rediseño inspirado en la facilidad de uso de Uber y Lyft, pero con identidad propia.
+# Rueda v0.6
 
 ## Novedades
-- Interfaz clara en blanco, negro y amarillo
-- Mapa principal con barra “¿A dónde vas?”
-- Panel inferior con tipos de viaje
-- Flujo completo: buscar, asignar, llegar, iniciar y finalizar
-- Tarjeta del conductor con calificación y matrícula
-- Botones de llamada, chat y seguridad
-- Navegación inferior: Inicio, Viajes, Pago y Cuenta
-- Historial local de viajes
-- Pantalla de conductor con solicitudes e ingresos de prueba
-- Métodos de pago preparados para efectivo, Transfermóvil y EnZona
+- Ruta azul desde el conductor hasta el pasajero
+- Vehículo animado acercándose
+- Cuenta regresiva visual del tiempo de llegada
+- Notificaciones internas tipo toast
+- Resumen del viaje con distancia, tiempo y precio
+- Flujo de iniciar y finalizar viaje
+- Pantalla de calificación de 1 a 5 estrellas
+- Historial con calificación
+- Solicitudes de conductor con cuenta regresiva visual
+- Diseño refinado inspirado en la facilidad de Uber y Lyft, con identidad propia
 
 Reemplaza `index.html` y `README.md` en GitHub.
