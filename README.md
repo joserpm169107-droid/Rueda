@@ -1,24 +1,22 @@
-# Rueda v0.8 Plus
+# Rueda v0.9 Login
 
-Nueva versión de la PWA de Rueda.
+## Cambios principales
+- Pantalla real de inicio de sesión.
+- Creación de cuenta.
+- Entrar con correo, teléfono o Google en modo demostración.
+- Opción para mantener la sesión iniciada.
+- Perfil actualizado con el nombre y correo del usuario.
+- Botón **Cerrar sesión** completamente funcional.
+- Confirmación antes de salir.
+- Regreso automático a la pantalla de acceso.
+- Conserva todas las funciones de Rueda v0.8 Plus.
 
-## Novedades
-- Código promocional RUEDA20 y cálculo del descuento.
-- Desglose completo de la tarifa.
-- Programación de viajes por fecha y hora.
-- Guardado de destinos favoritos en el dispositivo.
-- Centro de seguridad con compartir viaje y botón SOS.
-- Calificación del conductor con estrellas.
-- Perfil del pasajero con verificaciones simuladas.
-- Mejor navegación entre Inicio, Viajes, Guardados y Cuenta.
-- Conserva mapa, modos pasajero/conductor, solicitudes y ganancias de v0.7.
-- Compatible con GitHub Pages e instalación como PWA.
-
-## Actualizar en GitHub
+## Actualizar GitHub
 1. Descomprime el ZIP.
-2. Reemplaza todos los archivos de la raíz del repositorio.
+2. Reemplaza todos los archivos del repositorio.
 3. Confirma los cambios.
-4. Espera unos minutos y abre la página con recarga completa.
+4. Espera de 1 a 3 minutos.
+5. Abre la web y haz una recarga completa.
 
-## Importante
-Los datos se guardan localmente para la demostración. Usuarios reales, GPS compartido, notificaciones, pagos y emergencias requieren backend y configuración legal.
+## Nota
+El acceso de esta versión funciona localmente como demostración. Para cuentas reales y seguras se conectará Firebase Authentication.

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <meta name="theme-color" content="#F8C400" />
   <meta name="description" content="Rueda — transporte urbano para Cuba." />
-  <title>Rueda v0.8 Plus</title>
+  <title>Rueda v0.9 Login</title>
   <link rel="manifest" href="manifest.webmanifest" />
   <link rel="preconnect" href="https://unpkg.com" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
@@ -80,10 +80,50 @@
     .doc-card{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:16px;padding:12px;margin-top:9px}
     .badge{font-size:11px;font-weight:900;border-radius:999px;padding:6px 9px;background:#e8fff4;color:#087b4c}
 
+
+    .auth-screen{position:absolute;z-index:1200;inset:0;background:linear-gradient(160deg,#111214 0%,#202329 52%,#f8c400 160%);padding:28px 20px;display:flex;align-items:center;justify-content:center}
+    .auth-card{width:100%;background:#fff;border-radius:28px;padding:22px;box-shadow:var(--shadow)}
+    .auth-logo{width:70px;height:70px;border-radius:22px;background:var(--yellow);display:grid;place-items:center;font-size:38px;font-weight:1000;margin:0 auto 14px}
+    .auth-card h1{text-align:center}.auth-card>p{text-align:center;color:var(--muted);margin:7px 0 18px}
+    .auth-tabs{display:grid;grid-template-columns:1fr 1fr;background:#eef0f2;padding:4px;border-radius:15px;margin-bottom:12px}
+    .auth-tabs button{border:0;background:transparent;padding:10px;border-radius:12px;font-weight:850}.auth-tabs .active{background:#fff;box-shadow:0 4px 12px #0001}
+    .auth-card input{width:100%;border:1px solid var(--line);border-radius:14px;padding:13px;margin:6px 0;outline:0}
+    .social-btn{width:100%;border:1px solid var(--line);background:#fff;border-radius:15px;padding:12px;margin-top:9px;font-weight:800}
+    .logout-btn{width:100%;border:0;background:#fff0f0;color:#c72f2f;border-radius:16px;padding:13px;margin-top:14px;font-weight:900}
+    .confirm-box{background:#fff;border-radius:24px;padding:20px;width:100%}
+    .confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.confirm-actions button{border:0;border-radius:14px;padding:13px;font-weight:900}
+
   </style>
 </head>
 <body>
 <div class="app">
+  <section class="auth-screen" id="authScreen">
+    <div class="auth-card">
+      <div class="auth-logo">R</div>
+      <h1>Bienvenido a Rueda</h1>
+      <p>Muévete por Ciego de Ávila de forma rápida y segura.</p>
+      <div class="auth-tabs">
+        <button class="active" data-auth-tab="login">Iniciar sesión</button>
+        <button data-auth-tab="register">Crear cuenta</button>
+      </div>
+      <div id="loginForm">
+        <input id="loginEmail" type="email" placeholder="Correo electrónico">
+        <input id="loginPassword" type="password" placeholder="Contraseña">
+        <button class="primary" id="loginBtn">Entrar</button>
+        <button class="social-btn" id="phoneLoginBtn">📱 Entrar con teléfono</button>
+        <button class="social-btn" id="googleLoginBtn">G Entrar con Google</button>
+      </div>
+      <div id="registerForm" class="hidden">
+        <input id="registerName" placeholder="Nombre completo">
+        <input id="registerEmail" type="email" placeholder="Correo electrónico">
+        <input id="registerPassword" type="password" placeholder="Crea una contraseña">
+        <button class="primary" id="registerBtn">Crear cuenta</button>
+      </div>
+      <label style="display:flex;gap:8px;align-items:center;margin-top:13px;font-size:13px;color:var(--muted)">
+        <input id="rememberMe" type="checkbox" checked style="width:auto;margin:0"> Mantener sesión iniciada
+      </label>
+    </div>
+  </section>
   <div id="map"></div>
   <div class="topbar">
     <div class="brand"><div class="logo">R</div><div>RUEDA<small>Ciego de Ávila</small></div></div>
@@ -172,12 +212,13 @@
     </div>
     <div id="accountPanel" class="hidden">
       <h2>Mi cuenta</h2>
-      <div class="driver-card" style="margin-top:12px"><div class="avatar">👤</div><div><strong>José Ramón</strong><small>Pasajero verificado</small></div><div class="rating">⭐ 4.9</div></div>
+      <div class="driver-card" style="margin-top:12px"><div class="avatar">👤</div><div><strong id="accountName">José Ramón</strong><small id="accountEmail">Pasajero verificado</small></div><div class="rating">⭐ 4.9</div></div>
       <div class="section-title"><h3>Datos y seguridad</h3><button>Editar</button></div>
       <div class="doc-card"><span>📱 Teléfono</span><span class="badge">Verificado</span></div>
       <div class="doc-card"><span>🪪 Identidad</span><span class="badge">Verificada</span></div>
       <div class="doc-card"><span>🔔 Notificaciones</span><span>Activadas ›</span></div>
       <div class="doc-card"><span>🌙 Modo oscuro</span><span>Próximamente</span></div>
+      <button class="logout-btn" id="logoutBtn">Cerrar sesión</button>
     </div>
 
     <nav class="nav">
@@ -191,6 +232,17 @@
   <div class="modal hidden" id="scheduleModal"><div class="modal-card"><h2>Programar viaje</h2><p style="color:var(--muted);margin-top:5px">Reserva una motorina, moto o triciclo.</p><input id="scheduleDate" type="date"><input id="scheduleTime" type="time"><button class="primary" id="confirmSchedule">Confirmar reserva</button><button class="primary" style="background:#eef0f2;box-shadow:none" data-close="scheduleModal">Cerrar</button></div></div>
   <div class="modal hidden" id="ratingModal"><div class="modal-card"><h2 style="text-align:center">¿Cómo estuvo tu viaje?</h2><p style="text-align:center;color:var(--muted);margin-top:5px">Tu opinión ayuda a mejorar Rueda.</p><div class="stars" id="stars"><button>☆</button><button>☆</button><button>☆</button><button>☆</button><button>☆</button></div><button class="primary" id="sendRating">Enviar calificación</button></div></div>
   <div class="modal hidden" id="sosModal"><div class="modal-card"><h2>Centro de seguridad</h2><p style="color:var(--muted);margin-top:6px">Comparte el viaje o solicita ayuda.</p><button class="primary" id="shareTrip">📍 Compartir viaje</button><button class="primary" style="background:#e04444;color:#fff;box-shadow:none" id="emergencyBtn">📞 Llamada de emergencia</button><button class="primary" style="background:#eef0f2;box-shadow:none" data-close="sosModal">Cerrar</button></div></div>
+
+  <div class="modal hidden" id="logoutModal">
+    <div class="confirm-box">
+      <h2>¿Cerrar sesión?</h2>
+      <p style="color:var(--muted);margin-top:7px">Tendrás que iniciar sesión nuevamente para usar Rueda.</p>
+      <div class="confirm-actions">
+        <button id="cancelLogout" style="background:#eef0f2">Cancelar</button>
+        <button id="confirmLogout" style="background:#e04444;color:#fff">Cerrar sesión</button>
+      </div>
+    </div>
+  </div>
   <div class="toast" id="toast"></div>
 </div>
 
@@ -198,6 +250,45 @@
 <script>
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
 let selected={type:'Motorina',price:180,eta:3}, tripTimer, requestTimer, driverCountdown, promoApplied=false, rating=0;
+
+const AUTH_KEY='rueda_user';
+function showApp(user){
+  $('#authScreen').classList.add('hidden');
+  $('#accountName').textContent=user.name || 'Usuario Rueda';
+  $('#accountEmail').textContent=user.email || user.phone || 'Cuenta verificada';
+}
+function showAuth(){
+  $('#authScreen').classList.remove('hidden');
+  $('#logoutModal').classList.add('hidden');
+}
+const savedUser=JSON.parse(localStorage.getItem(AUTH_KEY)||sessionStorage.getItem(AUTH_KEY)||'null');
+if(savedUser) setTimeout(()=>showApp(savedUser),0);
+
+$$('[data-auth-tab]').forEach(b=>b.onclick=()=>{
+  $$('[data-auth-tab]').forEach(x=>x.classList.remove('active'));b.classList.add('active');
+  const login=b.dataset.authTab==='login';
+  $('#loginForm').classList.toggle('hidden',!login);
+  $('#registerForm').classList.toggle('hidden',login);
+});
+function saveUser(user){
+  localStorage.removeItem(AUTH_KEY);sessionStorage.removeItem(AUTH_KEY);
+  const store=$('#rememberMe').checked?localStorage:sessionStorage;
+  store.setItem(AUTH_KEY,JSON.stringify(user));
+  showApp(user);toast('Sesión iniciada');
+}
+$('#loginBtn').onclick=()=>{
+  const email=$('#loginEmail').value.trim(),pass=$('#loginPassword').value;
+  if(!email||!pass)return toast('Completa correo y contraseña');
+  saveUser({name:email.split('@')[0],email});
+};
+$('#registerBtn').onclick=()=>{
+  const name=$('#registerName').value.trim(),email=$('#registerEmail').value.trim(),pass=$('#registerPassword').value;
+  if(!name||!email||pass.length<4)return toast('Completa los datos correctamente');
+  saveUser({name,email});
+};
+$('#phoneLoginBtn').onclick=()=>saveUser({name:'Usuario Rueda',phone:'+53 5XX XXX XX'});
+$('#googleLoginBtn').onclick=()=>saveUser({name:'José Ramón',email:'jose@rueda.demo'});
+
 let map, driverMarker, routeLine;
 const start=[21.8467,-78.7636], end=[21.8407,-78.7602];
 
@@ -291,6 +382,15 @@ $('#emergencyBtn').onclick=()=>toast('En una versión real, este botón llamará
 $$('#stars button').forEach((b,i)=>b.onclick=()=>{rating=i+1;$$('#stars button').forEach((x,j)=>x.textContent=j<rating?'★':'☆')});
 $('#sendRating').onclick=()=>{if(!rating)return toast('Selecciona una calificación');localStorage.setItem('rueda_last_rating',rating);$('#ratingModal').classList.add('hidden');toast('Gracias por calificar con '+rating+' estrellas')};
 updateFare();
+
+$('#logoutBtn').onclick=()=>$('#logoutModal').classList.remove('hidden');
+$('#cancelLogout').onclick=()=>$('#logoutModal').classList.add('hidden');
+$('#confirmLogout').onclick=()=>{
+  localStorage.removeItem(AUTH_KEY);sessionStorage.removeItem(AUTH_KEY);
+  $('#logoutModal').classList.add('hidden');
+  showAuth();
+  toast('Sesión cerrada correctamente');
+};
 if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script>
 </body>
