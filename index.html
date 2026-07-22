@@ -332,7 +332,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
   <div id="mapConfirm" class="map-confirm hidden"><button class="cancel" id="cancelPin">Cancelar</button><button class="confirm" id="confirmPin">Confirmar destino</button></div>
   <div class="top">
     <button class="round glass" id="menuBtn">☰</button>
-    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS<small>CIEGO DE ÁVILA 1.6.2</small></div></div>
+    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS<small>CIEGO DE ÁVILA 1.6.3</small></div></div>
     <button class="round glass" id="profileBtn">👤</button>
   </div>
 
@@ -652,7 +652,7 @@ function haversineKm(a,b){
   const s=Math.sin(dLat/2)**2+Math.cos(toRad(a[0]))*Math.cos(toRad(b[0]))*Math.sin(dLon/2)**2;
   return 2*R*Math.asin(Math.sqrt(s));
 }
-function insideCiego de Ávila(point){
+function insideCiego(point){
   return point && point[0]>=21.72 && point[0]<=21.95 && point[1]>=-78.90 && point[1]<=-78.60;
 }
 function escapeOverpass(s){
@@ -722,7 +722,7 @@ async function geocodeCubanAddress(text){
       ]);
       if(p1&&p2){
         const separation=haversineKm(p1,p2);
-        if(insideCiego de Ávila(p1)&&insideCiego de Ávila(p2)&&separation<=1.2){
+        if(insideCiego(p1)&&insideCiego(p2)&&separation<=1.2){
           return {
             point:[(p1[0]+p2[0])/2,(p1[1]+p2[1])/2],
             label:`${parsed.main} entre ${parsed.cross1} y ${parsed.cross2}`,
@@ -750,7 +750,7 @@ async function geocodeCubanAddress(text){
       if(results?.length){
         const valid=results
           .map(r=>({...r,point:[+r.lat,+r.lon]}))
-          .filter(r=>insideCiego de Ávila(r.point));
+          .filter(r=>insideCiego(r.point));
         if(valid.length){
           const best=valid[0];
           return {
@@ -1046,7 +1046,17 @@ setTimeout(()=>{
   startMarker.setLatLng(currentStart).bindPopup('Ubicación de prueba: Parque José Martí, Ciego de Ávila');
   map.setView(currentStart,16);
 },400);
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=162').then(r=>r.update()).catch(()=>{}))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=163').then(r=>r.update()).catch(()=>{}))}
 </script>
+
+<script>
+window.addEventListener('load', function () {
+  window.setTimeout(function () {
+    var splash = document.getElementById('brandSplash');
+    if (splash) splash.classList.add('hide');
+  }, 1100);
+});
+</script>
+
 </body>
 </html>

@@ -1,17 +1,18 @@
-# Sobre Ruedas v1.6.2 — Ubicación de prueba editable
+# Sobre Ruedas v1.6.3 — Inicio corregido
 
-## Corrección
-La ubicación de desarrollo ya no queda obligatoriamente clavada en el Parque José Martí.
+## Problema corregido
+La aplicación se quedaba detenida en la pantalla del logo y no mostraba las opciones para iniciar sesión o registrarse.
 
-## Cómo funciona
-- Pulsa **Cambiar** en la tarjeta “Ubicación de prueba”.
-- Mueve el mapa hasta el punto de salida que quieras probar.
-- Pulsa **Usar como salida**.
-- La nueva ubicación se guarda en el teléfono y se usa para calcular las rutas.
-- El GPS real continúa completamente desactivado.
-- Pulsa **Restaurar** para volver al Parque José Martí.
+La causa era un error de JavaScript provocado por un nombre de función dañado durante la actualización de la ciudad.
 
-La selección manual está limitada a la zona de Ciego de Ávila configurada en esta versión.
+## Cambios
+- Corregido el error que impedía arrancar la aplicación.
+- La pantalla del logo desaparece automáticamente.
+- Se vuelve a mostrar el inicio de sesión y el registro.
+- Se mantiene el desplazamiento del formulario en iPhone.
+- Se mantiene la ubicación temporal editable.
+- El GPS real continúa desactivado.
+- Caché actualizado a v1.6.3.
 
 ## Actualización
-Reemplaza todos los archivos del repositorio y abre la app con `?v=162`.
+Reemplaza todos los archivos del repositorio y abre la aplicación con `?v=163`.
