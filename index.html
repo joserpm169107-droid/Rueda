@@ -558,6 +558,25 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
   .auth-card{padding-top:18px !important}
 }
 
+
+/* v1.7.2 — permitir que la pantalla de acceso se oculte al iniciar sesión */
+.auth.hidden{
+  display:none !important;
+}
+
+
+.driver-dev-note{
+  margin:12px 0 0;
+  padding:12px 14px;
+  border:1px solid rgba(255,204,0,.42);
+  border-radius:14px;
+  background:rgba(255,204,0,.08);
+  color:#ffe16b;
+  font-size:13px;
+  font-weight:800;
+  line-height:1.35;
+}
+
 </style>
 </head>
 <body>
@@ -615,11 +634,12 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
           </div>
           <label class="check-row">
             <input id="driverTerms" type="checkbox">
-            <span>Confirmo que la información es correcta y acepto que Sobre Ruedas revise esta identificación para aprobar mi cuenta.</span>
+            <span>Confirmo que la información es correcta y confirmo que la información es correcta.</span>
           </label>
-          <p class="muted" style="text-align:left;font-size:12px;margin-top:8px">La cuenta quedará pendiente hasta que un administrador revise la foto.</p>
+          <p class="muted" style="text-align:left;font-size:12px;margin-top:8px">La cuenta de conductor se activará directamente en modo desarrollo.</p>
         </div>
-        <button class="primary" id="registerBtn">Crear cuenta de usuario</button>
+        <div class="driver-dev-note">🧪 Modo desarrollo: la cuenta de conductor se activa directamente. No se enviará solicitud ni quedará pendiente de aprobación.</div>
+<button class="primary" id="registerBtn">Crear cuenta</button>
       </div>
       </div>
     </div>
@@ -630,7 +650,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
   <div id="mapConfirm" class="map-confirm hidden"><button class="cancel" id="cancelPin">Cancelar</button><button class="confirm" id="confirmPin">Confirmar destino</button></div>
   <div class="top">
     <button class="round glass" id="menuBtn">☰</button>
-    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS<small>CIEGO DE ÁVILA 1.7.1</small></div></div>
+    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS<small>CIEGO DE ÁVILA 1.7.3</small></div></div>
     <button class="round glass" id="profileBtn">👤</button>
   </div>
 
@@ -765,7 +785,7 @@ function openApp(){
   $('#lastNotice').textContent=localStorage.getItem('rueda_last_notice')||'No tienes alertas nuevas.';
   $('#accountRole').textContent=role==='driver'?'🛵 Conductor':'🙋 Usuario';
   $('#accountAvatar').textContent=role==='driver'?'🛵':'👤';
-  $('#drawerRole').textContent=role==='driver'?'Conductor '+(user.approved?'aprobado':'pendiente de aprobación'):'Usuario verificado';
+  $('#drawerRole').textContent=role==='driver'?'Conductor '+(user.approved?'aprobado':'activa en modo desarrollo'):'Usuario verificado';
   $('#roleStatus').textContent=role==='driver'?(user.approved?'Cuenta de conductor activa.':'Identificación pendiente de revisión.'):'Cuenta de usuario activa.';
   $('#identityBadge').textContent=role==='driver'?(user.approved?'Aprobada':'Pendiente'):'Verificada';
   $('#switchPassenger').classList.toggle('active',role==='passenger');
@@ -780,7 +800,7 @@ $$('[data-register-role]').forEach(b=>b.onclick=()=>{
   $$('[data-register-role]').forEach(x=>x.classList.toggle('active',x===b));
   const driver=registerRole==='driver';
   $('#driverFields').classList.toggle('hidden',!driver);
-  $('#registerBtn').textContent=driver?'Enviar solicitud de conductor':'Crear cuenta de usuario';
+  $('#registerBtn').textContent=driver?'Crear cuenta de conductor':'Crear cuenta de usuario';
 })
 $('#driverDocument').onchange=()=>{
   const file=$('#driverDocument').files[0];
@@ -818,7 +838,7 @@ $('#registerBtn').onclick=()=>{
     Object.assign(data,{
       vehicle,
       documentName:documentFile.name,
-      approved:false,
+      approved:true,
       verificationStatus:'pending'
     });
     setNotice('Tu identificación fue enviada. La solicitud está pendiente de revisión.');
@@ -835,7 +855,7 @@ $('#switchPassenger').onclick=()=>{
 }
 $('#switchDriver').onclick=()=>{
   if(!user)return;
-  if(user.role==='driver'){toast(user.approved?'Modo conductor activo':'Tu cuenta de conductor está pendiente de aprobación');return}
+  if(user.role==='driver'){toast(user.approved?'Modo conductor activo':'Tu cuenta de conductor está activa en modo desarrollo');return}
   const go=confirm('Para ser conductor debes completar el registro y enviar tus documentos. ¿Deseas cerrar sesión y registrarte como conductor?');
   if(go){logout();setTimeout(()=>{document.querySelector('[data-auth="register"]').click();document.querySelector('[data-register-role="driver"]').click()},200)}
 }
@@ -1353,7 +1373,7 @@ setTimeout(()=>{
   startMarker.setLatLng(currentStart).bindPopup('Ubicación de prueba: Parque José Martí, Ciego de Ávila');
   map.setView(currentStart,16);
 },400);
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=171').then(r=>r.update()).catch(()=>{}))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=173').then(r=>r.update()).catch(()=>{}))}
 </script>
 
 <script>
@@ -1391,6 +1411,20 @@ window.addEventListener('load', function () {
       if(input.parentElement) input.parentElement.style.display='none';
     }
   });
+});
+</script>
+
+
+<script>
+window.addEventListener('load', function () {
+  window.SOBRE_RUEDAS_DEV = Object.assign({}, window.SOBRE_RUEDAS_DEV || {}, {
+    skipDriverApproval: true
+  });
+
+  var registerBtn = document.getElementById('registerBtn');
+  if (registerBtn) {
+    registerBtn.dataset.devDirectDriver = 'true';
+  }
 });
 </script>
 

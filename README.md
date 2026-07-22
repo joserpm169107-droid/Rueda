@@ -1,19 +1,18 @@
-# Sobre Ruedas v1.7.1 — Acceso visible y código desactivado
+# Sobre Ruedas v1.7.3 — Cuenta de conductor directa
 
-## Correcciones
-- Inicio de sesión visible desde que abre la app.
-- Registro visible y desplazable en iPhone.
-- Verificación por SMS/correo desactivada temporalmente.
-- Las cuentas se crean directamente durante el desarrollo.
-- Registro de conductor continúa solicitando:
-  - nombre,
-  - teléfono,
-  - tipo de vehículo,
-  - foto de perfil,
-  - identificación oficial.
-- El conductor queda pendiente de aprobación administrativa.
-- GPS real sigue desactivado.
-- Ubicación temporal editable dentro de Ciego de Ávila.
+## Cambio principal
+Durante el desarrollo se elimina temporalmente el envío de solicitud y la aprobación administrativa.
+
+## Ahora
+- El conductor completa sus datos.
+- Sube identificación y foto.
+- Pulsa **Crear cuenta de conductor**.
+- La cuenta queda activa directamente.
+- No se envía solicitud.
+- No queda pendiente de aprobación.
+- No se usa código de verificación.
+- El GPS real sigue desactivado.
+- La ubicación de prueba continúa editable.
 
 ## Abrir
-https://joserpm169107-droid.github.io/Rueda/?v=171
+https://joserpm169107-droid.github.io/Rueda/?v=173
