@@ -3,162 +3,289 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#101010">
-<title>Rueda v0.4</title>
+<meta name="theme-color" content="#ffffff">
+<title>Rueda v0.5</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
-:root{--y:#ffd400;--bg:#101010;--card:#1b1b1f;--card2:#25252b;--t:#fff;--m:#b8b8bf;--l:#3a3a42;--ok:#58e49c;--red:#ff7b7b}
-*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
-main{max-width:560px;margin:auto;min-height:100vh;padding:calc(14px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom))}
+:root{
+  --yellow:#ffd400;--black:#101010;--white:#fff;--bg:#f5f5f7;--card:#fff;
+  --text:#111;--muted:#6d6d72;--line:#e6e6ea;--green:#22a957;--red:#d83d3d;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+body{min-height:100vh}
 button,input,select{font:inherit}button{cursor:pointer}
-header{display:flex;justify-content:space-between;align-items:center}.brand{display:flex;gap:10px;align-items:center;font-size:26px;font-weight:900}.logo{width:48px;height:48px;border-radius:15px;background:var(--y);color:#111;display:grid;place-items:center;font-weight:900}.ver{background:var(--card2);color:var(--m);padding:8px 12px;border-radius:999px}
-.hero{padding:25px 5px 12px}.hero h1{font-size:38px;line-height:1.05;margin:0 0 10px}.muted{color:var(--m)}
-.card{background:var(--card);border:1px solid var(--l);border-radius:23px;padding:18px;margin-top:15px;box-shadow:0 14px 30px rgba(0,0,0,.24)}
-.tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;background:var(--card2);padding:6px;border-radius:16px}.tab{border:0;background:transparent;color:var(--m);padding:12px;border-radius:12px;font-weight:900}.tab.on{background:var(--y);color:#111}
-label{display:block;color:var(--m);font-size:13px;font-weight:800;margin:13px 0 7px}input,select{width:100%;padding:14px;background:#101012;color:#fff;border:1px solid var(--l);border-radius:14px;outline:none}
-.primary,.secondary{width:100%;padding:15px;border-radius:15px;font-weight:900;margin-top:12px}.primary{border:0;background:var(--y);color:#111}.secondary{background:var(--card2);border:1px solid var(--l);color:#fff}.small{width:auto;padding:10px 12px;margin:0}
-.hidden{display:none!important}.msg{display:none;padding:12px;border-radius:13px;margin-top:12px}.msg.ok{display:block;background:#123c29;color:#8ef0ba;border:1px solid #2e7954}.msg.err{display:block;background:#442020;color:#ffaaaa;border:1px solid #7b3535}
-.homeHead{display:flex;justify-content:space-between;align-items:flex-start;margin:12px 0}.homeHead h2{font-size:30px;margin:0 0 4px}
-#map{height:340px;border-radius:20px;overflow:hidden;border:1px solid var(--l);background:#222}.mapBtns{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.vehicles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.vehicle{background:var(--card2);border:1px solid var(--l);color:#fff;border-radius:15px;padding:12px 6px}.vehicle.on{border-color:var(--y);color:var(--y);background:#3a3310}.vehicle b{display:block;font-size:24px}
-.metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:10px}.metric{background:#111;border:1px solid var(--l);border-radius:15px;padding:11px}.metric small{display:block;color:var(--m);margin-bottom:4px}.metric strong{font-size:16px}
-.fare,.status,.ride{background:#111;border:1px dashed #4a4a52;border-radius:16px;padding:15px;margin-top:13px}.fare{display:flex;justify-content:space-between;align-items:center}.fare strong{color:var(--y);font-size:23px}.ride{border-style:solid}
-.driverCard{margin-top:12px;padding:14px;background:#111;border:1px solid var(--l);border-radius:18px}.driverTop{display:flex;justify-content:space-between;align-items:center;gap:12px}.driverInfo{display:flex;gap:10px;align-items:center}.avatar{width:48px;height:48px;border-radius:50%;background:var(--y);color:#111;display:grid;place-items:center;font-weight:900;font-size:20px}.contact{display:grid;grid-template-columns:1fr 1fr;gap:8px}.progress{height:9px;background:#2a2a30;border-radius:999px;overflow:hidden;margin-top:12px}.progress>div{height:100%;background:var(--y);transition:width .35s}
-.foot{text-align:center;color:#777780;font-size:12px;padding:20px}.driverIcon{width:34px;height:34px;border-radius:50%;background:#111;border:3px solid var(--y);display:grid;place-items:center;font-size:18px;box-shadow:0 3px 12px rgba(0,0,0,.45)}
+.app{max-width:560px;margin:auto;min-height:100vh;background:var(--bg);padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:calc(12px + env(safe-area-inset-top)) 18px 12px;background:#fff;position:sticky;top:0;z-index:1000;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-size:24px;font-weight:900}
+.logo{width:42px;height:42px;border-radius:14px;background:var(--yellow);display:grid;place-items:center;font-weight:900}
+.version{font-size:12px;color:var(--muted);background:#f0f0f3;padding:7px 10px;border-radius:999px}
+.hidden{display:none!important}
+.page{padding:16px}
+.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px;box-shadow:0 10px 30px rgba(0,0,0,.05)}
+.hero{padding:28px 6px 16px}.hero h1{font-size:38px;line-height:1.05;margin:0 0 10px}.muted{color:var(--muted)}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:#f0f0f3;padding:5px;border-radius:15px}
+.tab{border:0;background:transparent;padding:12px;border-radius:11px;font-weight:800;color:var(--muted)}
+.tab.active{background:var(--black);color:#fff}
+label{display:block;font-size:13px;font-weight:800;color:var(--muted);margin:13px 0 7px}
+input,select{width:100%;padding:14px 15px;border:1px solid var(--line);border-radius:14px;background:#fff;color:#111;outline:none}
+input:focus,select:focus{border-color:#aaa;box-shadow:0 0 0 3px rgba(0,0,0,.05)}
+.primary,.secondary,.danger{width:100%;border-radius:15px;padding:15px 16px;font-weight:900;margin-top:12px}
+.primary{border:0;background:var(--black);color:#fff}
+.yellow{background:var(--yellow);color:#111}
+.secondary{background:#f1f1f4;border:1px solid var(--line);color:#111}
+.danger{background:#fff0f0;border:1px solid #f0caca;color:var(--red)}
+.msg{display:none;padding:12px;border-radius:13px;margin-top:12px}
+.msg.ok{display:block;background:#eaf8ef;color:#176e39;border:1px solid #bce5ca}
+.msg.err{display:block;background:#fff0f0;color:#a72b2b;border:1px solid #efc3c3}
+#map{height:360px;border-radius:0 0 24px 24px;overflow:hidden;background:#ddd}
+.mapWrap{position:relative;background:#fff}
+.searchPanel{position:absolute;left:16px;right:16px;top:14px;z-index:500;background:#fff;border-radius:20px;padding:10px;box-shadow:0 12px 35px rgba(0,0,0,.16)}
+.where{display:flex;align-items:center;gap:10px;padding:13px;border-radius:15px;background:#f4f4f6;font-weight:800}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--yellow);border:2px solid #111}
+.mapFab{position:absolute;right:18px;bottom:18px;z-index:500;width:48px;height:48px;border-radius:50%;border:0;background:#fff;box-shadow:0 8px 24px rgba(0,0,0,.2);font-size:20px}
+.sheet{margin:-18px 12px 0;position:relative;z-index:600;background:#fff;border-radius:26px;padding:16px;box-shadow:0 -8px 30px rgba(0,0,0,.08)}
+.handle{width:45px;height:5px;border-radius:999px;background:#d6d6da;margin:0 auto 14px}
+.sectionTitle{font-size:20px;font-weight:900;margin:0 0 12px}
+.rideOptions{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+.rideOption{min-width:138px;border:2px solid transparent;border-radius:18px;padding:13px;background:#f5f5f7;text-align:left}
+.rideOption.active{border-color:#111;background:#fff}
+.rideIcon{font-size:30px}.rideName{font-weight:900;margin-top:8px}.rideMeta{font-size:12px;color:var(--muted);margin-top:3px}
+.priceRow{display:flex;justify-content:space-between;align-items:center;padding:14px 2px 4px}.price{font-size:25px;font-weight:900}
+.statusCard{background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px;margin-top:14px}
+.driverTop{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.driverInfo{display:flex;align-items:center;gap:11px}.avatar{width:52px;height:52px;border-radius:50%;background:var(--yellow);display:grid;place-items:center;font-size:20px;font-weight:900}
+.actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}.action{border:1px solid var(--line);background:#f5f5f7;border-radius:14px;padding:11px;font-weight:800}
+.progress{height:8px;background:#ececef;border-radius:999px;overflow:hidden;margin-top:13px}.progress div{height:100%;background:var(--black)}
+.bottomNav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(560px,100%);z-index:1000;background:#fff;border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:8px 8px calc(8px + env(safe-area-inset-bottom))}
+.navBtn{border:0;background:transparent;padding:8px 4px;color:#8a8a90;font-size:12px}.navBtn span{display:block;font-size:20px;margin-bottom:3px}.navBtn.active{color:#111;font-weight:900}
+.listItem{display:flex;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}.listItem:last-child{border-bottom:0}
+.driverMode{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:20px;padding:16px;border:1px solid var(--line)}
+.switch{width:54px;height:31px;border-radius:999px;background:#ccc;padding:3px}.switch.on{background:#27b45f}.switchDot{width:25px;height:25px;border-radius:50%;background:#fff;transition:.2s}.switch.on .switchDot{transform:translateX(23px)}
+.requestCard{background:#fff;border:1px solid var(--line);border-radius:22px;padding:16px;margin-top:14px}.requestPrice{font-size:28px;font-weight:900}
 </style>
 </head>
-<body><main>
-<header><div class="brand"><div class="logo">R</div>Rueda</div><div class="ver">v0.4</div></header>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><div class="logo">R</div>Rueda</div>
+    <div class="version">v0.5</div>
+  </header>
 
-<section id="auth">
-<div class="hero"><h1>Muévete fácil por Ciego de Ávila.</h1><div class="muted">Conductores cercanos, ruta por calles y recogida ajustable.</div></div>
-<div class="card">
-<div class="tabs"><button id="tLogin" class="tab on" type="button">Entrar</button><button id="tRegister" class="tab" type="button">Crear cuenta</button></div>
-<form id="fLogin"><label>Correo</label><input id="le" type="email" required><label>Contraseña</label><input id="lp" type="password" minlength="4" required><button class="primary">Iniciar sesión</button><div id="lm" class="msg"></div></form>
-<form id="fRegister" class="hidden"><label>Nombre</label><input id="rn" required><label>Correo</label><input id="re" type="email" required><label>Contraseña</label><input id="rp" type="password" minlength="4" required><label>Tipo de cuenta</label><select id="rr"><option value="pasajero">Pasajero</option><option value="conductor">Conductor</option></select><div id="vf" class="hidden"><label>Vehículo</label><select id="rv"><option value="motorina">Motorina</option><option value="moto">Moto</option><option value="triciclo">Triciclo</option></select></div><button class="primary">Crear cuenta</button><div id="rm" class="msg"></div></form>
-</div></section>
+  <section id="authScreen" class="page">
+    <div class="hero">
+      <h1>Tu viaje, a tu manera.</h1>
+      <div class="muted">Una experiencia inspirada en la facilidad de las mejores apps de transporte, con identidad propia para Cuba.</div>
+    </div>
+    <div class="card">
+      <div class="tabs">
+        <button id="loginTab" class="tab active" type="button">Entrar</button>
+        <button id="registerTab" class="tab" type="button">Crear cuenta</button>
+      </div>
+      <form id="loginForm">
+        <label>Correo</label><input id="loginEmail" type="email" required>
+        <label>Contraseña</label><input id="loginPassword" type="password" minlength="4" required>
+        <button class="primary">Iniciar sesión</button>
+        <div id="loginMsg" class="msg"></div>
+      </form>
+      <form id="registerForm" class="hidden">
+        <label>Nombre</label><input id="regName" required>
+        <label>Correo</label><input id="regEmail" type="email" required>
+        <label>Contraseña</label><input id="regPassword" type="password" minlength="4" required>
+        <label>Tipo de cuenta</label>
+        <select id="regRole"><option value="pasajero">Pasajero</option><option value="conductor">Conductor</option></select>
+        <div id="vehicleField" class="hidden">
+          <label>Vehículo</label>
+          <select id="regVehicle"><option value="motorina">Motorina</option><option value="moto">Moto</option><option value="triciclo">Triciclo</option></select>
+        </div>
+        <button class="primary">Crear cuenta</button>
+        <div id="registerMsg" class="msg"></div>
+      </form>
+    </div>
+  </section>
 
-<section id="passenger" class="hidden">
-<div class="homeHead"><div><h2 id="pg">Hola</h2><div class="muted">Arrastra el pin azul para ajustar la recogida.</div></div><button id="plo" class="secondary small" type="button">Salir</button></div>
-<div id="map"></div>
-<div class="mapBtns"><button id="loc" class="secondary" type="button">📍 Mi ubicación</button><button id="center" class="secondary" type="button">🏙️ Centro</button></div>
-<div class="card">
-<label>Recogida</label><input id="pickup" value="Mi ubicación">
-<label>Destino</label><input id="dest" placeholder="Toca el mapa o escribe un lugar">
-<label>Vehículo</label>
-<div class="vehicles">
-<button class="vehicle on" data-v="motorina" data-b="90" data-k="35" type="button"><b>🛵</b>Motorina</button>
-<button class="vehicle" data-v="moto" data-b="120" data-k="45" type="button"><b>🏍️</b>Moto</button>
-<button class="vehicle" data-v="triciclo" data-b="170" data-k="60" type="button"><b>🛺</b>Triciclo</button>
+  <section id="passengerApp" class="hidden">
+    <div id="homePage">
+      <div class="mapWrap">
+        <div class="searchPanel">
+          <div class="where" id="whereButton"><span class="dot"></span> ¿A dónde vas?</div>
+        </div>
+        <div id="map"></div>
+        <button id="locateButton" class="mapFab" type="button">⌖</button>
+      </div>
+
+      <div class="sheet">
+        <div class="handle"></div>
+        <div class="sectionTitle">Elige tu viaje</div>
+        <input id="destinationInput" placeholder="Escribe un destino o toca el mapa">
+        <div class="rideOptions">
+          <button class="rideOption active" data-v="motorina" data-b="90" data-k="35" type="button">
+            <div class="rideIcon">🛵</div><div class="rideName">Motorina</div><div class="rideMeta">1 pasajero · económica</div>
+          </button>
+          <button class="rideOption" data-v="moto" data-b="120" data-k="45" type="button">
+            <div class="rideIcon">🏍️</div><div class="rideName">Moto</div><div class="rideMeta">1 pasajero · rápida</div>
+          </button>
+          <button class="rideOption" data-v="triciclo" data-b="170" data-k="60" type="button">
+            <div class="rideIcon">🛺</div><div class="rideName">Triciclo</div><div class="rideMeta">3 pasajeros · amplia</div>
+          </button>
+        </div>
+        <div class="priceRow"><div><div class="muted">Estimado</div><div id="etaText">3–6 min</div></div><div id="fareText" class="price">90 CUP</div></div>
+        <button id="requestRide" class="primary yellow" type="button">Confirmar viaje</button>
+        <div id="passengerMsg" class="msg"></div>
+        <div id="rideStatus" class="statusCard hidden"></div>
+      </div>
+    </div>
+
+    <div id="tripsPage" class="page hidden">
+      <h2>Mis viajes</h2>
+      <div id="tripHistory" class="card"></div>
+    </div>
+
+    <div id="walletPage" class="page hidden">
+      <h2>Pago</h2>
+      <div class="card">
+        <div class="listItem"><div>💵 Efectivo</div><strong>Predeterminado</strong></div>
+        <div class="listItem"><div>📲 Transfermóvil</div><span class="muted">Próximamente</span></div>
+        <div class="listItem"><div>💳 EnZona</div><span class="muted">Próximamente</span></div>
+      </div>
+    </div>
+
+    <div id="accountPage" class="page hidden">
+      <h2>Cuenta</h2>
+      <div class="card">
+        <div class="listItem"><div><strong id="accountName">Usuario</strong><div id="accountRole" class="muted"></div></div><div class="avatar" id="accountAvatar">U</div></div>
+        <div class="listItem"><span>⭐ Calificación</span><strong>5.0</strong></div>
+        <div class="listItem"><span>🛡️ Seguridad</span><span>Centro de ayuda</span></div>
+        <button id="passengerLogout" class="danger">Cerrar sesión</button>
+      </div>
+    </div>
+
+    <nav class="bottomNav">
+      <button class="navBtn active" data-page="homePage"><span>⌂</span>Inicio</button>
+      <button class="navBtn" data-page="tripsPage"><span>☷</span>Viajes</button>
+      <button class="navBtn" data-page="walletPage"><span>◫</span>Pago</button>
+      <button class="navBtn" data-page="accountPage"><span>◉</span>Cuenta</button>
+    </nav>
+  </section>
+
+  <section id="driverApp" class="page hidden">
+    <div class="driverMode">
+      <div><strong id="driverGreeting">Hola</strong><div class="muted">Modo conductor</div></div>
+      <div id="onlineSwitch" class="switch on"><div class="switchDot"></div></div>
+    </div>
+    <div id="driverMap" style="height:300px;border-radius:22px;margin-top:14px;overflow:hidden"></div>
+    <div id="driverRequests"></div>
+    <div class="card">
+      <div class="priceRow"><div><div class="muted">Ingresos de prueba</div><div>Hoy</div></div><div id="driverEarnings" class="price">0 CUP</div></div>
+      <button id="driverLogout" class="danger">Cerrar sesión</button>
+    </div>
+  </section>
 </div>
-<div class="metrics"><div class="metric"><small>Distancia</small><strong id="distance">—</strong></div><div class="metric"><small>Viaje</small><strong id="tripEta">—</strong></div><div class="metric"><small>Recogida</small><strong id="pickupEta">—</strong></div></div>
-<div class="fare"><span>Precio estimado</span><strong id="fare">90 CUP</strong></div>
-<button id="request" class="primary" type="button">Pedir viaje</button>
-<div id="pm" class="msg"></div><div id="pstatus" class="status hidden"></div>
-</div></section>
 
-<section id="driver" class="hidden">
-<div class="homeHead"><div><h2 id="dg">Hola</h2><div id="ds" class="muted">Modo conductor</div></div><button id="dlo" class="secondary small" type="button">Salir</button></div>
-<div class="card"><button id="refresh" class="primary" type="button">Actualizar solicitudes</button><div id="rides"></div></div>
-</section>
-<div class="foot">Versión privada de prueba · La ruta usa un servicio público y puede volver a línea recta si falla.</div>
-</main>
 <script>
-(()=>{"use strict";
-const $=id=>document.getElementById(id),UK="rueda_users_v01",SK="rueda_session_v01",RK="rueda_rides_v04";
-let user=null,map=null,pickMarker=null,destMarker=null,routeLine=null,veh="motorina",base=90,perKm=35;
-let pickup={lat:21.84,lng:-78.7619},dest=null,routeKm=0,routeMin=0,drivers=[],driverMarkers=[],idleTimer=null,approachTimer=null;
-const get=(k,d)=>{try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch{return d}},set=(k,v)=>localStorage.setItem(k,JSON.stringify(v)),users=()=>get(UK,[]),rides=()=>get(RK,[]);
-const hide=()=>["auth","passenger","driver"].forEach(x=>$(x).classList.add("hidden"));
-const msg=(el,t,ok)=>{el.textContent=t;el.className="msg "+(ok?"ok":"err")};
-function tab(login){$("tLogin").classList.toggle("on",login);$("tRegister").classList.toggle("on",!login);$("fLogin").classList.toggle("hidden",!login);$("fRegister").classList.toggle("hidden",login)}
-function auth(){hide();$("auth").classList.remove("hidden");tab(true)}
-function open(u){user=u;hide();if(u.role==="conductor"){$("driver").classList.remove("hidden");$("dg").textContent="Hola, "+u.name;$("ds").textContent="Conductor de "+(u.vehicle||"vehículo");renderDriver()}else{$("passenger").classList.remove("hidden");$("pg").textContent="Hola, "+u.name;setTimeout(initMap,100);renderPassenger()}}
-function logout(){localStorage.removeItem(SK);user=null;if(idleTimer)clearInterval(idleTimer);if(approachTimer)clearInterval(approachTimer);auth()}
-$("tLogin").onclick=()=>tab(true);$("tRegister").onclick=()=>tab(false);$("rr").onchange=()=>$("vf").classList.toggle("hidden",$("rr").value!=="conductor");
-$("fRegister").onsubmit=e=>{e.preventDefault();let us=users(),email=$("re").value.trim().toLowerCase();if(us.some(x=>x.email===email)){msg($("rm"),"Ese correo ya existe.",false);return}let u={id:Date.now(),name:$("rn").value.trim(),email,password:$("rp").value,role:$("rr").value,vehicle:$("rr").value==="conductor"?$("rv").value:""};us.push(u);set(UK,us);localStorage.setItem(SK,u.id);open(u)};
-$("fLogin").onsubmit=e=>{e.preventDefault();let u=users().find(x=>x.email===$("le").value.trim().toLowerCase()&&x.password===$("lp").value);if(!u){msg($("lm"),"Correo o contraseña incorrectos.",false);return}localStorage.setItem(SK,u.id);open(u)};
-$("plo").onclick=$("dlo").onclick=logout;
+(()=>{
+"use strict";
+const $=id=>document.getElementById(id);
+const UK="rueda_users_v01",SK="rueda_session_v01",RK="rueda_rides_v05",HK="rueda_history_v05";
+let currentUser=null,map=null,driverMap=null,pickup={lat:21.84,lng:-78.7619},destination=null,destMarker=null,routeLine=null;
+let vehicle="motorina",baseFare=90,priceKm=35,routeKm=0,selectedDriver=null,movingMarker=null,movementTimer=null;
+let drivers=[
+{id:1,name:"Carlos",type:"motorina",rating:4.9,plate:"CAV-214",lat:21.8432,lng:-78.7595},
+{id:2,name:"Luis",type:"moto",rating:4.8,plate:"CAV-508",lat:21.8368,lng:-78.7672},
+{id:3,name:"Ana",type:"triciclo",rating:4.9,plate:"CAV-731",lat:21.847,lng:-78.77},
+{id:4,name:"Miguel",type:"moto",rating:4.7,plate:"CAV-119",lat:21.839,lng:-78.754}
+];
+const get=(k,d)=>{try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch{return d}};
+const set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const users=()=>get(UK,[]),rides=()=>get(RK,[]),history=()=>get(HK,[]);
+const msg=(el,text,ok)=>{el.textContent=text;el.className="msg "+(ok?"ok":"err")};
+function hideAll(){["authScreen","passengerApp","driverApp"].forEach(x=>$(x).classList.add("hidden"))}
+function switchTab(login){$("loginTab").classList.toggle("active",login);$("registerTab").classList.toggle("active",!login);$("loginForm").classList.toggle("hidden",!login);$("registerForm").classList.toggle("hidden",login)}
+function showAuth(){hideAll();$("authScreen").classList.remove("hidden");switchTab(true)}
+function openApp(user){
+ currentUser=user;hideAll();
+ if(user.role==="conductor"){$("driverApp").classList.remove("hidden");$("driverGreeting").textContent="Hola, "+user.name;setTimeout(initDriverMap,100);renderDriverRequests()}
+ else{$("passengerApp").classList.remove("hidden");$("accountName").textContent=user.name;$("accountRole").textContent="Pasajero";$("accountAvatar").textContent=user.name[0].toUpperCase();setTimeout(initMap,100);renderRideStatus();renderHistory()}
+}
+function logout(){localStorage.removeItem(SK);currentUser=null;showAuth()}
+$("loginTab").onclick=()=>switchTab(true);$("registerTab").onclick=()=>switchTab(false);
+$("regRole").onchange=()=>$("vehicleField").classList.toggle("hidden",$("regRole").value!=="conductor");
+$("registerForm").onsubmit=e=>{e.preventDefault();let list=users(),email=$("regEmail").value.trim().toLowerCase();if(list.some(x=>x.email===email)){msg($("registerMsg"),"Ese correo ya existe.",false);return}let u={id:Date.now(),name:$("regName").value.trim(),email,password:$("regPassword").value,role:$("regRole").value,vehicle:$("regRole").value==="conductor"?$("regVehicle").value:""};list.push(u);set(UK,list);localStorage.setItem(SK,u.id);openApp(u)};
+$("loginForm").onsubmit=e=>{e.preventDefault();let u=users().find(x=>x.email===$("loginEmail").value.trim().toLowerCase()&&x.password===$("loginPassword").value);if(!u){msg($("loginMsg"),"Correo o contraseña incorrectos.",false);return}localStorage.setItem(SK,u.id);openApp(u)};
+$("passengerLogout").onclick=$("driverLogout").onclick=logout;
 
-function icon(type){let e=type==="triciclo"?"🛺":type==="moto"?"🏍️":"🛵";return L.divIcon({className:"",html:"<div class='driverIcon'>"+e+"</div>",iconSize:[34,34],iconAnchor:[17,17]})}
+function driverIcon(type){let e=type==="triciclo"?"🛺":type==="moto"?"🏍️":"🛵";return L.divIcon({className:"",html:`<div style="width:34px;height:34px;border-radius:50%;background:#111;border:3px solid #ffd400;display:grid;place-items:center;font-size:18px">${e}</div>`,iconSize:[34,34],iconAnchor:[17,17]})}
 function initMap(){
  if(map){map.invalidateSize();return}
- map=L.map("map",{zoomControl:false}).setView([pickup.lat,pickup.lng],14);L.control.zoom({position:"bottomright"}).addTo(map);
+ map=L.map("map",{zoomControl:false}).setView([pickup.lat,pickup.lng],14);
  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(map);
- pickMarker=L.marker([pickup.lat,pickup.lng],{draggable:true}).addTo(map).bindPopup("Recogida");
- pickMarker.on("dragend",()=>{let p=pickMarker.getLatLng();pickup={lat:p.lat,lng:p.lng};$("pickup").value="Punto ajustado en el mapa";if(dest)buildRoute()});
+ drivers.forEach(d=>L.marker([d.lat,d.lng],{icon:driverIcon(d.type)}).addTo(map).bindPopup(`${d.name} · ${d.type} · ⭐ ${d.rating}`));
  map.on("click",e=>setDestination(e.latlng));
- createDrivers();startIdle();
 }
-function createDrivers(){
- drivers=[
- {id:1,name:"Carlos",type:"motorina",rating:4.9,plate:"CAV-214",phone:"5550101",lat:21.8432,lng:-78.7595},
- {id:2,name:"Luis",type:"moto",rating:4.8,plate:"CAV-508",phone:"5550102",lat:21.8368,lng:-78.7672},
- {id:3,name:"Ana",type:"triciclo",rating:4.9,plate:"CAV-731",phone:"5550103",lat:21.8470,lng:-78.7700},
- {id:4,name:"Miguel",type:"moto",rating:4.7,plate:"CAV-119",phone:"5550104",lat:21.8390,lng:-78.7540}
- ];
- driverMarkers=drivers.map(d=>L.marker([d.lat,d.lng],{icon:icon(d.type)}).addTo(map).bindPopup(d.name+" · "+d.type+" · ⭐ "+d.rating));
+function initDriverMap(){
+ if(driverMap){driverMap.invalidateSize();return}
+ driverMap=L.map("driverMap",{zoomControl:false}).setView([21.84,-78.7619],14);
+ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(driverMap);
+ L.circle([21.84,-78.7619],{radius:900,weight:0,fillOpacity:.18}).addTo(driverMap);
 }
-function startIdle(){
- if(idleTimer)clearInterval(idleTimer);
- idleTimer=setInterval(()=>{drivers.forEach((d,i)=>{d.lat+=(Math.random()-.5)*.00045;d.lng+=(Math.random()-.5)*.00045;driverMarkers[i].setLatLng([d.lat,d.lng])})},1800);
+function setDestination(ll){
+ destination={lat:ll.lat,lng:ll.lng};
+ if(destMarker)destMarker.remove();
+ destMarker=L.marker(ll).addTo(map).bindPopup("Destino").openPopup();
+ $("destinationInput").value="Destino marcado en el mapa";
+ buildRoute();
 }
-function setDestination(ll){dest={lat:ll.lat,lng:ll.lng};if(destMarker)destMarker.remove();destMarker=L.marker(ll).addTo(map).bindPopup("Destino").openPopup();$("dest").value="Destino marcado en el mapa";buildRoute()}
 function hav(a,b){const R=6371,r=x=>x*Math.PI/180,d1=r(b.lat-a.lat),d2=r(b.lng-a.lng),q=Math.sin(d1/2)**2+Math.cos(r(a.lat))*Math.cos(r(b.lat))*Math.sin(d2/2)**2;return 2*R*Math.asin(Math.sqrt(q))}
 async function buildRoute(){
- if(!dest)return;
+ if(!destination)return;
  try{
-  const url=`https://router.project-osrm.org/route/v1/driving/${pickup.lng},${pickup.lat};${dest.lng},${dest.lat}?overview=full&geometries=geojson`;
-  const res=await fetch(url);const data=await res.json();if(!data.routes||!data.routes[0])throw new Error();
-  const r=data.routes[0];routeKm=r.distance/1000;routeMin=Math.max(2,Math.round(r.duration/60));
-  if(routeLine)routeLine.remove();routeLine=L.geoJSON(r.geometry,{style:{weight:5,opacity:.9}}).addTo(map);map.fitBounds(routeLine.getBounds(),{padding:[30,30]});
- }catch(e){
-  routeKm=Math.max(.5,hav(pickup,dest)*1.25);routeMin=Math.max(3,Math.round(routeKm/22*60));
-  if(routeLine)routeLine.remove();routeLine=L.polyline([[pickup.lat,pickup.lng],[dest.lat,dest.lng]],{weight:5,opacity:.85}).addTo(map);map.fitBounds(routeLine.getBounds(),{padding:[30,30]});
- }
- recalc();
+  const url=`https://router.project-osrm.org/route/v1/driving/${pickup.lng},${pickup.lat};${destination.lng},${destination.lat}?overview=full&geometries=geojson`;
+  const data=await (await fetch(url)).json();const route=data.routes[0];routeKm=route.distance/1000;
+  if(routeLine)routeLine.remove();routeLine=L.geoJSON(route.geometry,{style:{color:"#111",weight:5}}).addTo(map);map.fitBounds(routeLine.getBounds(),{padding:[35,35]});
+ }catch{routeKm=Math.max(.5,hav(pickup,destination)*1.25);if(routeLine)routeLine.remove();routeLine=L.polyline([[pickup.lat,pickup.lng],[destination.lat,destination.lng]],{color:"#111",weight:5}).addTo(map)}
+ updateFare();
 }
-function nearest(type){
- const pool=drivers.filter(d=>d.type===type);const arr=pool.length?pool:drivers;
- return arr.map(d=>({...d,km:hav(pickup,d)})).sort((a,b)=>a.km-b.km)[0]
-}
-function recalc(){
- const near=nearest(veh),pickupMin=Math.max(1,Math.round(near.km/20*60));
- $("distance").textContent=routeKm?routeKm.toFixed(1)+" km":"—";$("tripEta").textContent=routeMin?routeMin+" min":"—";$("pickupEta").textContent=pickupMin+" min";
- $("fare").textContent=Math.round(base+(routeKm||0)*perKm)+" CUP";
-}
-$("loc").onclick=()=>navigator.geolocation?navigator.geolocation.getCurrentPosition(p=>{pickup={lat:p.coords.latitude,lng:p.coords.longitude};pickMarker.setLatLng([pickup.lat,pickup.lng]);map.setView([pickup.lat,pickup.lng],16);$("pickup").value="Mi ubicación actual";if(dest)buildRoute();msg($("pm"),"Ubicación encontrada.",true)},()=>msg($("pm"),"Activa el permiso de ubicación en Safari.",false),{enableHighAccuracy:true,timeout:10000}):msg($("pm"),"Ubicación no disponible.",false);
-$("center").onclick=()=>map.setView([21.84,-78.7619],14);
-document.querySelectorAll(".vehicle").forEach(b=>b.onclick=()=>{document.querySelectorAll(".vehicle").forEach(x=>x.classList.remove("on"));b.classList.add("on");veh=b.dataset.v;base=+b.dataset.b;perKm=+b.dataset.k;recalc()});
-$("dest").onchange=()=>{if($("dest").value.trim()&&!dest)setDestination({lat:21.846,lng:-78.7635})};
+function nearest(type){let pool=drivers.filter(d=>d.type===type);if(!pool.length)pool=drivers;return pool.map(d=>({...d,km:hav(pickup,d)})).sort((a,b)=>a.km-b.km)[0]}
+function updateFare(){let n=nearest(vehicle),eta=Math.max(2,Math.round(n.km/20*60));$("etaText").textContent=`${eta}–${eta+3} min`;$("fareText").textContent=Math.round(baseFare+(routeKm||0)*priceKm)+" CUP"}
+document.querySelectorAll(".rideOption").forEach(b=>b.onclick=()=>{document.querySelectorAll(".rideOption").forEach(x=>x.classList.remove("active"));b.classList.add("active");vehicle=b.dataset.v;baseFare=+b.dataset.b;priceKm=+b.dataset.k;updateFare()});
+$("whereButton").onclick=()=>$("destinationInput").focus();
+$("destinationInput").onchange=()=>{if($("destinationInput").value.trim()&&!destination)setDestination({lat:21.846,lng:-78.7635})};
+$("locateButton").onclick=()=>navigator.geolocation&&navigator.geolocation.getCurrentPosition(p=>{pickup={lat:p.coords.latitude,lng:p.coords.longitude};map.setView([pickup.lat,pickup.lng],16);msg($("passengerMsg"),"Ubicación actualizada.",true)},()=>msg($("passengerMsg"),"Activa la ubicación en Safari.",false),{enableHighAccuracy:true,timeout:10000});
 
-$("request").onclick=()=>{
- if(!dest){msg($("pm"),"Toca el mapa o escribe un destino.",false);return}
- let rs=rides();if(rs.some(r=>r.passengerId===user.id&&["pendiente","aceptado","llegando","en_punto"].includes(r.status))){msg($("pm"),"Ya tienes un viaje activo.",false);return}
- const d=nearest(veh),r={id:Date.now(),passengerId:user.id,passengerName:user.name,pickup:$("pickup").value,destination:$("dest").value,vehicle:veh,fare:+$("fare").textContent.replace(/\D/g,""),distance:routeKm.toFixed(1),tripMin:routeMin,status:"pendiente",driverId:null,progress:0};
- rs.push(r);set(RK,rs);renderPassenger();msg($("pm"),"Buscando el conductor más cercano…",true);
- setTimeout(()=>assign(r.id,d),1200);
+$("requestRide").onclick=()=>{
+ if(!destination){if(!$("destinationInput").value.trim()){msg($("passengerMsg"),"Escribe o marca un destino.",false);return}setDestination({lat:21.846,lng:-78.7635})}
+ let all=rides();if(all.some(r=>r.passengerId===currentUser.id&&["buscando","asignado","llegando","en_punto","en_viaje"].includes(r.status))){msg($("passengerMsg"),"Ya tienes un viaje activo.",false);return}
+ selectedDriver=nearest(vehicle);
+ let ride={id:Date.now(),passengerId:currentUser.id,passengerName:currentUser.name,destination:$("destinationInput").value,vehicle,fare:+$("fareText").textContent.replace(/\D/g,""),distance:routeKm.toFixed(1),status:"buscando",driver:selectedDriver,progress:0};
+ all.push(ride);set(RK,all);renderRideStatus();setTimeout(()=>assignDriver(ride.id),1200);
 };
-function assign(id,d){let rs=rides(),r=rs.find(x=>x.id===id);if(!r||r.status!=="pendiente")return;r.status="aceptado";r.driverId=d.id;r.driverName=d.name;r.driverRating=d.rating;r.plate=d.plate;r.phone=d.phone;r.progress=0;set(RK,rs);renderPassenger();approach(id,d)}
-function approach(id,d){
- if(idleTimer)clearInterval(idleTimer);if(approachTimer)clearInterval(approachTimer);
- const marker=L.marker([d.lat,d.lng],{icon:icon(d.type)}).addTo(map).bindPopup(d.name+" viene hacia ti");
- approachTimer=setInterval(()=>{let rs=rides(),r=rs.find(x=>x.id===id);if(!r||!["aceptado","llegando"].includes(r.status)){clearInterval(approachTimer);marker.remove();startIdle();return}
- r.progress=Math.min(100,(r.progress||0)+7);let t=r.progress/100,lat=d.lat+(pickup.lat-d.lat)*t,lng=d.lng+(pickup.lng-d.lng)*t;marker.setLatLng([lat,lng]);
- if(r.progress>65)r.status="llegando";if(r.progress>=100){r.status="en_punto";clearInterval(approachTimer)}set(RK,rs);renderPassenger()},850);
+function assignDriver(id){let all=rides(),r=all.find(x=>x.id===id);if(!r||r.status!=="buscando")return;r.status="asignado";set(RK,all);renderRideStatus();startMovement(id,r.driver)}
+function startMovement(id,d){
+ if(movementTimer)clearInterval(movementTimer);
+ movingMarker=L.marker([d.lat,d.lng],{icon:driverIcon(d.type)}).addTo(map);
+ movementTimer=setInterval(()=>{let all=rides(),r=all.find(x=>x.id===id);if(!r||!["asignado","llegando"].includes(r.status)){clearInterval(movementTimer);if(movingMarker)movingMarker.remove();return}r.progress=Math.min(100,(r.progress||0)+8);let t=r.progress/100;movingMarker.setLatLng([d.lat+(pickup.lat-d.lat)*t,d.lng+(pickup.lng-d.lng)*t]);if(r.progress>65)r.status="llegando";if(r.progress>=100){r.status="en_punto";clearInterval(movementTimer)}set(RK,all);renderRideStatus()},850);
 }
-function update(id,status){let rs=rides(),r=rs.find(x=>x.id===id);if(!r)return;r.status=status;set(RK,rs);renderPassenger();renderDriver()}
-function renderPassenger(){
- if(!user)return;let r=rides().slice().reverse().find(x=>x.passengerId===user.id&&x.status!=="cancelado"),b=$("pstatus");
+function updateRide(id,status){let all=rides(),r=all.find(x=>x.id===id);if(!r)return;r.status=status;set(RK,all);if(status==="completado"){let h=history();h.unshift({...r,completedAt:new Date().toISOString()});set(HK,h)}renderRideStatus();renderHistory();renderDriverRequests()}
+function renderRideStatus(){
+ if(!currentUser)return;let r=rides().slice().reverse().find(x=>x.passengerId===currentUser.id&&!["cancelado","completado"].includes(x.status)),b=$("rideStatus");
  if(!r){b.classList.add("hidden");return}b.classList.remove("hidden");
- if(r.status==="pendiente"){b.innerHTML="<b>🔎 Buscando conductor cercano</b><div class='muted'>"+r.vehicle+" · "+r.fare+" CUP</div><button id='cancel' class='secondary'>Cancelar</button>";$("cancel").onclick=()=>update(r.id,"cancelado")}
- else if(["aceptado","llegando"].includes(r.status)){let eta=Math.max(1,Math.ceil((100-r.progress)/20));b.innerHTML=`<div class="driverCard"><div class="driverTop"><div class="driverInfo"><div class="avatar">${r.driverName[0]}</div><div><b>${r.driverName}</b><div class="muted">⭐ ${r.driverRating} · ${r.vehicle}<br>Matrícula ${r.plate}</div></div></div><strong>${eta} min</strong></div><div class="progress"><div style="width:${r.progress}%"></div></div><div class="muted" style="margin-top:9px">${r.status==="llegando"?"Está muy cerca.":"Viene hacia ti."}</div><div class="contact"><button id="call" class="secondary">📞 Llamar</button><button id="chat" class="secondary">💬 Chat</button></div></div>`;$("call").onclick=()=>msg($("pm"),"Llamada simulada a "+r.driverName+".",true);$("chat").onclick=()=>msg($("pm"),"Chat de prueba con "+r.driverName+".",true)}
- else if(r.status==="en_punto"){b.innerHTML=`<b>📍 ${r.driverName} llegó</b><div class="muted">Matrícula ${r.plate}. Ya está en el punto de recogida.</div><button id="finish" class="primary">Finalizar viaje de prueba</button>`;$("finish").onclick=()=>update(r.id,"completado")}
- else b.innerHTML="<b>🏁 Viaje terminado</b><div class='muted'>Ya puedes pedir otro viaje.</div>";
+ if(r.status==="buscando"){b.innerHTML=`<strong>Buscando conductor…</strong><div class="muted">${r.vehicle} · ${r.fare} CUP</div><button id="cancelRide" class="danger">Cancelar viaje</button>`;$("cancelRide").onclick=()=>updateRide(r.id,"cancelado")}
+ else if(["asignado","llegando"].includes(r.status)){let eta=Math.max(1,Math.ceil((100-r.progress)/20));b.innerHTML=`<div class="driverTop"><div class="driverInfo"><div class="avatar">${r.driver.name[0]}</div><div><strong>${r.driver.name}</strong><div class="muted">⭐ ${r.driver.rating} · ${r.driver.type}<br>${r.driver.plate}</div></div></div><strong>${eta} min</strong></div><div class="progress"><div style="width:${r.progress}%"></div></div><div class="actions"><button class="action" id="callBtn">📞</button><button class="action" id="chatBtn">💬</button><button class="action" id="safeBtn">🛡️</button></div>`;$("callBtn").onclick=()=>msg($("passengerMsg"),"Llamada simulada.",true);$("chatBtn").onclick=()=>msg($("passengerMsg"),"Chat de prueba.",true);$("safeBtn").onclick=()=>msg($("passengerMsg"),"Centro de seguridad abierto.",true)}
+ else if(r.status==="en_punto"){b.innerHTML=`<strong>Tu conductor llegó</strong><div class="muted">${r.driver.name} está en el punto de recogida.</div><button id="startTrip" class="primary yellow">Iniciar viaje</button>`;$("startTrip").onclick=()=>updateRide(r.id,"en_viaje")}
+ else if(r.status==="en_viaje"){b.innerHTML=`<strong>Viaje en curso</strong><div class="muted">Destino: ${r.destination}</div><button id="finishTrip" class="primary">Finalizar viaje</button>`;$("finishTrip").onclick=()=>updateRide(r.id,"completado")}
 }
-$("refresh").onclick=renderDriver;
-function renderDriver(){if(!user||user.role!=="conductor")return;let rs=rides().filter(r=>r.status==="pendiente"||r.driverId===user.id).reverse();$("rides").innerHTML=rs.length?rs.map(r=>`<div class="ride"><b>${r.passengerName}</b><div class="muted">📍 ${r.pickup}<br>🏁 ${r.destination}<br>${r.vehicle} · ${r.fare} CUP · ${r.distance} km</div>${r.status==="pendiente"?`<button class="primary accept" data-id="${r.id}">Aceptar viaje</button>`:`<div class="msg ok">Viaje ${r.status}</div>`}</div>`).join(""):"<div class='status'><b>No hay solicitudes</b><div class='muted'>Pulsa actualizar.</div></div>";document.querySelectorAll(".accept").forEach(b=>b.onclick=()=>{let all=rides(),r=all.find(x=>x.id===+b.dataset.id);r.status="aceptado";r.driverId=user.id;r.driverName=user.name;r.driverRating=4.9;r.plate="CAV-000";r.phone="";r.progress=0;set(RK,all);renderDriver()})}
-const sid=localStorage.getItem(SK),u=users().find(x=>String(x.id)===sid);u?open(u):auth();
+function renderHistory(){let h=history().filter(x=>x.passengerId===currentUser?.id);$("tripHistory").innerHTML=h.length?h.map(r=>`<div class="listItem"><div><strong>${r.destination}</strong><div class="muted">${r.vehicle} · ${r.distance} km</div></div><strong>${r.fare} CUP</strong></div>`).join(""):`<div class="muted">Todavía no tienes viajes completados.</div>`}
+document.querySelectorAll(".navBtn").forEach(b=>b.onclick=()=>{document.querySelectorAll(".navBtn").forEach(x=>x.classList.remove("active"));b.classList.add("active");["homePage","tripsPage","walletPage","accountPage"].forEach(id=>$(id).classList.add("hidden"));$(b.dataset.page).classList.remove("hidden");if(b.dataset.page==="homePage"&&map)setTimeout(()=>map.invalidateSize(),50)});
+$("onlineSwitch").onclick=()=>$("onlineSwitch").classList.toggle("on");
+function renderDriverRequests(){
+ if(!currentUser||currentUser.role!=="conductor")return;let req=rides().filter(r=>r.status==="buscando");$("driverRequests").innerHTML=req.length?req.map(r=>`<div class="requestCard"><div class="muted">Nueva solicitud</div><div class="requestPrice">${r.fare} CUP</div><div><strong>${r.passengerName}</strong><br><span class="muted">${r.destination} · ${r.distance} km · ${r.vehicle}</span></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button class="danger reject" data-id="${r.id}">Rechazar</button><button class="primary yellow accept" data-id="${r.id}">Aceptar</button></div></div>`).join(""):`<div class="card" style="margin-top:14px"><strong>Estás en línea</strong><div class="muted">Esperando solicitudes cercanas.</div></div>`;
+ document.querySelectorAll(".reject").forEach(b=>b.onclick=()=>updateRide(+b.dataset.id,"cancelado"));
+ document.querySelectorAll(".accept").forEach(b=>b.onclick=()=>{let all=rides(),r=all.find(x=>x.id===+b.dataset.id);r.status="asignado";r.driver={name:currentUser.name,type:currentUser.vehicle||"moto",rating:4.9,plate:"CAV-000"};set(RK,all);renderDriverRequests()});
+ let earned=history().filter(r=>r.driver?.name===currentUser.name).reduce((s,r)=>s+r.fare,0);$("driverEarnings").textContent=earned+" CUP";
+}
+const sid=localStorage.getItem(SK),u=users().find(x=>String(x.id)===sid);u?openApp(u):showAuth();
 })();
-</script></body></html>
+</script>
+</body>
+</html>
