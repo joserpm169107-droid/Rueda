@@ -1,25 +1,25 @@
-# Sobre Ruedas v1.5.1 — Ubicación corregida
+# Sobre Ruedas v1.6.0 — Ciego de Ávila
 
-## Error corregido
-La versión anterior podía escoger una calle o intersección equivocada porque aceptaba el primer resultado disponible.
+## Actualización realizada
+- Logo oficial integrado en la aplicación.
+- Nuevo ícono instalable para la PWA.
+- Pantalla de carga con la marca Sobre Ruedas.
+- Nombre y eslogan actualizados.
+- Ubicación de desarrollo fija en Parque José Martí, Ciego de Ávila.
+- GPS real desactivado para evitar que las pruebas salten a Denver.
+- Buscador y validación limitados a Ciego de Ávila.
+- Botones Restaurar y Centrar devuelven el mapa al Parque José Martí.
+- Se mantienen las rutas para Bicitaxi, Motorina, Moto y Triciclo.
+- Los precios continúan siendo solamente de prueba.
 
-Ahora:
-- No acepta una sola esquina como destino de una dirección “entre”.
-- Solo calcula el centro de la cuadra cuando encuentra ambas intersecciones.
-- Comprueba que ambas estén dentro de Ciego de Ávila.
-- Rechaza resultados separados por más de 1.2 km.
-- Muestra el pin encontrado y obliga a confirmarlo antes de trazar la ruta.
-- Permite corregir el punto directamente en el mapa.
-- No permite pedir el viaje mientras la salida siga siendo el punto ficticio.
-- Intenta obtener el GPS real automáticamente.
+## Punto fijo
+Parque José Martí, Ciego de Ávila:
+- Latitud aproximada: 21.84206
+- Longitud aproximada: -78.76000
 
-## Prueba recomendada
-1. Permite el acceso a la ubicación.
-2. Escribe la dirección cubana.
-3. Pulsa Buscar dirección cubana.
-4. Revisa el pin.
-5. Pulsa Usar este punto o Corregir en mapa.
-6. Solo después se dibuja la ruta azul.
-
-## Abrir
-Agrega `?v=151` al final de la dirección de GitHub Pages.
+## Instalación en GitHub
+1. Descomprime el ZIP.
+2. Reemplaza todos los archivos del repositorio.
+3. Pulsa Commit changes.
+4. Espera unos minutos.
+5. Abre la app agregando `?v=160` al final de la dirección.
