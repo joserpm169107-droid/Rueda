@@ -1,43 +1,25 @@
-# Sobre Ruedas v1.5.0 — Rutas Cuba
+# Sobre Ruedas v1.5.1 — Ubicación corregida
 
-## Qué se corrigió
-La aplicación ya no dibuja una línea ficticia hacia un punto fijo.
+## Error corregido
+La versión anterior podía escoger una calle o intersección equivocada porque aceptaba el primer resultado disponible.
 
-Ahora intenta:
-1. Interpretar direcciones cubanas como:
-   - Calle A entre Marcial Gómez y Abraham Delgado
-   - Martí entre Independencia y Joaquín Agüero
-2. Localizar las dos intersecciones de la cuadra.
-3. Colocar el destino aproximadamente entre ambas esquinas.
-4. Calcular una ruta real siguiendo las calles.
-5. Usar un perfil distinto según el vehículo.
+Ahora:
+- No acepta una sola esquina como destino de una dirección “entre”.
+- Solo calcula el centro de la cuadra cuando encuentra ambas intersecciones.
+- Comprueba que ambas estén dentro de Ciego de Ávila.
+- Rechaza resultados separados por más de 1.2 km.
+- Muestra el pin encontrado y obliga a confirmarlo antes de trazar la ruta.
+- Permite corregir el punto directamente en el mapa.
+- No permite pedir el viaje mientras la salida siga siendo el punto ficticio.
+- Intenta obtener el GPS real automáticamente.
 
-## Perfiles de ruta
-- Bicitaxi: ruta de bicicleta, velocidad moderada y menor preferencia por vías principales.
-- Motorina: perfil de motor scooter.
-- Moto: perfil de motocicleta.
-- Triciclo: perfil lento de motor scooter.
+## Prueba recomendada
+1. Permite el acceso a la ubicación.
+2. Escribe la dirección cubana.
+3. Pulsa Buscar dirección cubana.
+4. Revisa el pin.
+5. Pulsa Usar este punto o Corregir en mapa.
+6. Solo después se dibuja la ruta azul.
 
-## Alternativa cuando una calle no aparece
-Pulsa **Marcar en mapa**, mueve el mapa hasta el destino y confirma. Esto es importante porque la calidad de las direcciones depende de cómo estén registradas las calles en OpenStreetMap.
-
-## Servicios utilizados en esta beta
-- OpenStreetMap para los datos del mapa.
-- Nominatim para buscar lugares y calles.
-- Overpass para intentar encontrar intersecciones.
-- Valhalla para rutas según el tipo de vehículo.
-- OSRM como ruta de respaldo.
-
-## Limitaciones de esta beta
-- Necesita internet.
-- Los servicios públicos pueden demorarse o limitar muchas consultas.
-- Una vía solo puede evitarse correctamente si sus restricciones están registradas en OpenStreetMap.
-- Para producción se necesitará un servidor propio, caché y una base local de direcciones cubanas verificadas.
-- Los precios continúan siendo únicamente de prueba.
-
-## Cómo instalar en GitHub
-1. Descomprime el ZIP.
-2. Reemplaza todos los archivos del repositorio.
-3. Haz Commit.
-4. Espera unos minutos.
-5. Abre la aplicación agregando `?v=150` a la dirección.
+## Abrir
+Agrega `?v=151` al final de la dirección de GitHub Pages.

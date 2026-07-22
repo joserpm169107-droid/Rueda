@@ -1,11 +1,11 @@
 {
-  "name": "Sobre Ruedas v1.5.0 Rutas Cuba",
+  "name": "Sobre Ruedas v1.5.1 Ubicación Corregida",
   "short_name": "Sobre Ruedas",
-  "start_url": "./?v=150",
+  "start_url": "./?v=151",
   "display": "standalone",
   "background_color": "#111318",
   "theme_color": "#F6C600",
-  "description": "Direcciones cubanas por calles e intersecciones, selección manual y rutas según el vehículo.",
+  "description": "Confirma destino, valida intersecciones cubanas y usa GPS real antes de trazar la ruta.",
   "icons": [
     {
       "src": "icon.svg",

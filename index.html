@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#F6C600">
 <meta name="description" content="Rueda Beta 1.0 — transporte urbano para Cuba.">
-<title>Sobre Ruedas v1.5.0 Rutas Cuba</title>
+<title>Sobre Ruedas v1.5.1 Ubicación Corregida</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://unpkg.com">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -182,6 +182,24 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
 .map-confirm .cancel{background:#fff}.map-confirm .confirm{background:var(--y)}
 .route-source{font-size:11px;color:var(--muted);margin-top:5px}
 
+
+.confirm-location{
+  display:none;
+  border:1px solid #d9dde3;
+  background:#fff;
+  border-radius:16px;
+  padding:11px;
+  margin-top:9px;
+}
+.confirm-location.show{display:block}
+.confirm-location strong{display:block}
+.confirm-location small{display:block;color:var(--muted);margin-top:4px}
+.confirm-location .actions{display:flex;gap:8px;margin-top:10px}
+.confirm-location button{flex:1;border:0;border-radius:12px;padding:10px;font-weight:900}
+.confirm-location .fix{background:#eef0f3}
+.confirm-location .use{background:var(--y)}
+.gps-warning{font-size:11px;color:#8a5b00;margin-top:5px;font-weight:800}
+
 </style>
 </head>
 <body>
@@ -244,7 +262,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
   <div id="mapConfirm" class="map-confirm hidden"><button class="cancel" id="cancelPin">Cancelar</button><button class="confirm" id="confirmPin">Confirmar destino</button></div>
   <div class="top">
     <button class="round glass" id="menuBtn">☰</button>
-    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS<small>RUTAS CUBA 1.5</small></div></div>
+    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS<small>RUTAS CUBA 1.5.1</small></div></div>
     <button class="round glass" id="profileBtn">👤</button>
   </div>
 
@@ -265,6 +283,15 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
         <button id="pickMapBtn">📍 Marcar en mapa</button>
       </div>
       <div class="route-status" id="routeStatus"><span class="spin"></span><div><strong id="routeStatusTitle">Buscando dirección…</strong><small id="routeStatusText" style="display:block;color:var(--muted);margin-top:3px">Interpretando calles e intersecciones.</small></div></div>
+      <div class="confirm-location" id="confirmLocation">
+        <strong>Confirma el punto encontrado</strong>
+        <small id="confirmLocationText">Revisa el pin en el mapa antes de calcular la ruta.</small>
+        <div class="actions">
+          <button class="fix" id="fixLocationBtn">Corregir en mapa</button>
+          <button class="use" id="useLocationBtn">Usar este punto</button>
+        </div>
+      </div>
+      <div class="gps-warning" id="gpsWarning">La salida todavía usa un punto de prueba. Pulsa actualizar ubicación para usar tu GPS.</div>
       <div class="live-banner"><div><span class="live-dot"></span><strong>Ubicación en vivo activa</strong><small style="display:block;color:#4d7b65;margin-top:2px">Precisión aproximada: 8 m</small></div><button id="refreshLocation" class="chip">Actualizar</button></div>
       <div class="quick"><button class="chip" data-dest="Casa">🏠 Casa</button><button class="chip" data-dest="Trabajo">💼 Trabajo</button><button class="chip" data-dest="Terminal de Ómnibus">🚌 Terminal</button><button class="chip" data-dest="Hospital Provincial">🏥 Hospital</button></div>
       <div class="hero"><div><strong>Tu primer viaje tiene 20%</strong><small>Promoción SOBRE RUEDAS20</small></div><button id="promoBtn">Aplicar</button></div>
@@ -309,7 +336,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
         <button id="switchPassenger">🙋 Usuario</button>
         <button id="switchDriver">🛵 Conductor</button>
       </div>
-      <p class="muted" id="roleStatus" style="font-size:12px;margin-top:9px">Cuenta de usuario activa.</p><button class="logout" id="logoutBtn">🚪 Cerrar sesión</button><p class="muted" style="text-align:center;font-size:11px;margin-top:8px">Sobre Ruedas v1.5.0 Rutas Cuba</p></div>
+      <p class="muted" id="roleStatus" style="font-size:12px;margin-top:9px">Cuenta de usuario activa.</p><button class="logout" id="logoutBtn">🚪 Cerrar sesión</button><p class="muted" style="text-align:center;font-size:11px;margin-top:8px">Sobre Ruedas v1.5.1 Ubicación Corregida</p></div>
 
     <nav class="nav"><button class="active" data-page="home"><span>⌂</span>Inicio</button><button data-page="history"><span>◷</span>Viajes</button><button data-page="saved"><span>♡</span>Guardados</button><button data-page="account"><span>☻</span>Cuenta</button></nav>
     </div>
@@ -326,7 +353,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
-const AUTH='rueda_v1_user'; let user=null, registerRole='passenger', selected={type:'Motorina',price:180,eta:3}, promo=false, tripTimer=null, driverTimer=null, routeLine=null, driverMarker=null, tripPhase=0, gpsWatch=null, destinationMarker=null, destinationPoint=null, currentStart=[21.84,-78.76], pinPicking=false;
+const AUTH='rueda_v1_user'; let user=null, registerRole='passenger', selected={type:'Motorina',price:180,eta:3}, promo=false, tripTimer=null, driverTimer=null, routeLine=null, driverMarker=null, tripPhase=0, gpsWatch=null, destinationMarker=null, destinationPoint=null, currentStart=[21.84,-78.76], pinPicking=false, pendingDestination=null, gpsReady=false;
 function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
 
 function setNotice(msg){$('#lastNotice').textContent=msg;localStorage.setItem('rueda_last_notice',msg)}
@@ -524,6 +551,16 @@ function parseCubanAddress(text){
     extra:(m[4]||'').trim()
   };
 }
+function haversineKm(a,b){
+  const R=6371;
+  const toRad=x=>x*Math.PI/180;
+  const dLat=toRad(b[0]-a[0]), dLon=toRad(b[1]-a[1]);
+  const s=Math.sin(dLat/2)**2+Math.cos(toRad(a[0]))*Math.cos(toRad(b[0]))*Math.sin(dLon/2)**2;
+  return 2*R*Math.asin(Math.sqrt(s));
+}
+function insideCiego(point){
+  return point && point[0]>=21.72 && point[0]<=21.95 && point[1]>=-78.90 && point[1]<=-78.60;
+}
 function escapeOverpass(s){
   return (s||'').replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
 }
@@ -590,14 +627,18 @@ async function geocodeCubanAddress(text){
         overpassIntersection(parsed.main,parsed.cross2)
       ]);
       if(p1&&p2){
-        return {
-          point:[(p1[0]+p2[0])/2,(p1[1]+p2[1])/2],
-          label:`${parsed.main} entre ${parsed.cross1} y ${parsed.cross2}`,
-          source:'intersections'
-        };
+        const separation=haversineKm(p1,p2);
+        if(insideCiego(p1)&&insideCiego(p2)&&separation<=1.2){
+          return {
+            point:[(p1[0]+p2[0])/2,(p1[1]+p2[1])/2],
+            label:`${parsed.main} entre ${parsed.cross1} y ${parsed.cross2}`,
+            source:'intersections',
+            confidence:'high'
+          };
+        }
       }
-      if(p1)return {point:p1,label:`${parsed.main} y ${parsed.cross1}`,source:'intersection'};
-      if(p2)return {point:p2,label:`${parsed.main} y ${parsed.cross2}`,source:'intersection'};
+      // No usamos una sola esquina automáticamente porque puede ser otra calle con el mismo nombre.
+      return null;
     }catch(e){}
   }
 
@@ -613,12 +654,18 @@ async function geocodeCubanAddress(text){
     try{
       const results=await nominatimSearch(q);
       if(results?.length){
-        const best=results[0];
-        return {
-          point:[+best.lat,+best.lon],
-          label:best.display_name||text,
-          source:'geocoder'
-        };
+        const valid=results
+          .map(r=>({...r,point:[+r.lat,+r.lon]}))
+          .filter(r=>insideCiego(r.point));
+        if(valid.length){
+          const best=valid[0];
+          return {
+            point:best.point,
+            label:best.display_name||text,
+            source:'geocoder',
+            confidence:'medium'
+          };
+        }
       }
     }catch(e){}
   }
@@ -702,20 +749,35 @@ function setDestinationPoint(point,label){
   destinationMarker=L.marker(point).addTo(map).bindPopup(label||'Destino');
   $('#destination').value=label||$('#destination').value;
 }
-async function prepareRealRoute(){
+async function prepareRealRoute(forceConfirmed=false){
   const text=$('#destination').value.trim();
   if(!text){toast('Escribe o marca un destino');return false}
-  setRouteStatus('Buscando dirección','Interpretando el formato de dirección usado en Cuba.');
+
+  if(!gpsReady){
+    setRouteStatus('Falta confirmar tu salida','Pulsa actualizar ubicación para usar tu GPS real.','warn');
+    toast('Actualiza primero tu ubicación');
+    return false;
+  }
+
   if(!destinationPoint){
+    setRouteStatus('Buscando dirección','Interpretando el formato de dirección usado en Cuba.');
     const result=await geocodeCubanAddress(text);
     if(!result){
-      setRouteStatus('No encontré esa dirección','Marca el punto directamente en el mapa para continuar.','warn');
+      setRouteStatus('Dirección dudosa','No encontré las dos esquinas con suficiente seguridad. Márcala en el mapa.','warn');
       setSheetHeight(sheetLimits().min,true);
       startPinMode();
       return false;
     }
+    pendingDestination=result;
     setDestinationPoint(result.point,text);
+    map.setView(result.point,17);
+    $('#confirmLocationText').textContent='Punto encontrado para: '+text+'. Revisa que el pin esté realmente dentro de la cuadra.';
+    $('#confirmLocation').classList.add('show');
+    setRouteStatus('Punto encontrado','Confirma el pin antes de trazar la ruta.','warn');
+    if(!forceConfirmed)return false;
   }
+
+  $('#confirmLocation').classList.remove('show');
   setRouteStatus('Calculando ruta por calles',`Buscando vías permitidas para ${selected.type}.`);
   try{
     const route=await getStreetRoute(currentStart,destinationPoint);
@@ -739,7 +801,7 @@ function startPinMode(){
   map.invalidateSize();
 }
 function stopPinMode(){
-  pinPicking=false;
+  pinPicking=false, pendingDestination=null, gpsReady=false;
   $('#pinMode').classList.add('hidden');
   $('#mapConfirm').classList.add('hidden');
 }
@@ -751,12 +813,24 @@ $('#searchAddressBtn').onclick=async()=>{
   if(ok)toast('Dirección y ruta listas');
 }
 $('#pickMapBtn').onclick=startPinMode;
+$('#fixLocationBtn').onclick=()=>{ $('#confirmLocation').classList.remove('show'); startPinMode(); }
+$('#useLocationBtn').onclick=async()=>{
+  if(pendingDestination){
+    destinationPoint=pendingDestination.point;
+    pendingDestination=null;
+  }
+  const ok=await prepareRealRoute(true);
+  if(ok)toast('Ruta confirmada');
+}
+
 $('#cancelPin').onclick=()=>{stopPinMode();setSheetHeight(sheetLimits().mid,true)}
 $('#confirmPin').onclick=async()=>{
   const center=map.getCenter();
   setDestinationPoint([center.lat,center.lng],$('#destination').value.trim()||'Destino marcado en el mapa');
+  pendingDestination=null;
+  $('#confirmLocation').classList.remove('show');
   stopPinMode();
-  const ok=await prepareRealRoute();
+  const ok=await prepareRealRoute(true);
   if(ok){toast('Destino marcado y ruta calculada');setSheetHeight(sheetLimits().mid,true)}
 }
 $('#destination').addEventListener('input',()=>{destinationPoint=null;clearRouteStatus()});
@@ -766,7 +840,9 @@ $('#refreshLocation').onclick=()=>{
   navigator.geolocation.getCurrentPosition(pos=>{
     const here=[pos.coords.latitude,pos.coords.longitude];
     currentStart=here;
-    startMarker.setLatLng(here);
+    gpsReady=true;
+    startMarker.setLatLng(here).bindPopup('Tu ubicación GPS');
+    $('#gpsWarning').style.display='none';
     map.setView(here,16);
     $('#pickupText').textContent='Ubicación GPS actualizada';
     toast('Ubicación actualizada');
@@ -779,7 +855,7 @@ function updateFare(){const base=Math.round(selected.price*.67),dist=selected.pr
 $('#promoBtn').onclick=()=>{promo=true;updateFare();toast('Promoción SOBRE RUEDAS20 aplicada')}
 $('#scheduleBtn').onclick=()=>$('#scheduleModal').classList.remove('hidden');$('#confirmSchedule').onclick=()=>{if(!$('#date').value||!$('#time').value)return toast('Selecciona fecha y hora');localStorage.setItem('rueda_schedule',JSON.stringify({date:$('#date').value,time:$('#time').value,destination:$('#destination').value}));$('#scheduleModal').classList.add('hidden');toast('Viaje programado')}
 $$('[data-close]').forEach(b=>b.onclick=()=>$('#'+b.dataset.close).classList.add('hidden'))
-$('#requestBtn').onclick=async()=>{const routeReady=await prepareRealRoute();if(!routeReady)return;setSheetHeight(sheetLimits().min,true);$('#homePanel').classList.add('hidden');$('#tripPanel').classList.remove('hidden');const total=selected.price-(promo?Math.round(selected.price*.2):0);$('#eta').textContent=selected.eta+' min';$('#tripPrice').textContent='$'+total;
+$('#requestBtn').onclick=async()=>{const routeReady=await prepareRealRoute(false);if(!routeReady)return;setSheetHeight(sheetLimits().min,true);$('#homePanel').classList.add('hidden');$('#tripPanel').classList.remove('hidden');const total=selected.price-(promo?Math.round(selected.price*.2):0);$('#eta').textContent=selected.eta+' min';$('#tripPrice').textContent='$'+total;
   const vehicleLabels={
     Motorina:'Motorina azul · CA-218',
     Moto:'Moto roja · CA-442',
@@ -834,7 +910,17 @@ $('#driverGpsBtn').onclick=()=>{
   },()=>toast('No se pudo activar el GPS'),{enableHighAccuracy:true});
 }
 updateFare();openApp();setTimeout(()=>setSheetHeight(sheetLimits().mid,false),80);
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=150').then(r=>r.update()).catch(()=>{}))}
+setTimeout(()=>{
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(pos=>{
+      currentStart=[pos.coords.latitude,pos.coords.longitude];
+      gpsReady=true;
+      startMarker.setLatLng(currentStart).bindPopup('Tu ubicación GPS');
+      $('#gpsWarning').style.display='none';
+    },()=>{}, {enableHighAccuracy:true,timeout:8000});
+  }
+},400);
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=151').then(r=>r.update()).catch(()=>{}))}
 </script>
 </body>
 </html>
