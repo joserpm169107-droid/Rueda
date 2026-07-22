@@ -1,11 +1,11 @@
 {
-  "name": "Rueda v1.0.0 Beta",
-  "short_name": "Rueda",
-  "start_url": "./?v=100",
+  "name": "Rueda v1.1.0 Live",
+  "short_name": "Rueda Live",
+  "start_url": "./?v=110",
   "display": "standalone",
   "background_color": "#111318",
   "theme_color": "#F6C600",
-  "description": "Aplicación beta de transporte urbano para Ciego de Ávila.",
+  "description": "Rueda con seguimiento en vivo, GPS, etapas del viaje y código de seguridad.",
   "icons": [
     {
       "src": "icon.svg",

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#F6C600">
 <meta name="description" content="Rueda Beta 1.0 — transporte urbano para Cuba.">
-<title>Rueda v1.0.0 Beta</title>
+<title>Rueda v1.1.0 Live</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://unpkg.com">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -50,6 +50,22 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
 .auth{position:absolute;z-index:1500;inset:0;background:linear-gradient(160deg,#111318,#252932 60%,#f6c600 180%);display:flex;align-items:center;padding:22px}.auth-card{background:#fff;width:100%;border-radius:28px;padding:22px}.auth-logo{width:72px;height:72px;border-radius:22px;background:var(--y);display:grid;place-items:center;font-size:40px;font-weight:1000;margin:0 auto 13px}.auth h1{text-align:center}.auth p{text-align:center;color:var(--muted);margin:7px 0 16px}.tabs{display:grid;grid-template-columns:1fr 1fr;background:#eef0f2;padding:4px;border-radius:14px}.tabs button{border:0;background:transparent;padding:10px;border-radius:11px;font-weight:900}.tabs .active{background:#fff}.auth input{width:100%;border:1px solid var(--line);border-radius:14px;padding:13px;margin-top:8px}.social{width:100%;border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px;margin-top:8px;font-weight:850}
 .toast{position:absolute;z-index:2000;left:17px;right:17px;bottom:23px;background:#111;color:#fff;border-radius:15px;padding:13px 15px;font-weight:800;transform:translateY(120px);opacity:0;transition:.3s}.toast.show{transform:none;opacity:1}
 @media(min-width:700px){body{padding:16px}.app{height:calc(100dvh - 32px);border-radius:32px}}
+
+.live-banner{display:flex;justify-content:space-between;align-items:center;background:#eafff5;border:1px solid #b7f0d4;border-radius:16px;padding:11px 12px;margin:10px 0}
+.live-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#10a66a;margin-right:7px;box-shadow:0 0 0 0 rgba(16,166,106,.5);animation:pulse 1.5s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 10px rgba(16,166,106,0)}100%{box-shadow:0 0 0 0 rgba(16,166,106,0)}}
+.trip-stage{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:12px 0}
+.trip-stage div{height:6px;border-radius:99px;background:#e6e8eb}.trip-stage .done,.trip-stage .active{background:var(--y)}
+.pickup-card{display:flex;justify-content:space-between;gap:10px;align-items:center;border:1px solid var(--line);border-radius:16px;padding:11px;margin-top:10px}
+.pickup-card button{border:0;background:#eef0f2;border-radius:12px;padding:9px 10px;font-weight:850}
+.trip-code{background:#111318;color:#fff;border-radius:16px;padding:12px;margin-top:10px;display:flex;justify-content:space-between;align-items:center}
+.trip-code strong{letter-spacing:.18em}
+.trip-code button{border:0;background:var(--y);border-radius:11px;padding:8px 10px;font-weight:900}
+.notice-card{border:1px solid var(--line);border-radius:16px;padding:12px;margin-top:10px;background:#fff}
+.notice-card small{color:var(--muted)}
+.driver-live{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:16px;padding:11px;margin-top:10px}
+.driver-live button{border:0;background:#111;color:#fff;border-radius:12px;padding:9px 11px;font-weight:900}
+
 </style>
 </head>
 <body>
@@ -78,7 +94,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
   <div id="map"></div>
   <div class="top">
     <button class="round glass" id="menuBtn">☰</button>
-    <div class="brand glass"><div class="logo">R</div><div>RUEDA<small>BETA 1.0</small></div></div>
+    <div class="brand glass"><div class="logo">R</div><div>RUEDA<small>LIVE 1.1</small></div></div>
     <button class="round glass" id="profileBtn">👤</button>
   </div>
 
@@ -90,6 +106,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
       <p class="hello">Hola, <span id="helloName">viajero</span> 👋</p>
       <h1 class="headline">¿A dónde vas hoy?</h1>
       <div class="search"><span class="dot"></span><input id="destination" value="Parque Martí" placeholder="Escribe tu destino"><button id="locateBtn">⌖</button></div>
+      <div class="live-banner"><div><span class="live-dot"></span><strong>Ubicación en vivo activa</strong><small style="display:block;color:#4d7b65;margin-top:2px">Precisión aproximada: 8 m</small></div><button id="refreshLocation" class="chip">Actualizar</button></div>
       <div class="quick"><button class="chip" data-dest="Casa">🏠 Casa</button><button class="chip" data-dest="Trabajo">💼 Trabajo</button><button class="chip" data-dest="Terminal de Ómnibus">🚌 Terminal</button><button class="chip" data-dest="Hospital Provincial">🏥 Hospital</button></div>
       <div class="hero"><div><strong>Tu primer viaje tiene 20%</strong><small>Promoción RUEDA20</small></div><button id="promoBtn">Aplicar</button></div>
       <div class="section-title"><h3>Elige cómo viajar</h3><button id="scheduleBtn">Programar</button></div>
@@ -103,8 +120,11 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
     </div>
 
     <div id="tripPanel" class="hidden">
-      <p class="hello">Conductor asignado</p><h2 style="margin:4px 0 13px">Llega en <span id="eta">3 min</span></h2>
+      <p class="hello">Viaje en vivo</p><h2 style="margin:4px 0 8px"><span id="tripStatus">Conductor en camino</span> · <span id="eta">3 min</span></h2>
+      <div class="trip-stage"><div id="stage1" class="active"></div><div id="stage2"></div><div id="stage3"></div><div id="stage4"></div></div>
       <div class="driver-card"><div class="avatar">👨🏽</div><div><strong>Daniel R.</strong><small>Motorina azul · CA-218</small></div><div class="rating">⭐ 4.9</div></div>
+      <div class="pickup-card"><div><strong>Punto de recogida</strong><small id="pickupText" style="display:block;color:var(--muted)">Tu ubicación actual</small></div><button id="changePickup">Cambiar</button></div>
+      <div class="trip-code"><div><small style="display:block;color:#c7cad0">Código de seguridad</small><strong id="tripCode">4821</strong></div><button id="copyCode">Copiar</button></div>
       <div class="progress"><div id="progress"></div></div>
       <div class="metrics"><div class="metric"><strong id="distance">1.4 km</strong><small>Distancia</small></div><div class="metric"><strong>8 min</strong><small>Viaje</small></div><div class="metric"><strong id="tripPrice">$180</strong><small>CUP</small></div></div>
       <div class="actions"><button id="chatBtn">💬 Chat</button><button id="callBtn">📞 Llamar</button><button class="sos" id="sosBtn">🆘 SOS</button></div>
@@ -113,7 +133,8 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
 
     <div id="driverPanel" class="hidden">
       <div class="earn"><div class="online"><div><small>Estado del conductor</small><strong id="onlineText" style="display:block;margin-top:4px">Desconectado</strong></div><div class="toggle" id="onlineToggle"><i></i></div></div><small style="display:block;margin-top:17px">Ganancias de hoy</small><h2>$2,840 CUP</h2><small>8 viajes completados</small></div>
-      <div id="driverSummary"><div class="section-title"><h3>Resumen de hoy</h3><button>Ver semana</button></div><div class="metrics"><div class="metric"><strong>4.9</strong><small>Rating</small></div><div class="metric"><strong>92%</strong><small>Aceptación</small></div><div class="metric"><strong>6.2 h</strong><small>En línea</small></div></div><p class="muted" style="text-align:center;padding:24px 8px">Actívate para recibir solicitudes cercanas.</p></div>
+      <div id="driverSummary"><div class="section-title"><h3>Resumen de hoy</h3><button>Ver semana</button></div><div class="metrics"><div class="metric"><strong>4.9</strong><small>Rating</small></div><div class="metric"><strong>92%</strong><small>Aceptación</small></div><div class="metric"><strong>6.2 h</strong><small>En línea</small></div></div><p class="muted" style="text-align:center;padding:24px 8px">Actívate para recibir solicitudes cercanas.</p>
+      <div class="driver-live"><div><strong>GPS del conductor</strong><small style="display:block;color:var(--muted)">Compartir ubicación mientras estás disponible</small></div><button id="driverGpsBtn">Activar GPS</button></div></div>
       <div id="driverRequest" class="hidden"><div class="section-title"><h3>Nueva solicitud</h3><button>1.2 km</button></div><div class="request"><div class="req-top"><div><small>Motorina · efectivo</small><h2 style="margin-top:3px">$180 CUP</h2></div><div class="count" id="count">15</div></div><div class="route"><p>● Calle Independencia</p><p>◆ Parque Martí</p></div><div class="req-actions"><button class="decline" id="declineBtn">Rechazar</button><button class="accept" id="acceptBtn">Aceptar</button></div></div></div>
     </div>
 
@@ -121,7 +142,8 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
 
     <div id="savedPanel" class="hidden"><h2>Guardados</h2><div class="saved-card"><span>🏠 Casa</span><button class="chip" data-dest="Casa">Elegir</button></div><div class="saved-card"><span>💼 Trabajo</span><button class="chip" data-dest="Trabajo">Elegir</button></div><div class="saved-card"><span>♡ Destino personal</span><button id="savedCustom" class="chip">Agregar</button></div></div>
 
-    <div id="accountPanel" class="hidden"><h2>Mi cuenta</h2><div class="driver-card" style="margin-top:12px"><div class="avatar">👤</div><div><strong id="accountName">Usuario</strong><small id="accountEmail">Cuenta verificada</small></div><div class="rating">⭐ 4.9</div></div><div class="section-title"><h3>Seguridad y preferencias</h3><button>Editar</button></div><div class="setting"><span>📱 Teléfono</span><span class="badge">Verificado</span></div><div class="setting"><span>🪪 Identidad</span><span class="badge">Verificada</span></div><div class="setting"><span>🔔 Notificaciones</span><span>Activadas ›</span></div><div class="setting"><span>💳 Método de pago</span><span>Efectivo ›</span></div><button class="logout" id="logoutBtn">🚪 Cerrar sesión</button><p class="muted" style="text-align:center;font-size:11px;margin-top:8px">Rueda v1.0.0 Beta</p></div>
+    <div id="accountPanel" class="hidden"><h2>Mi cuenta</h2><div class="driver-card" style="margin-top:12px"><div class="avatar">👤</div><div><strong id="accountName">Usuario</strong><small id="accountEmail">Cuenta verificada</small></div><div class="rating">⭐ 4.9</div></div><div class="section-title"><h3>Seguridad y preferencias</h3><button>Editar</button></div><div class="setting"><span>📱 Teléfono</span><span class="badge">Verificado</span></div><div class="setting"><span>🪪 Identidad</span><span class="badge">Verificada</span></div><div class="setting"><span>🔔 Notificaciones</span><span>Activadas ›</span></div>
+      <div class="notice-card"><strong>Última alerta</strong><small style="display:block;margin-top:4px" id="lastNotice">No tienes alertas nuevas.</small></div><div class="setting"><span>💳 Método de pago</span><span>Efectivo ›</span></div><button class="logout" id="logoutBtn">🚪 Cerrar sesión</button><p class="muted" style="text-align:center;font-size:11px;margin-top:8px">Rueda v1.1.0 Live</p></div>
 
     <nav class="nav"><button class="active" data-page="home"><span>⌂</span>Inicio</button><button data-page="history"><span>◷</span>Viajes</button><button data-page="saved"><span>♡</span>Guardados</button><button data-page="account"><span>☻</span>Cuenta</button></nav>
   </section>
@@ -137,10 +159,21 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
-const AUTH='rueda_v1_user'; let user=null, selected={type:'Motorina',price:180,eta:3}, promo=false, tripTimer=null, driverTimer=null, routeLine=null, driverMarker=null;
+const AUTH='rueda_v1_user'; let user=null, selected={type:'Motorina',price:180,eta:3}, promo=false, tripTimer=null, driverTimer=null, routeLine=null, driverMarker=null, tripPhase=0, gpsWatch=null;
 function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
+
+function setNotice(msg){$('#lastNotice').textContent=msg;localStorage.setItem('rueda_last_notice',msg)}
+function makeTripCode(){return String(Math.floor(1000+Math.random()*9000))}
+function updateTripStage(stage){
+  tripPhase=stage;
+  [1,2,3,4].forEach(i=>{
+    const el=$('#stage'+i);
+    el.classList.toggle('done',i<stage);
+    el.classList.toggle('active',i===stage);
+  });
+}
 function saveSession(u){localStorage.setItem(AUTH,JSON.stringify(u));user=u;openApp()}
-function openApp(){user=user||JSON.parse(localStorage.getItem(AUTH)||'null');if(!user)return;$('#auth').classList.add('hidden');const name=user.name||'Usuario Rueda';$('#helloName').textContent=name.split(' ')[0];$('#accountName').textContent=name;$('#drawerName').textContent=name;$('#accountEmail').textContent=user.email||user.phone||'Cuenta verificada'}
+function openApp(){user=user||JSON.parse(localStorage.getItem(AUTH)||'null');if(!user)return;$('#auth').classList.add('hidden');const name=user.name||'Usuario Rueda';$('#helloName').textContent=name.split(' ')[0];$('#accountName').textContent=name;$('#drawerName').textContent=name;$('#accountEmail').textContent=user.email||user.phone||'Cuenta verificada';$('#lastNotice').textContent=localStorage.getItem('rueda_last_notice')||'No tienes alertas nuevas.'}
 function logout(){if(!confirm('¿Deseas cerrar sesión en Rueda?'))return;localStorage.removeItem(AUTH);sessionStorage.clear();user=null;$('#auth').classList.remove('hidden');$('#drawer').classList.remove('open');$('#backdrop').classList.add('hidden');$('#loginEmail').value='';$('#loginPass').value='';toast('Sesión cerrada correctamente')}
 $$('[data-auth]').forEach(b=>b.onclick=()=>{$$('[data-auth]').forEach(x=>x.classList.remove('active'));b.classList.add('active');const login=b.dataset.auth==='login';$('#loginForm').classList.toggle('hidden',!login);$('#registerForm').classList.toggle('hidden',login)})
 $('#loginBtn').onclick=()=>{const email=$('#loginEmail').value.trim(),pass=$('#loginPass').value;if(!email||!pass)return toast('Completa correo y contraseña');saveSession({name:email.split('@')[0],email})}
@@ -151,6 +184,16 @@ const map=L.map('map',{zoomControl:false}).setView([21.84,-78.76],14);L.tileLaye
 const start=[21.84,-78.76], end=[21.847,-78.751];L.marker(start).addTo(map).bindPopup('Tu ubicación');
 function drawRoute(){if(routeLine)map.removeLayer(routeLine);routeLine=L.polyline([start,[21.842,-78.757],[21.845,-78.754],end],{color:'#111',weight:6,opacity:.8}).addTo(map);map.fitBounds(routeLine.getBounds(),{padding:[70,70]})}
 $('#locateBtn').onclick=()=>{map.setView(start,16);toast('Ubicación centrada')}
+$('#refreshLocation').onclick=()=>{
+  if(!navigator.geolocation){toast('GPS no disponible');return}
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const here=[pos.coords.latitude,pos.coords.longitude];
+    map.setView(here,16);
+    $('#pickupText').textContent='Ubicación GPS actualizada';
+    toast('Ubicación actualizada');
+    setNotice('Tu ubicación fue actualizada correctamente.');
+  },()=>toast('No se pudo acceder a la ubicación'),{enableHighAccuracy:true,timeout:7000});
+}
 $$('[data-dest]').forEach(b=>b.onclick=()=>{$('#destination').value=b.dataset.dest;showPage('home');toast('Destino seleccionado')})
 $$('.vehicle').forEach(v=>v.onclick=()=>{$$('.vehicle').forEach(x=>x.classList.remove('active'));v.classList.add('active');selected={type:v.dataset.type,price:+v.dataset.price,eta:+v.dataset.eta};updateFare()})
 function updateFare(){const base=Math.round(selected.price*.67),dist=selected.price-base,disc=promo?Math.round(selected.price*.2):0,total=selected.price-disc;$('#baseFare').textContent='$'+base;$('#distanceFare').textContent='$'+dist;$('#discountRow').classList.toggle('hidden',!promo);$('#discount').textContent='-$'+disc;$('#totalFare').textContent='$'+total+' CUP';$('#requestBtn').textContent=`Pedir ${selected.type} · $${total} CUP`}
@@ -159,6 +202,15 @@ $('#scheduleBtn').onclick=()=>$('#scheduleModal').classList.remove('hidden');$('
 $$('[data-close]').forEach(b=>b.onclick=()=>$('#'+b.dataset.close).classList.add('hidden'))
 $('#requestBtn').onclick=()=>{drawRoute();$('#homePanel').classList.add('hidden');$('#tripPanel').classList.remove('hidden');const total=selected.price-(promo?Math.round(selected.price*.2):0);$('#eta').textContent=selected.eta+' min';$('#tripPrice').textContent='$'+total;let p=7;if(driverMarker)map.removeLayer(driverMarker);driverMarker=L.marker([21.832,-78.771]).addTo(map).bindPopup('Daniel R.');clearInterval(tripTimer);tripTimer=setInterval(()=>{p+=6;$('#progress').style.width=Math.min(p,100)+'%';const lat=21.832+(start[0]-21.832)*(p/100),lng=-78.771+(start[1]+78.771)*(p/100);driverMarker.setLatLng([lat,lng]);if(p>=100){clearInterval(tripTimer);toast('Tu conductor llegó')}},700)}
 $('#cancelTrip').onclick=()=>{clearInterval(tripTimer);if(driverMarker){map.removeLayer(driverMarker);driverMarker=null}$('#tripPanel').classList.add('hidden');$('#homePanel').classList.remove('hidden');toast('Viaje cancelado')}
+$('#changePickup').onclick=()=>{
+  const point=prompt('Escribe una referencia para recogerte:','Frente a la entrada principal');
+  if(point){$('#pickupText').textContent=point;setNotice('Punto de recogida actualizado: '+point);toast('Punto de recogida cambiado')}
+}
+$('#copyCode').onclick=()=>{
+  const code=$('#tripCode').textContent;
+  navigator.clipboard?.writeText(code);
+  toast('Código '+code+' copiado');
+}
 $('#chatBtn').onclick=()=>toast('Chat del viaje abierto');$('#callBtn').onclick=()=>toast('Llamando a Daniel R.');$('#sosBtn').onclick=()=>$('#sosModal').classList.remove('hidden');$('#helpBtn').onclick=()=>{$('#sosModal').classList.remove('hidden');closeDrawer()}
 $('#shareBtn').onclick=()=>{const text='Estoy viajando con Rueda hacia '+$('#destination').value+'. Conductor Daniel R., placa CA-218.';if(navigator.share)navigator.share({title:'Mi viaje en Rueda',text});else navigator.clipboard?.writeText(text);toast('Viaje compartido')}
 $('#emergencyBtn').onclick=()=>toast('Función de emergencia preparada para configuración local')
@@ -170,8 +222,21 @@ $$('[data-mode]').forEach(b=>b.onclick=()=>{$$('[data-mode]').forEach(x=>x.class
 $('#onlineToggle').onclick=()=>{const on=$('#onlineToggle').classList.toggle('on');$('#onlineText').textContent=on?'Disponible':'Desconectado';$('#driverSummary').classList.toggle('hidden',on);$('#driverRequest').classList.toggle('hidden',!on);if(on){let c=15;$('#count').textContent=c;clearInterval(driverTimer);driverTimer=setInterval(()=>{c--;$('#count').textContent=c;if(c<=0){clearInterval(driverTimer);$('#driverRequest').classList.add('hidden');$('#driverSummary').classList.remove('hidden');toast('Solicitud expirada')}},1000)}}
 $('#declineBtn').onclick=()=>{$('#driverRequest').classList.add('hidden');$('#driverSummary').classList.remove('hidden');toast('Solicitud rechazada')}
 $('#acceptBtn').onclick=()=>{clearInterval(driverTimer);$('#driverRequest').classList.add('hidden');$('#driverSummary').classList.remove('hidden');toast('Viaje aceptado')}
+$('#driverGpsBtn').onclick=()=>{
+  const btn=$('#driverGpsBtn');
+  const active=btn.dataset.active==='1';
+  if(active){
+    btn.dataset.active='0';btn.textContent='Activar GPS';btn.style.background='#111';
+    if(gpsWatch!==null&&navigator.geolocation)navigator.geolocation.clearWatch(gpsWatch);
+    gpsWatch=null;toast('GPS del conductor desactivado');return;
+  }
+  if(!navigator.geolocation){toast('GPS no disponible');return}
+  gpsWatch=navigator.geolocation.watchPosition(pos=>{
+    btn.dataset.active='1';btn.textContent='GPS activo';btn.style.background='#10a66a';
+  },()=>toast('No se pudo activar el GPS'),{enableHighAccuracy:true});
+}
 updateFare();openApp();
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=100').then(r=>r.update()).catch(()=>{}))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=110').then(r=>r.update()).catch(()=>{}))}
 </script>
 </body>
 </html>
