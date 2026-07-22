@@ -1,37 +1,43 @@
-# Rueda v1.3.0 Verificación
+# Sobre Ruedas v1.5.0 — Rutas Cuba
 
-## Novedad principal: mapa más grande
-La barra inferior ahora se puede arrastrar con el dedo:
+## Qué se corrigió
+La aplicación ya no dibuja una línea ficticia hacia un punto fijo.
 
-- Hacia abajo para ver más mapa.
-- Hacia arriba para ver todas las opciones.
-- Tiene tres posiciones: recogida, media y expandida.
-- Al comenzar un viaje, el panel baja automáticamente para mostrar mejor la ruta.
-- Un doble toque sobre la agarradera alterna entre abierto y recogido.
+Ahora intenta:
+1. Interpretar direcciones cubanas como:
+   - Calle A entre Marcial Gómez y Abraham Delgado
+   - Martí entre Independencia y Joaquín Agüero
+2. Localizar las dos intersecciones de la cuadra.
+3. Colocar el destino aproximadamente entre ambas esquinas.
+4. Calcular una ruta real siguiendo las calles.
+5. Usar un perfil distinto según el vehículo.
 
-## Registro de conductor simplificado
-Ya no se solicitan varios números de documentos.
+## Perfiles de ruta
+- Bicitaxi: ruta de bicicleta, velocidad moderada y menor preferencia por vías principales.
+- Motorina: perfil de motor scooter.
+- Moto: perfil de motocicleta.
+- Triciclo: perfil lento de motor scooter.
 
-El conductor completa:
-- Nombre.
-- Correo.
-- Teléfono.
-- Contraseña.
-- Tipo de vehículo.
-- Una foto de identificación oficial:
-  - Carné de identidad.
-  - Licencia de conducción.
-  - Otro documento oficial.
-- Aceptación para que Rueda revise la foto.
+## Alternativa cuando una calle no aparece
+Pulsa **Marcar en mapa**, mueve el mapa hasta el destino y confirma. Esto es importante porque la calidad de las direcciones depende de cómo estén registradas las calles en OpenStreetMap.
 
-La solicitud queda en estado **Pendiente de revisión**.
+## Servicios utilizados en esta beta
+- OpenStreetMap para los datos del mapa.
+- Nominatim para buscar lugares y calles.
+- Overpass para intentar encontrar intersecciones.
+- Valhalla para rutas según el tipo de vehículo.
+- OSRM como ruta de respaldo.
 
-## Importante
-En esta versión la imagen se previsualiza en el teléfono, pero todavía no se guarda en un servidor. La carga real y la aprobación desde otro dispositivo se conectarán posteriormente con Firebase Storage y Firestore.
+## Limitaciones de esta beta
+- Necesita internet.
+- Los servicios públicos pueden demorarse o limitar muchas consultas.
+- Una vía solo puede evitarse correctamente si sus restricciones están registradas en OpenStreetMap.
+- Para producción se necesitará un servidor propio, caché y una base local de direcciones cubanas verificadas.
+- Los precios continúan siendo únicamente de prueba.
 
-## Subir a GitHub
+## Cómo instalar en GitHub
 1. Descomprime el ZIP.
 2. Reemplaza todos los archivos del repositorio.
-3. Pulsa **Commit changes**.
+3. Haz Commit.
 4. Espera unos minutos.
-5. Abre la aplicación agregando `?v=130` al final de la dirección.
+5. Abre la aplicación agregando `?v=150` a la dirección.

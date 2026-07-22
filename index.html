@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#F6C600">
 <meta name="description" content="Rueda Beta 1.0 — transporte urbano para Cuba.">
-<title>Rueda v1.3.0 Verificación</title>
+<title>Sobre Ruedas v1.5.0 Rutas Cuba</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://unpkg.com">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -163,6 +163,25 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
   .sheet.expanded{height:94dvh}
 }
 
+
+.address-tools{display:flex;gap:8px;margin-top:8px}
+.address-tools button{flex:1;border:1px solid var(--line);background:#fff;border-radius:13px;padding:10px;font-weight:900}
+.route-status{display:none;align-items:flex-start;gap:9px;border:1px solid #dce2e7;background:#f8fafb;border-radius:14px;padding:10px;margin-top:9px;font-size:12px}
+.route-status.show{display:flex}
+.route-status .spin{width:17px;height:17px;border:2px solid #d9dde2;border-top-color:#111;border-radius:50%;animation:routeSpin .8s linear infinite;flex:0 0 auto}
+.route-status.ok .spin{animation:none;border:0;background:#10a66a;position:relative}
+.route-status.ok .spin:after{content:'✓';color:#fff;position:absolute;inset:0;display:grid;place-items:center;font-size:11px;font-weight:1000}
+.route-status.warn .spin{animation:none;border:0;background:#f6c600;position:relative}
+.route-status.warn .spin:after{content:'!';position:absolute;inset:0;display:grid;place-items:center;font-weight:1000}
+@keyframes routeSpin{to{transform:rotate(360deg)}}
+.pin-mode{position:absolute;z-index:1000;left:50%;top:44%;transform:translate(-50%,-50%);pointer-events:none;text-align:center}
+.pin-mode .pin{font-size:40px;filter:drop-shadow(0 5px 4px #0004)}
+.pin-mode small{display:block;background:#111;color:#fff;border-radius:999px;padding:6px 10px;font-weight:900}
+.map-confirm{position:absolute;z-index:1001;left:16px;right:16px;bottom:18px;display:flex;gap:8px}
+.map-confirm button{flex:1;border:0;border-radius:14px;padding:13px;font-weight:1000}
+.map-confirm .cancel{background:#fff}.map-confirm .confirm{background:var(--y)}
+.route-source{font-size:11px;color:var(--muted);margin-top:5px}
+
 </style>
 </head>
 <body>
@@ -199,6 +218,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
             <option>Motorina</option>
             <option>Moto</option>
             <option>Triciclo</option>
+            <option>Bicitaxi</option>
           </select>
           <div class="upload-box">
             <strong>Identificación oficial</strong>
@@ -220,9 +240,11 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
   </section>
 
   <div id="map"></div>
+  <div id="pinMode" class="pin-mode hidden"><div class="pin">📍</div><small>Mueve el mapa hasta el destino</small></div>
+  <div id="mapConfirm" class="map-confirm hidden"><button class="cancel" id="cancelPin">Cancelar</button><button class="confirm" id="confirmPin">Confirmar destino</button></div>
   <div class="top">
     <button class="round glass" id="menuBtn">☰</button>
-    <div class="brand glass"><div class="logo">R</div><div>RUEDA<small>VERIFICACIÓN 1.3</small></div></div>
+    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS<small>RUTAS CUBA 1.5</small></div></div>
     <button class="round glass" id="profileBtn">👤</button>
   </div>
 
@@ -238,11 +260,17 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
       <p class="hello">Hola, <span id="helloName">viajero</span> 👋</p>
       <h1 class="headline">¿A dónde vas hoy?</h1>
       <div class="search"><span class="dot"></span><input id="destination" value="Parque Martí" placeholder="Escribe tu destino"><button id="locateBtn">⌖</button></div>
+      <div class="address-tools">
+        <button id="searchAddressBtn">🔎 Buscar dirección cubana</button>
+        <button id="pickMapBtn">📍 Marcar en mapa</button>
+      </div>
+      <div class="route-status" id="routeStatus"><span class="spin"></span><div><strong id="routeStatusTitle">Buscando dirección…</strong><small id="routeStatusText" style="display:block;color:var(--muted);margin-top:3px">Interpretando calles e intersecciones.</small></div></div>
       <div class="live-banner"><div><span class="live-dot"></span><strong>Ubicación en vivo activa</strong><small style="display:block;color:#4d7b65;margin-top:2px">Precisión aproximada: 8 m</small></div><button id="refreshLocation" class="chip">Actualizar</button></div>
       <div class="quick"><button class="chip" data-dest="Casa">🏠 Casa</button><button class="chip" data-dest="Trabajo">💼 Trabajo</button><button class="chip" data-dest="Terminal de Ómnibus">🚌 Terminal</button><button class="chip" data-dest="Hospital Provincial">🏥 Hospital</button></div>
-      <div class="hero"><div><strong>Tu primer viaje tiene 20%</strong><small>Promoción RUEDA20</small></div><button id="promoBtn">Aplicar</button></div>
+      <div class="hero"><div><strong>Tu primer viaje tiene 20%</strong><small>Promoción SOBRE RUEDAS20</small></div><button id="promoBtn">Aplicar</button></div>
       <div class="section-title"><h3>Elige cómo viajar</h3><button id="scheduleBtn">Programar</button></div>
       <div class="vehicles">
+        <button class="vehicle" data-type="Bicitaxi" data-price="120" data-eta="4"><span>🚲</span><div><strong>Bicitaxi</strong><small>Económico · trayectos cortos</small></div><b>$120</b></button>
         <article class="vehicle active" data-type="Motorina" data-price="180" data-eta="3"><div class="vicon">🛵</div><div><strong>Motorina</strong><small>1 pasajero · 3 min</small></div><div class="price">$180<small>CUP</small></div></article>
         <article class="vehicle" data-type="Moto" data-price="220" data-eta="5"><div class="vicon">🏍️</div><div><strong>Moto</strong><small>1 pasajero · 5 min</small></div><div class="price">$220<small>CUP</small></div></article>
         <article class="vehicle" data-type="Triciclo" data-price="350" data-eta="7"><div class="vicon">🛺</div><div><strong>Triciclo</strong><small>Hasta 3 · 7 min</small></div><div class="price">$350<small>CUP</small></div></article>
@@ -265,7 +293,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
 
     <div id="driverPanel" class="hidden">
       <div class="earn"><div class="online"><div><small>Estado del conductor</small><strong id="onlineText" style="display:block;margin-top:4px">Desconectado</strong></div><div class="toggle" id="onlineToggle"><i></i></div></div><small style="display:block;margin-top:17px">Ganancias de hoy</small><h2>$2,840 CUP</h2><small>8 viajes completados</small></div>
-      <div id="driverSummary"><div class="section-title"><h3>Resumen de hoy</h3><button>Ver semana</button></div><div class="metrics"><div class="metric"><strong>4.9</strong><small>Rating</small></div><div class="metric"><strong>92%</strong><small>Aceptación</small></div><div class="metric"><strong>6.2 h</strong><small>En línea</small></div></div><p class="muted" style="text-align:center;padding:24px 8px">Actívate para recibir solicitudes cercanas.</p>
+      <div id="driverSummary"><div class="section-title"><h3>Resumen de hoy</h3><button>Ver semana</button></div><div class="metrics"><div class="metric"><strong>4.9</strong><small>Rating</small></div><div class="metric"><strong>92%</strong><small>Aceptación</small></div><div class="metric"><strong>6.2 h</strong><small>En línea</small></div></div><p class="muted" style="text-align:center;padding:24px 8px">Actívate para recibir solicitudes cercanas según tu tipo de vehículo, incluyendo bicitaxi.</p>
       <div class="driver-live"><div><strong>GPS del conductor</strong><small style="display:block;color:var(--muted)">Compartir ubicación mientras estás disponible</small></div><button id="driverGpsBtn">Activar GPS</button></div></div>
       <div id="driverRequest" class="hidden"><div class="section-title"><h3>Nueva solicitud</h3><button>1.2 km</button></div><div class="request"><div class="req-top"><div><small>Motorina · efectivo</small><h2 style="margin-top:3px">$180 CUP</h2></div><div class="count" id="count">15</div></div><div class="route"><p>● Calle Independencia</p><p>◆ Parque Martí</p></div><div class="req-actions"><button class="decline" id="declineBtn">Rechazar</button><button class="accept" id="acceptBtn">Aceptar</button></div></div></div>
     </div>
@@ -281,7 +309,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
         <button id="switchPassenger">🙋 Usuario</button>
         <button id="switchDriver">🛵 Conductor</button>
       </div>
-      <p class="muted" id="roleStatus" style="font-size:12px;margin-top:9px">Cuenta de usuario activa.</p><button class="logout" id="logoutBtn">🚪 Cerrar sesión</button><p class="muted" style="text-align:center;font-size:11px;margin-top:8px">Rueda v1.3.0 Verificación</p></div>
+      <p class="muted" id="roleStatus" style="font-size:12px;margin-top:9px">Cuenta de usuario activa.</p><button class="logout" id="logoutBtn">🚪 Cerrar sesión</button><p class="muted" style="text-align:center;font-size:11px;margin-top:8px">Sobre Ruedas v1.5.0 Rutas Cuba</p></div>
 
     <nav class="nav"><button class="active" data-page="home"><span>⌂</span>Inicio</button><button data-page="history"><span>◷</span>Viajes</button><button data-page="saved"><span>♡</span>Guardados</button><button data-page="account"><span>☻</span>Cuenta</button></nav>
     </div>
@@ -298,7 +326,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
-const AUTH='rueda_v1_user'; let user=null, registerRole='passenger', selected={type:'Motorina',price:180,eta:3}, promo=false, tripTimer=null, driverTimer=null, routeLine=null, driverMarker=null, tripPhase=0, gpsWatch=null;
+const AUTH='rueda_v1_user'; let user=null, registerRole='passenger', selected={type:'Motorina',price:180,eta:3}, promo=false, tripTimer=null, driverTimer=null, routeLine=null, driverMarker=null, tripPhase=0, gpsWatch=null, destinationMarker=null, destinationPoint=null, currentStart=[21.84,-78.76], pinPicking=false;
 function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
 
 function setNotice(msg){$('#lastNotice').textContent=msg;localStorage.setItem('rueda_last_notice',msg)}
@@ -463,27 +491,314 @@ sheetHandle.addEventListener('dblclick',()=>{
 });
 window.addEventListener('resize',()=>setSheetHeight(sheetLimits().mid,false));
 
-const map=L.map('map',{zoomControl:false}).setView([21.84,-78.76],14);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
-const start=[21.84,-78.76], end=[21.847,-78.751];L.marker(start).addTo(map).bindPopup('Tu ubicación');
-function drawRoute(){if(routeLine)map.removeLayer(routeLine);routeLine=L.polyline([start,[21.842,-78.757],[21.845,-78.754],end],{color:'#111',weight:6,opacity:.8}).addTo(map);map.fitBounds(routeLine.getBounds(),{padding:[70,70]})}
-$('#locateBtn').onclick=()=>{map.setView(start,16);toast('Ubicación centrada')}
+const map=L.map('map',{zoomControl:false}).setView([21.84,-78.76],14);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
+let startMarker=L.marker(currentStart).addTo(map).bindPopup('Tu ubicación');
+
+function setRouteStatus(title,text,type='loading'){
+  const box=$('#routeStatus');
+  box.classList.add('show');
+  box.classList.toggle('ok',type==='ok');
+  box.classList.toggle('warn',type==='warn');
+  $('#routeStatusTitle').textContent=title;
+  $('#routeStatusText').textContent=text;
+}
+function clearRouteStatus(){ $('#routeStatus').classList.remove('show','ok','warn'); }
+
+function normalizeStreet(s){
+  return (s||'')
+    .replace(/\b(calle|avenida|ave\.?|calzada|carretera)\b/gi,'')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+function parseCubanAddress(text){
+  const raw=(text||'').trim();
+  const m=raw.match(/^(.*?)\s+entre\s+(.*?)\s+(?:y|e)\s+(.*?)(?:,\s*(.*))?$/i);
+  if(!m)return {type:'normal',raw};
+  return {
+    type:'block',
+    raw,
+    main:normalizeStreet(m[1]),
+    cross1:normalizeStreet(m[2]),
+    cross2:normalizeStreet(m[3]),
+    extra:(m[4]||'').trim()
+  };
+}
+function escapeOverpass(s){
+  return (s||'').replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+}
+async function fetchJSON(url,options={},timeout=14000){
+  const controller=new AbortController();
+  const timer=setTimeout(()=>controller.abort(),timeout);
+  try{
+    const res=await fetch(url,{...options,signal:controller.signal});
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    return await res.json();
+  }finally{clearTimeout(timer)}
+}
+async function nominatimSearch(query){
+  const params=new URLSearchParams({
+    q:query,
+    format:'jsonv2',
+    limit:'6',
+    countrycodes:'cu',
+    addressdetails:'1',
+    'accept-language':'es',
+    viewbox:'-78.90,21.95,-78.60,21.70',
+    bounded:'1'
+  });
+  return fetchJSON('https://nominatim.openstreetmap.org/search?'+params.toString(),{
+    headers:{'Accept':'application/json'}
+  });
+}
+async function overpassIntersection(main,cross){
+  const a=escapeOverpass(main), b=escapeOverpass(cross);
+  const q=`[out:json][timeout:20];
+    area["boundary"="administrative"]["name"~"Ciego de Ávila",i]->.searchArea;
+    way(area.searchArea)["highway"]["name"~"${a}",i]->.a;
+    way(area.searchArea)["highway"]["name"~"${b}",i]->.b;
+    node(w.a)(w.b);
+    out body;`;
+  const endpoints=[
+    'https://overpass-api.de/api/interpreter',
+    'https://overpass.kumi.systems/api/interpreter'
+  ];
+  let lastErr;
+  for(const endpoint of endpoints){
+    try{
+      const data=await fetchJSON(endpoint,{
+        method:'POST',
+        headers:{'Content-Type':'application/x-www-form-urlencoded;charset=UTF-8'},
+        body:'data='+encodeURIComponent(q)
+      },22000);
+      if(data.elements?.length){
+        const p=data.elements[0];
+        return [p.lat,p.lon];
+      }
+    }catch(e){lastErr=e}
+  }
+  if(lastErr)throw lastErr;
+  return null;
+}
+async function geocodeCubanAddress(text){
+  const parsed=parseCubanAddress(text);
+  if(parsed.type==='block'){
+    setRouteStatus('Buscando la cuadra','Localizando las dos esquinas de '+parsed.main+'.');
+    try{
+      const [p1,p2]=await Promise.all([
+        overpassIntersection(parsed.main,parsed.cross1),
+        overpassIntersection(parsed.main,parsed.cross2)
+      ]);
+      if(p1&&p2){
+        return {
+          point:[(p1[0]+p2[0])/2,(p1[1]+p2[1])/2],
+          label:`${parsed.main} entre ${parsed.cross1} y ${parsed.cross2}`,
+          source:'intersections'
+        };
+      }
+      if(p1)return {point:p1,label:`${parsed.main} y ${parsed.cross1}`,source:'intersection'};
+      if(p2)return {point:p2,label:`${parsed.main} y ${parsed.cross2}`,source:'intersection'};
+    }catch(e){}
+  }
+
+  const city='Ciego de Ávila, Cuba';
+  const attempts=[
+    `${text}, ${city}`,
+    parsed.type==='block'?`${parsed.main}, ${city}`:'',
+    parsed.type==='block'?`${parsed.cross1}, ${city}`:'',
+    text
+  ].filter(Boolean);
+
+  for(const q of attempts){
+    try{
+      const results=await nominatimSearch(q);
+      if(results?.length){
+        const best=results[0];
+        return {
+          point:[+best.lat,+best.lon],
+          label:best.display_name||text,
+          source:'geocoder'
+        };
+      }
+    }catch(e){}
+  }
+  return null;
+}
+function decodePolyline6(str){
+  let index=0,lat=0,lng=0,coordinates=[];
+  while(index<str.length){
+    let b,shift=0,result=0;
+    do{b=str.charCodeAt(index++)-63;result|=(b&0x1f)<<shift;shift+=5}while(b>=0x20);
+    const dlat=(result&1)?~(result>>1):(result>>1);lat+=dlat;
+    shift=0;result=0;
+    do{b=str.charCodeAt(index++)-63;result|=(b&0x1f)<<shift;shift+=5}while(b>=0x20);
+    const dlng=(result&1)?~(result>>1):(result>>1);lng+=dlng;
+    coordinates.push([lat/1e6,lng/1e6]);
+  }
+  return coordinates;
+}
+function routeCosting(){
+  if(selected.type==='Bicitaxi')return {
+    costing:'bicycle',
+    costing_options:{bicycle:{bicycle_type:'hybrid',cycling_speed:12,use_roads:.35,use_hills:.4}}
+  };
+  if(selected.type==='Motorina')return {
+    costing:'motor_scooter',
+    costing_options:{motor_scooter:{top_speed:45,use_primary:.45,use_hills:.5}}
+  };
+  if(selected.type==='Moto')return {
+    costing:'motorcycle',
+    costing_options:{motorcycle:{use_highways:.1,use_tolls:0,use_trails:.1}}
+  };
+  return {
+    costing:'motor_scooter',
+    costing_options:{motor_scooter:{top_speed:35,use_primary:.3,use_hills:.4}}
+  };
+}
+async function getStreetRoute(from,to){
+  const mode=routeCosting();
+  const payload={
+    locations:[
+      {lat:from[0],lon:from[1],type:'break'},
+      {lat:to[0],lon:to[1],type:'break'}
+    ],
+    costing:mode.costing,
+    costing_options:mode.costing_options,
+    units:'kilometers',
+    language:'es-ES',
+    directions_options:{units:'kilometers'}
+  };
+  try{
+    const data=await fetchJSON('https://valhalla.openstreetmap.de/route',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    },22000);
+    const shape=data.trip?.legs?.[0]?.shape;
+    if(!shape)throw new Error('Sin geometría');
+    return {
+      points:decodePolyline6(shape),
+      distance:data.trip.summary.length,
+      minutes:Math.max(1,Math.round(data.trip.summary.time/60)),
+      source:'Valhalla/OSM'
+    };
+  }catch(e){
+    const profile='driving';
+    const url=`https://router.project-osrm.org/route/v1/${profile}/${from[1]},${from[0]};${to[1]},${to[0]}?overview=full&geometries=geojson&steps=false`;
+    const data=await fetchJSON(url,{},18000);
+    const coords=data.routes?.[0]?.geometry?.coordinates;
+    if(!coords)throw e;
+    return {
+      points:coords.map(c=>[c[1],c[0]]),
+      distance:data.routes[0].distance/1000,
+      minutes:Math.max(1,Math.round(data.routes[0].duration/60)),
+      source:'OSRM/OSM'
+    };
+  }
+}
+function setDestinationPoint(point,label){
+  destinationPoint=point;
+  if(destinationMarker)map.removeLayer(destinationMarker);
+  destinationMarker=L.marker(point).addTo(map).bindPopup(label||'Destino');
+  $('#destination').value=label||$('#destination').value;
+}
+async function prepareRealRoute(){
+  const text=$('#destination').value.trim();
+  if(!text){toast('Escribe o marca un destino');return false}
+  setRouteStatus('Buscando dirección','Interpretando el formato de dirección usado en Cuba.');
+  if(!destinationPoint){
+    const result=await geocodeCubanAddress(text);
+    if(!result){
+      setRouteStatus('No encontré esa dirección','Marca el punto directamente en el mapa para continuar.','warn');
+      setSheetHeight(sheetLimits().min,true);
+      startPinMode();
+      return false;
+    }
+    setDestinationPoint(result.point,text);
+  }
+  setRouteStatus('Calculando ruta por calles',`Buscando vías permitidas para ${selected.type}.`);
+  try{
+    const route=await getStreetRoute(currentStart,destinationPoint);
+    if(routeLine)map.removeLayer(routeLine);
+    routeLine=L.polyline(route.points,{color:'#1677ff',weight:6,opacity:.9,lineJoin:'round'}).addTo(map);
+    map.fitBounds(routeLine.getBounds(),{padding:[60,60]});
+    $('#distance').textContent=route.distance.toFixed(1)+' km';
+    $('#eta').textContent=route.minutes+' min';
+    setRouteStatus('Ruta encontrada',`${route.distance.toFixed(1)} km · ${route.minutes} min · ${selected.type}.`,'ok');
+    return true;
+  }catch(e){
+    setRouteStatus('No pude calcular la ruta','Revisa el punto o inténtalo de nuevo.','warn');
+    return false;
+  }
+}
+function startPinMode(){
+  pinPicking=true;
+  setSheetHeight(sheetLimits().min,true);
+  $('#pinMode').classList.remove('hidden');
+  $('#mapConfirm').classList.remove('hidden');
+  map.invalidateSize();
+}
+function stopPinMode(){
+  pinPicking=false;
+  $('#pinMode').classList.add('hidden');
+  $('#mapConfirm').classList.add('hidden');
+}
+
+$('#locateBtn').onclick=()=>{map.setView(currentStart,16);toast('Ubicación centrada')}
+$('#searchAddressBtn').onclick=async()=>{
+  destinationPoint=null;
+  const ok=await prepareRealRoute();
+  if(ok)toast('Dirección y ruta listas');
+}
+$('#pickMapBtn').onclick=startPinMode;
+$('#cancelPin').onclick=()=>{stopPinMode();setSheetHeight(sheetLimits().mid,true)}
+$('#confirmPin').onclick=async()=>{
+  const center=map.getCenter();
+  setDestinationPoint([center.lat,center.lng],$('#destination').value.trim()||'Destino marcado en el mapa');
+  stopPinMode();
+  const ok=await prepareRealRoute();
+  if(ok){toast('Destino marcado y ruta calculada');setSheetHeight(sheetLimits().mid,true)}
+}
+$('#destination').addEventListener('input',()=>{destinationPoint=null;clearRouteStatus()});
+
 $('#refreshLocation').onclick=()=>{
   if(!navigator.geolocation){toast('GPS no disponible');return}
   navigator.geolocation.getCurrentPosition(pos=>{
     const here=[pos.coords.latitude,pos.coords.longitude];
+    currentStart=here;
+    startMarker.setLatLng(here);
     map.setView(here,16);
     $('#pickupText').textContent='Ubicación GPS actualizada';
     toast('Ubicación actualizada');
     setNotice('Tu ubicación fue actualizada correctamente.');
   },()=>toast('No se pudo acceder a la ubicación'),{enableHighAccuracy:true,timeout:7000});
 }
-$$('[data-dest]').forEach(b=>b.onclick=()=>{$('#destination').value=b.dataset.dest;showPage('home');toast('Destino seleccionado')})
+$$('[data-dest]').forEach(b=>b.onclick=()=>{$('#destination').value=b.dataset.dest;destinationPoint=null;clearRouteStatus();showPage('home');toast('Destino seleccionado')})
 $$('.vehicle').forEach(v=>v.onclick=()=>{$$('.vehicle').forEach(x=>x.classList.remove('active'));v.classList.add('active');selected={type:v.dataset.type,price:+v.dataset.price,eta:+v.dataset.eta};updateFare()})
 function updateFare(){const base=Math.round(selected.price*.67),dist=selected.price-base,disc=promo?Math.round(selected.price*.2):0,total=selected.price-disc;$('#baseFare').textContent='$'+base;$('#distanceFare').textContent='$'+dist;$('#discountRow').classList.toggle('hidden',!promo);$('#discount').textContent='-$'+disc;$('#totalFare').textContent='$'+total+' CUP';$('#requestBtn').textContent=`Pedir ${selected.type} · $${total} CUP`}
-$('#promoBtn').onclick=()=>{promo=true;updateFare();toast('Promoción RUEDA20 aplicada')}
+$('#promoBtn').onclick=()=>{promo=true;updateFare();toast('Promoción SOBRE RUEDAS20 aplicada')}
 $('#scheduleBtn').onclick=()=>$('#scheduleModal').classList.remove('hidden');$('#confirmSchedule').onclick=()=>{if(!$('#date').value||!$('#time').value)return toast('Selecciona fecha y hora');localStorage.setItem('rueda_schedule',JSON.stringify({date:$('#date').value,time:$('#time').value,destination:$('#destination').value}));$('#scheduleModal').classList.add('hidden');toast('Viaje programado')}
 $$('[data-close]').forEach(b=>b.onclick=()=>$('#'+b.dataset.close).classList.add('hidden'))
-$('#requestBtn').onclick=()=>{setSheetHeight(sheetLimits().min,true);drawRoute();$('#homePanel').classList.add('hidden');$('#tripPanel').classList.remove('hidden');const total=selected.price-(promo?Math.round(selected.price*.2):0);$('#eta').textContent=selected.eta+' min';$('#tripPrice').textContent='$'+total;let p=7;if(driverMarker)map.removeLayer(driverMarker);driverMarker=L.marker([21.832,-78.771]).addTo(map).bindPopup('Daniel R.');clearInterval(tripTimer);tripTimer=setInterval(()=>{p+=6;$('#progress').style.width=Math.min(p,100)+'%';const lat=21.832+(start[0]-21.832)*(p/100),lng=-78.771+(start[1]+78.771)*(p/100);driverMarker.setLatLng([lat,lng]);if(p>=100){clearInterval(tripTimer);toast('Tu conductor llegó')}},700)}
+$('#requestBtn').onclick=async()=>{const routeReady=await prepareRealRoute();if(!routeReady)return;setSheetHeight(sheetLimits().min,true);$('#homePanel').classList.add('hidden');$('#tripPanel').classList.remove('hidden');const total=selected.price-(promo?Math.round(selected.price*.2):0);$('#eta').textContent=selected.eta+' min';$('#tripPrice').textContent='$'+total;
+  const vehicleLabels={
+    Motorina:'Motorina azul · CA-218',
+    Moto:'Moto roja · CA-442',
+    Triciclo:'Triciclo amarillo · CA-031',
+    Bicitaxi:'Bicitaxi verde · CA-107'
+  };
+  const driverNames={
+    Motorina:'Daniel R.',
+    Moto:'Alejandro M.',
+    Triciclo:'Roberto L.',
+    Bicitaxi:'Yunier P.'
+  };
+  const card=$('#tripPanel .driver-card');
+  if(card){
+    const strong=card.querySelector('strong');
+    const small=card.querySelector('small');
+    if(strong)strong.textContent=driverNames[selected.type]||'Daniel R.';
+    if(small)small.textContent=vehicleLabels[selected.type]||'Vehículo Rueda';
+  }let p=7;if(driverMarker)map.removeLayer(driverMarker);driverMarker=L.marker([21.832,-78.771]).addTo(map).bindPopup('Daniel R.');clearInterval(tripTimer);tripTimer=setInterval(()=>{p+=6;$('#progress').style.width=Math.min(p,100)+'%';const lat=21.832+(currentStart[0]-21.832)*(p/100),lng=-78.771+(currentStart[1]+78.771)*(p/100);driverMarker.setLatLng([lat,lng]);if(p>=100){clearInterval(tripTimer);toast('Tu conductor llegó')}},700)}
 $('#cancelTrip').onclick=()=>{clearInterval(tripTimer);if(driverMarker){map.removeLayer(driverMarker);driverMarker=null}$('#tripPanel').classList.add('hidden');$('#homePanel').classList.remove('hidden');toast('Viaje cancelado')}
 $('#changePickup').onclick=()=>{
   const point=prompt('Escribe una referencia para recogerte:','Frente a la entrada principal');
@@ -519,7 +834,7 @@ $('#driverGpsBtn').onclick=()=>{
   },()=>toast('No se pudo activar el GPS'),{enableHighAccuracy:true});
 }
 updateFare();openApp();setTimeout(()=>setSheetHeight(sheetLimits().mid,false),80);
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=130').then(r=>r.update()).catch(()=>{}))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=150').then(r=>r.update()).catch(()=>{}))}
 </script>
 </body>
 </html>

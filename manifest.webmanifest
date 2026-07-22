@@ -1,11 +1,11 @@
 {
-  "name": "Rueda v1.3.0 Verificación",
-  "short_name": "Rueda",
-  "start_url": "./?v=130",
+  "name": "Sobre Ruedas v1.5.0 Rutas Cuba",
+  "short_name": "Sobre Ruedas",
+  "start_url": "./?v=150",
   "display": "standalone",
   "background_color": "#111318",
   "theme_color": "#F6C600",
-  "description": "Registro sencillo de conductores con foto de identificación y panel inferior deslizable.",
+  "description": "Direcciones cubanas por calles e intersecciones, selección manual y rutas según el vehículo.",
   "icons": [
     {
       "src": "icon.svg",
