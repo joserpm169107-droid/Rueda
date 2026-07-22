@@ -1,13 +1,19 @@
-# Sobre Ruedas v1.7.0 — Diseño de acceso definitivo
+# Sobre Ruedas v1.7.1 — Acceso visible y código desactivado
 
-## Cambios
-- Se usa la foto original completa del logo oficial, sin recortes.
-- El logo está fuera de la tarjeta y ocupa la parte superior de la pantalla.
-- Diseño negro y amarillo inspirado en la referencia aprobada.
-- Tarjeta de acceso oscura con borde amarillo.
-- Pestaña activa en amarillo.
-- Campos oscuros y botones sociales blancos.
-- Se mantiene registro, desplazamiento en iPhone, ubicación temporal editable y GPS real desactivado.
+## Correcciones
+- Inicio de sesión visible desde que abre la app.
+- Registro visible y desplazable en iPhone.
+- Verificación por SMS/correo desactivada temporalmente.
+- Las cuentas se crean directamente durante el desarrollo.
+- Registro de conductor continúa solicitando:
+  - nombre,
+  - teléfono,
+  - tipo de vehículo,
+  - foto de perfil,
+  - identificación oficial.
+- El conductor queda pendiente de aprobación administrativa.
+- GPS real sigue desactivado.
+- Ubicación temporal editable dentro de Ciego de Ávila.
 
 ## Abrir
-https://joserpm169107-droid.github.io/Rueda/?v=170
+https://joserpm169107-droid.github.io/Rueda/?v=171

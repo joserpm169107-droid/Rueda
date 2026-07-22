@@ -515,6 +515,49 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
   .auth .tabs button{font-size:17px}
 }
 
+
+/* v1.7.1 — acceso visible y verificación desactivada en desarrollo */
+.auth{
+  justify-content:flex-start !important;
+}
+.auth-shell{
+  min-height:auto !important;
+  justify-content:flex-start !important;
+  padding-top:0 !important;
+  padding-bottom:28px !important;
+}
+.auth-brand img{
+  width:min(340px,82vw) !important;
+  max-height:170px !important;
+  object-fit:contain !important;
+}
+.auth-brand p{
+  margin-top:0 !important;
+  font-size:22px !important;
+}
+.auth-card{
+  margin-top:4px !important;
+}
+.dev-code-note{
+  margin:12px 0 0;
+  padding:12px 14px;
+  border:1px solid rgba(255,204,0,.45);
+  border-radius:14px;
+  background:rgba(255,204,0,.08);
+  color:#ffe16b;
+  font-size:13px;
+  font-weight:800;
+  line-height:1.35;
+}
+@media(max-width:520px){
+  .auth-brand img{
+    width:min(310px,80vw) !important;
+    max-height:145px !important;
+  }
+  .auth-brand p{font-size:20px !important}
+  .auth-card{padding-top:18px !important}
+}
+
 </style>
 </head>
 <body>
@@ -539,7 +582,8 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
         <button class="social" id="phoneBtn">📱 Continuar con teléfono</button>
         <button class="social" id="googleBtn">G Continuar con Google</button>
       </div>
-      <div id="registerForm" class="hidden">
+      <div class="dev-code-note">🧪 Modo desarrollo: no se enviará código por SMS ni correo. La cuenta se crea directamente para poder probar la app.</div>
+<div id="registerForm" class="hidden">
         <p style="text-align:left;margin:10px 0 2px;font-weight:900;color:var(--ink)">¿Cómo quieres registrarte?</p>
         <div class="role-choice">
           <button type="button" class="role-card active" data-register-role="passenger">
@@ -586,7 +630,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
   <div id="mapConfirm" class="map-confirm hidden"><button class="cancel" id="cancelPin">Cancelar</button><button class="confirm" id="confirmPin">Confirmar destino</button></div>
   <div class="top">
     <button class="round glass" id="menuBtn">☰</button>
-    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS<small>CIEGO DE ÁVILA 1.7.0</small></div></div>
+    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS<small>CIEGO DE ÁVILA 1.7.1</small></div></div>
     <button class="round glass" id="profileBtn">👤</button>
   </div>
 
@@ -683,6 +727,15 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+window.SOBRE_RUEDAS_DEV = {
+  skipVerification: true,
+  city: "Ciego de Ávila",
+  realGPS: false
+};
+</script>
+
 <script>
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
 const AUTH='rueda_v1_user'; let user=null, registerRole='passenger', selected={type:'Motorina',price:180,eta:3}, promo=false, tripTimer=null, driverTimer=null, routeLine=null, driverMarker=null, tripPhase=0, gpsWatch=null, destinationMarker=null, destinationPoint=null, currentStart=[21.84206,-78.76000], pinPicking=false, pinPurpose='destination', pendingDestination=null, gpsReady=true;
@@ -1300,7 +1353,7 @@ setTimeout(()=>{
   startMarker.setLatLng(currentStart).bindPopup('Ubicación de prueba: Parque José Martí, Ciego de Ávila');
   map.setView(currentStart,16);
 },400);
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=170').then(r=>r.update()).catch(()=>{}))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=171').then(r=>r.update()).catch(()=>{}))}
 </script>
 
 <script>
@@ -1309,6 +1362,35 @@ window.addEventListener('load', function () {
     var splash = document.getElementById('brandSplash');
     if (splash) splash.classList.add('hide');
   }, 1100);
+});
+</script>
+
+
+<script>
+window.addEventListener('load', function () {
+  var possibleIds = [
+    'sendCodeBtn','verifyCodeBtn','resendCodeBtn',
+    'phoneCodeBtn','emailCodeBtn','continueCodeBtn'
+  ];
+  possibleIds.forEach(function(id){
+    var btn=document.getElementById(id);
+    if(!btn) return;
+    btn.textContent = id.toLowerCase().includes('verify') ? 'Crear cuenta' : 'Continuar sin código';
+    btn.onclick = function(e){
+      e.preventDefault();
+      var registerBtn=document.getElementById('registerBtn');
+      if(registerBtn) registerBtn.click();
+    };
+  });
+
+  document.querySelectorAll('input').forEach(function(input){
+    var name=((input.name||'')+' '+(input.id||'')+' '+(input.placeholder||'')).toLowerCase();
+    if(name.includes('code') || name.includes('código') || name.includes('codigo')){
+      input.required=false;
+      input.style.display='none';
+      if(input.parentElement) input.parentElement.style.display='none';
+    }
+  });
 });
 </script>
 
