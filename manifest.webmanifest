@@ -1,11 +1,11 @@
 {
-  "name": "Rueda v0.9.1 — Logout Fix",
+  "name": "Rueda v1.0.0 Beta",
   "short_name": "Rueda",
-  "start_url": "./",
+  "start_url": "./?v=100",
   "display": "standalone",
-  "background_color": "#111214",
-  "theme_color": "#F8C400",
-  "description": "Corrección definitiva del cierre de sesión y actualización de caché.",
+  "background_color": "#111318",
+  "theme_color": "#F6C600",
+  "description": "Aplicación beta de transporte urbano para Ciego de Ávila.",
   "icons": [
     {
       "src": "icon.svg",
