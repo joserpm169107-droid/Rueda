@@ -380,21 +380,157 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
   .auth-brand p{font-size:18px}
 }
 
+
+/* v1.7.0 — diseño real de acceso Sobre Ruedas */
+.auth{
+  background:
+    radial-gradient(circle at 50% 14%, rgba(255,205,0,.12), transparent 28%),
+    linear-gradient(180deg,#050505 0%,#090909 68%,#151006 100%) !important;
+  display:block !important;
+  overflow-y:auto !important;
+  -webkit-overflow-scrolling:touch;
+  padding:max(24px,env(safe-area-inset-top)) 18px max(34px,env(safe-area-inset-bottom)) !important;
+}
+.auth-shell{
+  width:min(700px,100%);
+  min-height:100%;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:18px;
+}
+.auth-brand{
+  margin:0 auto !important;
+  text-align:center;
+  width:100%;
+}
+.auth-brand img{
+  display:block;
+  width:min(470px,90vw) !important;
+  height:auto !important;
+  max-height:none !important;
+  object-fit:contain !important;
+  margin:0 auto !important;
+  border-radius:0 !important;
+  box-shadow:none !important;
+}
+.auth-brand p{
+  margin:8px 0 0 !important;
+  color:#fff !important;
+  font-size:clamp(24px,5vw,34px) !important;
+  line-height:1.15;
+  font-weight:950 !important;
+}
+.auth-brand p strong{color:#ffca05 !important}
+.auth-card{
+  width:100% !important;
+  margin:0 auto !important;
+  padding:30px !important;
+  border:2px solid #f2c400 !important;
+  border-radius:34px !important;
+  background:linear-gradient(180deg,rgba(19,19,20,.98),rgba(8,8,9,.99)) !important;
+  box-shadow:0 28px 70px rgba(0,0,0,.6),0 0 40px rgba(255,204,0,.08) !important;
+  color:#fff !important;
+}
+.auth .tabs{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0;
+  padding:4px !important;
+  margin-bottom:18px;
+  border:1px solid #3a3a3d;
+  background:#171719 !important;
+  border-radius:20px !important;
+}
+.auth .tabs button{
+  min-height:58px;
+  color:#f2f2f2;
+  font-size:18px;
+  border-radius:16px !important;
+}
+.auth .tabs button.active{
+  background:linear-gradient(180deg,#ffd51a,#f2b900) !important;
+  color:#111 !important;
+  box-shadow:0 10px 24px rgba(255,196,0,.22);
+}
+.auth input,.auth select{
+  min-height:62px !important;
+  padding:0 20px !important;
+  margin-top:12px !important;
+  border:1px solid #44464b !important;
+  border-radius:18px !important;
+  background:linear-gradient(180deg,#191a1d,#111214) !important;
+  color:#fff !important;
+  font-size:17px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+}
+.auth input::placeholder{color:#8f9096 !important}
+#loginBtn,#registerBtn{
+  width:100%;
+  min-height:64px !important;
+  margin-top:18px !important;
+  background:linear-gradient(180deg,#ffd51a,#f1b800) !important;
+  color:#111 !important;
+  font-size:19px;
+  font-weight:1000 !important;
+  border-radius:18px !important;
+}
+.auth .social{
+  width:100%;
+  min-height:60px !important;
+  margin-top:12px !important;
+  background:#fff !important;
+  color:#111 !important;
+  border:0 !important;
+  border-radius:18px !important;
+  font-size:17px;
+  font-weight:950 !important;
+}
+.auth .role-choice{gap:12px}
+.auth .role-card{
+  min-height:132px;
+  border-radius:20px !important;
+}
+.auth .role-card.active{
+  border:2px solid #ffca05 !important;
+}
+.auth #registerForm>p{
+  color:#fff !important;
+  font-size:18px;
+}
+.auth .check-row{color:#ddd}
+.splash img{
+  content:url("logo-oficial.jpg");
+  width:min(520px,90vw) !important;
+  max-height:520px !important;
+  object-fit:contain !important;
+}
+@media(max-width:520px){
+  .auth{padding-left:14px !important;padding-right:14px !important}
+  .auth-shell{justify-content:flex-start;padding-top:14px}
+  .auth-brand img{width:min(430px,96vw) !important}
+  .auth-brand p{font-size:28px !important}
+  .auth-card{padding:22px 18px !important;border-radius:28px !important}
+  .auth .tabs button{font-size:17px}
+}
+
 </style>
 </head>
 <body>
   <div class="splash" id="brandSplash">
-    <img src="logo-completo.jpg" alt="Sobre Ruedas">
+    <img src="logo-oficial.jpg" alt="Sobre Ruedas">
     <strong>Tu viaje, tu camino</strong>
     <small>Ciego de Ávila</small>
   </div>
 <div class="app">
   <section class="auth" id="auth">
-    <div class="auth-card">
+    <div class="auth-shell">
       <div class="auth-brand">
-         <img src="logo-login.jpg" alt="Sobre Ruedas">
-         <p>Tu viaje, <strong>tu camino.</strong></p>
-       </div>
+        <img src="logo-oficial.jpg" alt="Logo oficial Sobre Ruedas">
+        <p>Tu viaje, <strong>tu camino.</strong></p>
+      </div>
+      <div class="auth-card">
       <div class="tabs"><button class="active" data-auth="login">Entrar</button><button data-auth="register">Crear cuenta</button></div>
       <div id="loginForm">
         <input id="loginEmail" type="email" placeholder="Correo electrónico">
@@ -441,6 +577,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
         </div>
         <button class="primary" id="registerBtn">Crear cuenta de usuario</button>
       </div>
+      </div>
     </div>
   </section>
 
@@ -449,7 +586,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
   <div id="mapConfirm" class="map-confirm hidden"><button class="cancel" id="cancelPin">Cancelar</button><button class="confirm" id="confirmPin">Confirmar destino</button></div>
   <div class="top">
     <button class="round glass" id="menuBtn">☰</button>
-    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS<small>CIEGO DE ÁVILA 1.6.4</small></div></div>
+    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS<small>CIEGO DE ÁVILA 1.7.0</small></div></div>
     <button class="round glass" id="profileBtn">👤</button>
   </div>
 
@@ -1163,7 +1300,7 @@ setTimeout(()=>{
   startMarker.setLatLng(currentStart).bindPopup('Ubicación de prueba: Parque José Martí, Ciego de Ávila');
   map.setView(currentStart,16);
 },400);
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=164').then(r=>r.update()).catch(()=>{}))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=170').then(r=>r.update()).catch(()=>{}))}
 </script>
 
 <script>
