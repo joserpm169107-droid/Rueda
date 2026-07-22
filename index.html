@@ -1,303 +1,64 @@
-<!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta name="theme-color" content="#111111" />
-  <title>Rueda v0.1</title>
-  <style>
-    :root{
-      --bg:#0f0f10;
-      --card:#19191c;
-      --card2:#222226;
-      --text:#ffffff;
-      --muted:#b8b8bd;
-      --yellow:#ffd400;
-      --danger:#ff5b5b;
-      --ok:#3ddc84;
-      --line:#34343a;
-      --radius:22px;
-    }
-    *{box-sizing:border-box}
-    html,body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
-    body{min-height:100vh}
-    button,input,select{font:inherit}
-    button{cursor:pointer}
-    .app{max-width:520px;margin:0 auto;min-height:100vh;padding:env(safe-area-inset-top) 18px calc(24px + env(safe-area-inset-bottom))}
-    .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 2px 10px}
-    .brand{display:flex;align-items:center;gap:10px;font-weight:900;font-size:24px}
-    .logo{width:44px;height:44px;border-radius:14px;background:var(--yellow);color:#111;display:grid;place-items:center;font-size:24px;box-shadow:0 8px 25px rgba(255,212,0,.18)}
-    .version{font-size:12px;color:var(--muted);background:var(--card2);padding:7px 10px;border-radius:999px}
-    .hero{padding:26px 6px 18px}
-    .hero h1{font-size:38px;line-height:1.05;margin:0 0 12px;letter-spacing:-1px}
-    .hero p{color:var(--muted);font-size:17px;line-height:1.45;margin:0}
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-top:16px;box-shadow:0 12px 28px rgba(0,0,0,.22)}
-    .tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;background:var(--card2);padding:6px;border-radius:16px;margin-bottom:16px}
-    .tab{border:0;background:transparent;color:var(--muted);padding:12px;border-radius:12px;font-weight:800}
-    .tab.active{background:var(--yellow);color:#111}
-    .field{margin:12px 0}
-    label{display:block;font-size:13px;color:var(--muted);margin-bottom:7px;font-weight:700}
-    input,select{width:100%;background:#101012;color:var(--text);border:1px solid var(--line);border-radius:14px;padding:14px 15px;outline:none}
-    input:focus,select:focus{border-color:var(--yellow);box-shadow:0 0 0 3px rgba(255,212,0,.12)}
-    .primary{width:100%;border:0;border-radius:15px;background:var(--yellow);color:#111;padding:15px 18px;font-weight:900;margin-top:10px}
-    .secondary{width:100%;border:1px solid var(--line);border-radius:15px;background:var(--card2);color:var(--text);padding:14px 18px;font-weight:800;margin-top:10px}
-    .danger{background:transparent;border:1px solid #5c2c2c;color:#ff8e8e}
-    .message{display:none;margin:12px 0 0;padding:12px 14px;border-radius:14px;font-size:14px;line-height:1.35}
-    .message.ok{display:block;background:rgba(61,220,132,.12);color:#8af0b5;border:1px solid rgba(61,220,132,.3)}
-    .message.error{display:block;background:rgba(255,91,91,.12);color:#ff9e9e;border:1px solid rgba(255,91,91,.3)}
-    .hidden{display:none!important}
-    .welcome{padding:12px 0}
-    .welcome h2{margin:0 0 6px;font-size:28px}
-    .pill{display:inline-flex;align-items:center;gap:7px;background:var(--card2);color:var(--muted);padding:8px 11px;border-radius:999px;font-size:13px;margin:8px 6px 0 0}
-    .trip-box{margin-top:18px;background:#111;border:1px dashed #4b4b52;border-radius:18px;padding:18px}
-    .trip-box h3{margin:0 0 8px}
-    .foot{color:#7e7e86;font-size:12px;text-align:center;padding:22px 8px}
-  </style>
-</head>
-<body>
-  <main class="app">
-    <header class="topbar">
-      <div class="brand"><div class="logo">R</div><span>Rueda</span></div>
-      <div class="version">v0.1</div>
-    </header>
+<!doctype html><html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101010"><title>Rueda v0.2</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root{--y:#ffd400;--b:#101010;--c:#1b1b1f;--c2:#25252b;--t:#fff;--m:#b8b8bf;--l:#3a3a42}
+*{box-sizing:border-box}body{margin:0;background:var(--b);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{max-width:560px;margin:auto;min-height:100vh;padding:calc(14px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom))}
+header{display:flex;justify-content:space-between;align-items:center}.brand{display:flex;gap:10px;align-items:center;font-size:26px;font-weight:900}.logo{width:48px;height:48px;border-radius:15px;background:var(--y);color:#111;display:grid;place-items:center}.ver,.pill{background:var(--c2);color:var(--m);padding:8px 12px;border-radius:999px}
+.card{background:var(--c);border:1px solid var(--l);border-radius:23px;padding:18px;margin-top:15px}.hero{padding:25px 5px 12px}.hero h1{font-size:38px;line-height:1.05;margin:0 0 10px}.muted{color:var(--m)}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:7px;background:var(--c2);padding:6px;border-radius:16px}.tab{border:0;background:transparent;color:var(--m);padding:12px;border-radius:12px;font-weight:900}.tab.on{background:var(--y);color:#111}
+label{display:block;color:var(--m);font-size:13px;font-weight:800;margin:13px 0 7px}input,select{width:100%;padding:14px;background:#101012;color:#fff;border:1px solid var(--l);border-radius:14px}
+button{font:inherit;cursor:pointer}.primary,.secondary{width:100%;padding:15px;border-radius:15px;font-weight:900;margin-top:12px}.primary{border:0;background:var(--y);color:#111}.secondary{background:var(--c2);border:1px solid var(--l);color:#fff}.small{width:auto;padding:10px 12px;margin:0}
+.hidden{display:none!important}.msg{display:none;padding:12px;border-radius:13px;margin-top:12px}.ok{display:block;background:#123c29;color:#8ef0ba;border:1px solid #2e7954}.err{display:block;background:#442020;color:#ffaaaa;border:1px solid #7b3535}
+.homeHead{display:flex;justify-content:space-between;align-items:flex-start;margin:12px 0}.homeHead h2{font-size:30px;margin:0 0 4px}
+#map{height:310px;border-radius:20px;overflow:hidden;border:1px solid var(--l);background:#222}.mapBtns{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.vehicles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.vehicle{background:var(--c2);border:1px solid var(--l);color:#fff;border-radius:15px;padding:12px 6px}.vehicle.on{border-color:var(--y);color:var(--y);background:#3a3310}.vehicle b{display:block;font-size:24px}
+.fare,.status,.ride{background:#111;border:1px dashed #4a4a52;border-radius:16px;padding:15px;margin-top:13px}.fare{display:flex;justify-content:space-between;align-items:center}.fare strong{color:var(--y);font-size:23px}.ride{border-style:solid}.foot{text-align:center;color:#777780;font-size:12px;padding:20px}
+</style></head><body><main>
+<header><div class="brand"><div class="logo">R</div>Rueda</div><div class="ver">v0.2</div></header>
 
-    <section id="authScreen">
-      <div class="hero">
-        <h1>Muévete fácil por Ciego de Ávila.</h1>
-        <p>Prototipo privado para pasajeros y conductores de motorinas, motos y triciclos.</p>
-      </div>
+<section id="auth"><div class="hero"><h1>Muévete fácil por Ciego de Ávila.</h1><div class="muted">Ahora con mapa y solicitud de viajes.</div></div>
+<div class="card"><div class="tabs"><button id="tLogin" class="tab on">Entrar</button><button id="tRegister" class="tab">Crear cuenta</button></div>
+<form id="fLogin"><label>Correo</label><input id="le" type="email" required><label>Contraseña</label><input id="lp" type="password" minlength="4" required><button class="primary">Iniciar sesión</button><div id="lm" class="msg"></div></form>
+<form id="fRegister" class="hidden"><label>Nombre</label><input id="rn" required><label>Correo</label><input id="re" type="email" required><label>Contraseña</label><input id="rp" type="password" minlength="4" required><label>Tipo de cuenta</label><select id="rr"><option value="pasajero">Pasajero</option><option value="conductor">Conductor</option></select><div id="vf" class="hidden"><label>Vehículo</label><select id="rv"><option>motorina</option><option>moto</option><option>triciclo</option></select></div><button class="primary">Crear cuenta</button><div id="rm" class="msg"></div></form>
+</div></section>
 
-      <div class="card">
-        <div class="tabs">
-          <button id="loginTab" class="tab active" type="button">Entrar</button>
-          <button id="registerTab" class="tab" type="button">Crear cuenta</button>
-        </div>
+<section id="passenger" class="hidden"><div class="homeHead"><div><h2 id="pg">Hola</h2><div class="muted">¿A dónde vamos?</div></div><button id="plo" class="secondary small">Salir</button></div>
+<div id="map"></div><div class="mapBtns"><button id="loc" class="secondary">📍 Mi ubicación</button><button id="center" class="secondary">🏙️ Centro</button></div>
+<div class="card"><label>Recogida</label><input id="pickup" value="Mi ubicación"><label>Destino</label><input id="dest" placeholder="Ej.: Parque Martí">
+<label>Vehículo</label><div class="vehicles"><button class="vehicle on" data-v="motorina" data-p="120"><b>🛵</b>Motorina</button><button class="vehicle" data-v="moto" data-p="160"><b>🏍️</b>Moto</button><button class="vehicle" data-v="triciclo" data-p="240"><b>🛺</b>Triciclo</button></div>
+<div class="fare"><span>Precio estimado</span><strong id="fare">120 CUP</strong></div><button id="request" class="primary">Pedir viaje</button><div id="pm" class="msg"></div><div id="pstatus" class="status hidden"></div></div></section>
 
-        <form id="loginForm">
-          <div class="field">
-            <label for="loginEmail">Correo</label>
-            <input id="loginEmail" type="email" autocomplete="email" placeholder="nombre@correo.com" required />
-          </div>
-          <div class="field">
-            <label for="loginPassword">Contraseña</label>
-            <input id="loginPassword" type="password" autocomplete="current-password" minlength="4" placeholder="Mínimo 4 caracteres" required />
-          </div>
-          <button class="primary" type="submit">Iniciar sesión</button>
-          <div id="loginMessage" class="message"></div>
-        </form>
-
-        <form id="registerForm" class="hidden">
-          <div class="field">
-            <label for="fullName">Nombre completo</label>
-            <input id="fullName" type="text" autocomplete="name" placeholder="Tu nombre" required />
-          </div>
-          <div class="field">
-            <label for="registerEmail">Correo</label>
-            <input id="registerEmail" type="email" autocomplete="email" placeholder="nombre@correo.com" required />
-          </div>
-          <div class="field">
-            <label for="registerPassword">Contraseña</label>
-            <input id="registerPassword" type="password" autocomplete="new-password" minlength="4" placeholder="Mínimo 4 caracteres" required />
-          </div>
-          <div class="field">
-            <label for="role">Tipo de cuenta</label>
-            <select id="role" required>
-              <option value="pasajero">Pasajero</option>
-              <option value="conductor">Conductor</option>
-            </select>
-          </div>
-          <div id="vehicleField" class="field hidden">
-            <label for="vehicle">Vehículo</label>
-            <select id="vehicle">
-              <option value="motorina">Motorina</option>
-              <option value="moto">Moto</option>
-              <option value="triciclo">Triciclo</option>
-            </select>
-          </div>
-          <button class="primary" type="submit">Crear cuenta</button>
-          <div id="registerMessage" class="message"></div>
-        </form>
-      </div>
-    </section>
-
-    <section id="homeScreen" class="hidden">
-      <div class="card welcome">
-        <h2 id="welcomeName">Hola</h2>
-        <p id="welcomeText" style="color:var(--muted);margin:0"></p>
-        <div>
-          <span id="rolePill" class="pill"></span>
-          <span id="vehiclePill" class="pill hidden"></span>
-          <span class="pill">📍 Ciego de Ávila</span>
-        </div>
-
-        <div class="trip-box">
-          <h3>Versión de prueba</h3>
-          <p style="color:var(--muted);margin:0 0 14px">El registro y el inicio de sesión ya funcionan. La solicitud de viajes llegará en la próxima versión.</p>
-          <button id="demoButton" class="secondary" type="button">Probar botón</button>
-          <div id="demoMessage" class="message"></div>
-        </div>
-
-        <button id="logoutButton" class="secondary danger" type="button">Cerrar sesión</button>
-      </div>
-    </section>
-
-    <div class="foot">Los datos se guardan solamente en este dispositivo mediante Local Storage.</div>
-  </main>
-
-<script>
-(function(){
-  "use strict";
-
-  const $ = (id) => document.getElementById(id);
-  const USERS_KEY = "rueda_users_v01";
-  const SESSION_KEY = "rueda_session_v01";
-
-  const authScreen = $("authScreen");
-  const homeScreen = $("homeScreen");
-  const loginTab = $("loginTab");
-  const registerTab = $("registerTab");
-  const loginForm = $("loginForm");
-  const registerForm = $("registerForm");
-  const role = $("role");
-  const vehicleField = $("vehicleField");
-
-  function getUsers(){
-    try{
-      return JSON.parse(localStorage.getItem(USERS_KEY) || "[]");
-    }catch(e){
-      return [];
-    }
-  }
-
-  function saveUsers(users){
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
-  }
-
-  function showMessage(element, text, type){
-    element.textContent = text;
-    element.className = "message " + type;
-  }
-
-  function clearMessage(element){
-    element.textContent = "";
-    element.className = "message";
-  }
-
-  function switchTab(tab){
-    const isLogin = tab === "login";
-    loginTab.classList.toggle("active", isLogin);
-    registerTab.classList.toggle("active", !isLogin);
-    loginForm.classList.toggle("hidden", !isLogin);
-    registerForm.classList.toggle("hidden", isLogin);
-    clearMessage($("loginMessage"));
-    clearMessage($("registerMessage"));
-  }
-
-  function updateVehicleVisibility(){
-    vehicleField.classList.toggle("hidden", role.value !== "conductor");
-  }
-
-  function openHome(user){
-    authScreen.classList.add("hidden");
-    homeScreen.classList.remove("hidden");
-    $("welcomeName").textContent = "Hola, " + user.name;
-    $("welcomeText").textContent = user.role === "conductor"
-      ? "Tu cuenta de conductor está lista para las pruebas."
-      : "Tu cuenta de pasajero está lista para las pruebas.";
-    $("rolePill").textContent = user.role === "conductor" ? "🛵 Conductor" : "👤 Pasajero";
-    const vehiclePill = $("vehiclePill");
-    if(user.role === "conductor"){
-      vehiclePill.textContent = "Vehículo: " + (user.vehicle || "Sin definir");
-      vehiclePill.classList.remove("hidden");
-    }else{
-      vehiclePill.classList.add("hidden");
-    }
-  }
-
-  function openAuth(){
-    homeScreen.classList.add("hidden");
-    authScreen.classList.remove("hidden");
-    switchTab("login");
-  }
-
-  loginTab.addEventListener("click", () => switchTab("login"));
-  registerTab.addEventListener("click", () => switchTab("register"));
-  role.addEventListener("change", updateVehicleVisibility);
-
-  registerForm.addEventListener("submit", function(event){
-    event.preventDefault();
-    const name = $("fullName").value.trim();
-    const email = $("registerEmail").value.trim().toLowerCase();
-    const password = $("registerPassword").value;
-    const selectedRole = role.value;
-    const selectedVehicle = selectedRole === "conductor" ? $("vehicle").value : "";
-
-    if(name.length < 2){
-      showMessage($("registerMessage"), "Escribe un nombre válido.", "error");
-      return;
-    }
-    if(password.length < 4){
-      showMessage($("registerMessage"), "La contraseña debe tener al menos 4 caracteres.", "error");
-      return;
-    }
-
-    const users = getUsers();
-    if(users.some(u => u.email === email)){
-      showMessage($("registerMessage"), "Ya existe una cuenta con ese correo.", "error");
-      return;
-    }
-
-    const user = {
-      id: Date.now(),
-      name,
-      email,
-      password,
-      role: selectedRole,
-      vehicle: selectedVehicle
-    };
-
-    users.push(user);
-    saveUsers(users);
-    localStorage.setItem(SESSION_KEY, String(user.id));
-    registerForm.reset();
-    updateVehicleVisibility();
-    openHome(user);
-  });
-
-  loginForm.addEventListener("submit", function(event){
-    event.preventDefault();
-    const email = $("loginEmail").value.trim().toLowerCase();
-    const password = $("loginPassword").value;
-    const user = getUsers().find(u => u.email === email && u.password === password);
-
-    if(!user){
-      showMessage($("loginMessage"), "Correo o contraseña incorrectos.", "error");
-      return;
-    }
-
-    localStorage.setItem(SESSION_KEY, String(user.id));
-    openHome(user);
-  });
-
-  $("logoutButton").addEventListener("click", function(){
-    localStorage.removeItem(SESSION_KEY);
-    openAuth();
-  });
-
-  $("demoButton").addEventListener("click", function(){
-    showMessage($("demoMessage"), "¡Todo está funcionando correctamente en este dispositivo!", "ok");
-  });
-
-  updateVehicleVisibility();
-
-  const sessionId = localStorage.getItem(SESSION_KEY);
-  const sessionUser = getUsers().find(u => String(u.id) === sessionId);
-  if(sessionUser){
-    openHome(sessionUser);
-  }else{
-    openAuth();
-  }
+<section id="driver" class="hidden"><div class="homeHead"><div><h2 id="dg">Hola</h2><div id="ds" class="muted">Modo conductor</div></div><button id="dlo" class="secondary small">Salir</button></div>
+<div class="card"><button id="refresh" class="primary">Actualizar solicitudes</button><div id="rides"></div></div></section>
+<div class="foot">Versión privada de prueba · Local Storage</div>
+</main><script>
+(()=>{"use strict";const $=x=>document.getElementById(x),UK="rueda_users_v01",SK="rueda_session_v01",RK="rueda_rides_v02";
+let user=null,map=null,um=null,dm=null,veh="motorina",base=120;
+const get=(k,d)=>{try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch{return d}},set=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const users=()=>get(UK,[]),rides=()=>get(RK,[]),hide=()=>["auth","passenger","driver"].forEach(x=>$(x).classList.add("hidden"));
+function msg(el,t,ok){el.textContent=t;el.className="msg "+(ok?"ok":"err")}
+function tab(login){$("tLogin").classList.toggle("on",login);$("tRegister").classList.toggle("on",!login);$("fLogin").classList.toggle("hidden",!login);$("fRegister").classList.toggle("hidden",login)}
+function auth(){hide();$("auth").classList.remove("hidden");tab(true)}
+function open(u){user=u;hide();if(u.role==="conductor"){$("driver").classList.remove("hidden");$("dg").textContent="Hola, "+u.name;$("ds").textContent="Conductor de "+(u.vehicle||"vehículo");renderDriver()}else{$("passenger").classList.remove("hidden");$("pg").textContent="Hola, "+u.name;setTimeout(initMap,100);renderPassenger()}}
+function logout(){localStorage.removeItem(SK);user=null;auth()}
+$("tLogin").onclick=()=>tab(true);$("tRegister").onclick=()=>tab(false);$("rr").onchange=()=>$("vf").classList.toggle("hidden",$("rr").value!=="conductor");
+$("fRegister").onsubmit=e=>{e.preventDefault();let us=users(),email=$("re").value.trim().toLowerCase();if(us.some(x=>x.email===email)){msg($("rm"),"Ese correo ya existe.",false);return}let u={id:Date.now(),name:$("rn").value.trim(),email,password:$("rp").value,role:$("rr").value,vehicle:$("rr").value==="conductor"?$("rv").value:""};us.push(u);set(UK,us);localStorage.setItem(SK,u.id);open(u)};
+$("fLogin").onsubmit=e=>{e.preventDefault();let u=users().find(x=>x.email===$("le").value.trim().toLowerCase()&&x.password===$("lp").value);if(!u){msg($("lm"),"Correo o contraseña incorrectos.",false);return}localStorage.setItem(SK,u.id);open(u)};
+$("plo").onclick=$("dlo").onclick=logout;
+function initMap(){if(map){map.invalidateSize();return}map=L.map("map",{zoomControl:false}).setView([21.84,-78.7619],14);L.control.zoom({position:"bottomright"}).addTo(map);L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(map);L.marker([21.84,-78.7619]).addTo(map).bindPopup("Centro de Ciego de Ávila");map.on("click",e=>{if(dm)dm.remove();dm=L.marker(e.latlng).addTo(map).bindPopup("Destino").openPopup();$("dest").value="Punto marcado en el mapa";fare()})}
+$("loc").onclick=()=>navigator.geolocation?navigator.geolocation.getCurrentPosition(p=>{let ll=[p.coords.latitude,p.coords.longitude];map.setView(ll,16);if(um)um.remove();um=L.marker(ll).addTo(map).bindPopup("Tu ubicación").openPopup();$("pickup").value="Mi ubicación actual";msg($("pm"),"Ubicación encontrada.",true)},()=>msg($("pm"),"Activa el permiso de ubicación en Safari.",false),{enableHighAccuracy:true,timeout:10000}):msg($("pm"),"Ubicación no disponible.",false);
+$("center").onclick=()=>map.setView([21.84,-78.7619],14);
+document.querySelectorAll(".vehicle").forEach(b=>b.onclick=()=>{document.querySelectorAll(".vehicle").forEach(x=>x.classList.remove("on"));b.classList.add("on");veh=b.dataset.v;base=+b.dataset.p;fare()});$("dest").oninput=fare;
+function fare(){$("fare").textContent=(base+Math.min(100,$("dest").value.trim().length*2))+" CUP"}
+$("request").onclick=()=>{let d=$("dest").value.trim();if(!d){msg($("pm"),"Escribe o marca un destino.",false);return}let rs=rides();if(rs.some(r=>r.passengerId===user.id&&["pendiente","aceptado"].includes(r.status))){msg($("pm"),"Ya tienes un viaje activo.",false);return}rs.push({id:Date.now(),passengerId:user.id,passengerName:user.name,pickup:$("pickup").value,destination:d,vehicle:veh,fare:+$("fare").textContent.replace(/\D/g,""),status:"pendiente"});set(RK,rs);msg($("pm"),"Solicitud enviada. Buscando conductor…",true);renderPassenger()};
+function update(id,status,drv){let rs=rides(),r=rs.find(x=>x.id===id);if(!r)return;r.status=status;if(drv){r.driverId=drv.id;r.driverName=drv.name}set(RK,rs);renderPassenger();renderDriver()}
+function renderPassenger(){if(!user)return;let r=rides().slice().reverse().find(x=>x.passengerId===user.id&&x.status!=="cancelado"),b=$("pstatus");if(!r){b.classList.add("hidden");return}b.classList.remove("hidden");if(r.status==="pendiente"){b.innerHTML="<b>🔎 Buscando conductor</b><div class='muted'>Destino: "+r.destination+"<br>"+r.vehicle+" · "+r.fare+" CUP</div><button id='cancel' class='secondary'>Cancelar</button>";$("cancel").onclick=()=>update(r.id,"cancelado")}else if(r.status==="aceptado"){b.innerHTML="<b>✅ Conductor encontrado</b><div class='muted'>"+(r.driverName||"Conductor")+" aceptó el viaje.<br>Destino: "+r.destination+"</div><button id='finish' class='secondary'>Finalizar prueba</button>";$("finish").onclick=()=>update(r.id,"completado")}else b.innerHTML="<b>🏁 Viaje de prueba terminado</b>"}
+$("refresh").onclick=renderDriver;
+function renderDriver(){if(!user||user.role!=="conductor")return;let rs=rides().filter(r=>r.status==="pendiente"||r.driverId===user.id).reverse();$("rides").innerHTML=rs.length?rs.map(r=>"<div class='ride'><b>"+r.passengerName+"</b><div class='muted'>📍 "+r.pickup+"<br>🏁 "+r.destination+"<br>"+r.vehicle+" · "+r.fare+" CUP</div>"+(r.status==="pendiente"?"<button class='primary accept' data-id='"+r.id+"'>Aceptar viaje</button>":"<div class='msg ok'>Viaje "+r.status+"</div>")+"</div>").join(""):"<div class='status'><b>No hay solicitudes</b><div class='muted'>Pulsa actualizar cuando un pasajero pida un viaje.</div></div>";document.querySelectorAll(".accept").forEach(b=>b.onclick=()=>update(+b.dataset.id,"aceptado",user))}
+let sid=localStorage.getItem(SK),u=users().find(x=>String(x.id)===sid);u?open(u):auth();
 })();
-</script>
-</body>
-</html>
+</script></body></html>
