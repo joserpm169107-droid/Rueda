@@ -1,18 +1,14 @@
-# Sobre Ruedas v1.7.3 — Cuenta de conductor directa
+# Sobre Ruedas v1.8.0 — Flujo completo del viaje
 
-## Cambio principal
-Durante el desarrollo se elimina temporalmente el envío de solicitud y la aprobación administrativa.
+El conductor ahora puede:
+1. Aceptar la solicitud.
+2. Ir al punto de recogida.
+3. Marcar **Llegué al punto de recogida**.
+4. Pulsar **Iniciar viaje** cuando el pasajero suba.
+5. Ver el cambio de etapa hacia el destino.
+6. Pulsar **Finalizar viaje** al llegar.
+7. Confirmar el cierre y ver el resumen.
+8. Volver a quedar disponible.
 
-## Ahora
-- El conductor completa sus datos.
-- Sube identificación y foto.
-- Pulsa **Crear cuenta de conductor**.
-- La cuenta queda activa directamente.
-- No se envía solicitud.
-- No queda pendiente de aprobación.
-- No se usa código de verificación.
-- El GPS real sigue desactivado.
-- La ubicación de prueba continúa editable.
-
-## Abrir
-https://joserpm169107-droid.github.io/Rueda/?v=173
+Abrir:
+https://joserpm169107-droid.github.io/Rueda/?v=180

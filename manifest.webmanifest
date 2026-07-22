@@ -1,11 +1,10 @@
 {
   "name": "Sobre Ruedas",
   "short_name": "Sobre Ruedas",
-  "start_url": "./?v=173",
+  "start_url": "./?v=180",
   "display": "standalone",
   "background_color": "#050505",
   "theme_color": "#050505",
-  "description": "Aplicación de transporte para Ciego de Ávila con bicitaxis, motorinas, motos y triciclos.",
   "icons": [
     {
       "src": "icon-192.png",
@@ -18,11 +17,6 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
-    },
-    {
-      "src": "icon-1024.png",
-      "sizes": "1024x1024",
-      "type": "image/png"
     }
   ]
 }
