@@ -1,11 +1,11 @@
 {
-  "name": "Rueda v1.1.0 Live",
-  "short_name": "Rueda Live",
-  "start_url": "./?v=110",
+  "name": "Rueda v1.3.0 Verificación",
+  "short_name": "Rueda",
+  "start_url": "./?v=130",
   "display": "standalone",
   "background_color": "#111318",
   "theme_color": "#F6C600",
-  "description": "Rueda con seguimiento en vivo, GPS, etapas del viaje y código de seguridad.",
+  "description": "Registro sencillo de conductores con foto de identificación y panel inferior deslizable.",
   "icons": [
     {
       "src": "icon.svg",

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#F6C600">
 <meta name="description" content="Rueda Beta 1.0 — transporte urbano para Cuba.">
-<title>Rueda v1.1.0 Live</title>
+<title>Rueda v1.3.0 Verificación</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://unpkg.com">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -66,6 +66,103 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
 .driver-live{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:16px;padding:11px;margin-top:10px}
 .driver-live button{border:0;background:#111;color:#fff;border-radius:12px;padding:9px 11px;font-weight:900}
 
+
+.role-choice{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.role-card{border:2px solid var(--line);background:#fff;border-radius:18px;padding:14px;text-align:left}
+.role-card strong{display:block;font-size:15px}.role-card small{display:block;color:var(--muted);margin-top:4px}
+.role-card.active{border-color:var(--y);background:#fffbea;box-shadow:0 0 0 3px #f6c60022}
+.role-icon{font-size:30px;margin-bottom:7px}
+.driver-fields{border-top:1px solid var(--line);margin-top:12px;padding-top:10px}
+.role-badge{display:inline-flex;align-items:center;gap:6px;background:#fff4bf;color:#594a00;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:900}
+.role-switch{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}
+.role-switch button{border:1px solid var(--line);background:#fff;border-radius:14px;padding:11px;font-weight:900}
+.role-switch button.active{background:var(--y);border-color:var(--y)}
+
+
+/* Panel inferior deslizable */
+.sheet{
+  max-height:none;
+  height:72dvh;
+  overflow:hidden;
+  touch-action:none;
+  transition:height .28s ease;
+  will-change:height;
+}
+.sheet.dragging{transition:none}
+.sheet.collapsed{height:22dvh}
+.sheet.expanded{height:92dvh}
+.sheet-content{
+  height:calc(100% - 22px);
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  padding-bottom:4px;
+  touch-action:pan-y;
+}
+.handle-wrap{
+  height:22px;
+  display:grid;
+  place-items:center;
+  cursor:grab;
+  touch-action:none;
+}
+.handle-wrap:active{cursor:grabbing}
+.handle{margin:0}
+.sheet-hint{
+  position:absolute;
+  right:18px;
+  top:8px;
+  font-size:10px;
+  color:var(--muted);
+  font-weight:800;
+  pointer-events:none;
+}
+.upload-box{
+  border:2px dashed #d5d8df;
+  border-radius:18px;
+  padding:14px;
+  margin-top:10px;
+  text-align:center;
+  background:#fafafa;
+}
+.upload-box input{display:none}
+.upload-label{
+  display:block;
+  border:0;
+  background:#111318;
+  color:#fff;
+  border-radius:14px;
+  padding:12px;
+  font-weight:900;
+  cursor:pointer;
+}
+.upload-preview{
+  width:100%;
+  max-height:170px;
+  object-fit:cover;
+  border-radius:14px;
+  margin-top:10px;
+}
+.upload-name{
+  display:block;
+  color:var(--muted);
+  font-size:12px;
+  margin-top:8px;
+}
+.check-row{
+  display:flex;
+  gap:9px;
+  align-items:flex-start;
+  text-align:left;
+  margin-top:12px;
+  font-size:12px;
+  color:var(--muted);
+}
+.check-row input{width:auto;margin:2px 0 0}
+@media(max-height:700px){
+  .sheet{height:68dvh}
+  .sheet.expanded{height:94dvh}
+}
+
 </style>
 </head>
 <body>
@@ -83,10 +180,41 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
         <button class="social" id="googleBtn">G Continuar con Google</button>
       </div>
       <div id="registerForm" class="hidden">
+        <p style="text-align:left;margin:10px 0 2px;font-weight:900;color:var(--ink)">¿Cómo quieres registrarte?</p>
+        <div class="role-choice">
+          <button type="button" class="role-card active" data-register-role="passenger">
+            <div class="role-icon">🙋</div><strong>Usuario</strong><small>Solicitar viajes</small>
+          </button>
+          <button type="button" class="role-card" data-register-role="driver">
+            <div class="role-icon">🛵</div><strong>Conductor</strong><small>Recibir viajes y ganar</small>
+          </button>
+        </div>
         <input id="regName" placeholder="Nombre completo">
         <input id="regEmail" type="email" placeholder="Correo electrónico">
+        <input id="regPhone" type="tel" placeholder="Número de teléfono">
         <input id="regPass" type="password" placeholder="Contraseña">
-        <button class="primary" id="registerBtn">Crear cuenta</button>
+        <div id="driverFields" class="driver-fields hidden">
+          <select id="driverVehicle" style="width:100%;border:1px solid var(--line);border-radius:14px;padding:13px;margin-top:8px">
+            <option value="">Tipo de vehículo</option>
+            <option>Motorina</option>
+            <option>Moto</option>
+            <option>Triciclo</option>
+          </select>
+          <div class="upload-box">
+            <strong>Identificación oficial</strong>
+            <p class="muted" style="font-size:12px;margin:5px 0 10px">Sube una foto clara del carné de identidad, licencia de conducción u otro documento oficial.</p>
+            <label class="upload-label" for="driverDocument">📷 Tomar o seleccionar foto</label>
+            <input id="driverDocument" type="file" accept="image/*" capture="environment">
+            <img id="documentPreview" class="upload-preview hidden" alt="Vista previa de la identificación">
+            <small id="documentName" class="upload-name">Ninguna foto seleccionada</small>
+          </div>
+          <label class="check-row">
+            <input id="driverTerms" type="checkbox">
+            <span>Confirmo que la información es correcta y acepto que Rueda revise esta identificación para aprobar mi cuenta.</span>
+          </label>
+          <p class="muted" style="text-align:left;font-size:12px;margin-top:8px">La cuenta quedará pendiente hasta que un administrador revise la foto.</p>
+        </div>
+        <button class="primary" id="registerBtn">Crear cuenta de usuario</button>
       </div>
     </div>
   </section>
@@ -94,12 +222,16 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
   <div id="map"></div>
   <div class="top">
     <button class="round glass" id="menuBtn">☰</button>
-    <div class="brand glass"><div class="logo">R</div><div>RUEDA<small>LIVE 1.1</small></div></div>
+    <div class="brand glass"><div class="logo">R</div><div>RUEDA<small>VERIFICACIÓN 1.3</small></div></div>
     <button class="round glass" id="profileBtn">👤</button>
   </div>
 
-  <section class="sheet">
-    <div class="handle"></div>
+  <section class="sheet" id="mainSheet">
+    <div class="handle-wrap" id="sheetHandle" aria-label="Deslizar panel">
+      <div class="handle"></div>
+    </div>
+    <span class="sheet-hint">Desliza</span>
+    <div class="sheet-content" id="sheetContent">
     <div class="mode"><button class="active" data-mode="passenger">Pasajero</button><button data-mode="driver">Conductor</button></div>
 
     <div id="homePanel">
@@ -142,14 +274,21 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
 
     <div id="savedPanel" class="hidden"><h2>Guardados</h2><div class="saved-card"><span>🏠 Casa</span><button class="chip" data-dest="Casa">Elegir</button></div><div class="saved-card"><span>💼 Trabajo</span><button class="chip" data-dest="Trabajo">Elegir</button></div><div class="saved-card"><span>♡ Destino personal</span><button id="savedCustom" class="chip">Agregar</button></div></div>
 
-    <div id="accountPanel" class="hidden"><h2>Mi cuenta</h2><div class="driver-card" style="margin-top:12px"><div class="avatar">👤</div><div><strong id="accountName">Usuario</strong><small id="accountEmail">Cuenta verificada</small></div><div class="rating">⭐ 4.9</div></div><div class="section-title"><h3>Seguridad y preferencias</h3><button>Editar</button></div><div class="setting"><span>📱 Teléfono</span><span class="badge">Verificado</span></div><div class="setting"><span>🪪 Identidad</span><span class="badge">Verificada</span></div><div class="setting"><span>🔔 Notificaciones</span><span>Activadas ›</span></div>
-      <div class="notice-card"><strong>Última alerta</strong><small style="display:block;margin-top:4px" id="lastNotice">No tienes alertas nuevas.</small></div><div class="setting"><span>💳 Método de pago</span><span>Efectivo ›</span></div><button class="logout" id="logoutBtn">🚪 Cerrar sesión</button><p class="muted" style="text-align:center;font-size:11px;margin-top:8px">Rueda v1.1.0 Live</p></div>
+    <div id="accountPanel" class="hidden"><h2>Mi cuenta</h2><div class="driver-card" style="margin-top:12px"><div class="avatar" id="accountAvatar">👤</div><div><strong id="accountName">Usuario</strong><small id="accountEmail">Cuenta verificada</small><div style="margin-top:6px"><span class="role-badge" id="accountRole">🙋 Usuario</span></div></div><div class="rating">⭐ 4.9</div></div><div class="section-title"><h3>Seguridad y preferencias</h3><button>Editar</button></div><div class="setting"><span>📱 Teléfono</span><span class="badge">Verificado</span></div><div class="setting"><span>🪪 Identificación</span><span class="badge" id="identityBadge">Verificada</span></div><div class="setting"><span>🔔 Notificaciones</span><span>Activadas ›</span></div>
+      <div class="notice-card"><strong>Última alerta</strong><small style="display:block;margin-top:4px" id="lastNotice">No tienes alertas nuevas.</small></div><div class="setting"><span>💳 Método de pago</span><span>Efectivo ›</span></div>
+      <div class="section-title"><h3>Tipo de cuenta</h3><button id="roleInfoBtn">Información</button></div>
+      <div class="role-switch">
+        <button id="switchPassenger">🙋 Usuario</button>
+        <button id="switchDriver">🛵 Conductor</button>
+      </div>
+      <p class="muted" id="roleStatus" style="font-size:12px;margin-top:9px">Cuenta de usuario activa.</p><button class="logout" id="logoutBtn">🚪 Cerrar sesión</button><p class="muted" style="text-align:center;font-size:11px;margin-top:8px">Rueda v1.3.0 Verificación</p></div>
 
     <nav class="nav"><button class="active" data-page="home"><span>⌂</span>Inicio</button><button data-page="history"><span>◷</span>Viajes</button><button data-page="saved"><span>♡</span>Guardados</button><button data-page="account"><span>☻</span>Cuenta</button></nav>
+    </div>
   </section>
 
   <div class="backdrop hidden" id="backdrop"></div>
-  <aside class="drawer" id="drawer"><div class="drawer-head"><h2>Menú Rueda</h2><button class="close" id="closeDrawer">✕</button></div><div class="drawer-user"><div class="avatar">👤</div><div><strong id="drawerName">Usuario Rueda</strong><small class="muted" style="display:block">Pasajero verificado</small></div></div><button class="menuitem" data-drawer-page="home">⌂ Inicio</button><button class="menuitem" data-drawer-page="history">◷ Historial de viajes</button><button class="menuitem" data-drawer-page="saved">♡ Lugares guardados</button><button class="menuitem" data-drawer-page="account">☻ Mi cuenta</button><button class="menuitem" id="helpBtn">🛡️ Centro de seguridad</button></aside>
+  <aside class="drawer" id="drawer"><div class="drawer-head"><h2>Menú Rueda</h2><button class="close" id="closeDrawer">✕</button></div><div class="drawer-user"><div class="avatar">👤</div><div><strong id="drawerName">Usuario Rueda</strong><small class="muted" id="drawerRole" style="display:block">Usuario verificado</small></div></div><button class="menuitem" data-drawer-page="home">⌂ Inicio</button><button class="menuitem" data-drawer-page="history">◷ Historial de viajes</button><button class="menuitem" data-drawer-page="saved">♡ Lugares guardados</button><button class="menuitem" data-drawer-page="account">☻ Mi cuenta</button><button class="menuitem" id="helpBtn">🛡️ Centro de seguridad</button></aside>
 
   <div class="overlay hidden" id="scheduleModal"><div class="modal"><h2>Programar viaje</h2><p class="muted" style="margin-top:5px">Selecciona fecha y hora.</p><input id="date" type="date"><input id="time" type="time"><button class="primary" id="confirmSchedule">Confirmar</button><button class="secondary" data-close="scheduleModal">Cerrar</button></div></div>
   <div class="overlay hidden" id="sosModal"><div class="modal"><h2>Centro de seguridad</h2><p class="muted" style="margin-top:5px">Comparte tu viaje o pide ayuda.</p><button class="primary" id="shareBtn">📍 Compartir viaje</button><button class="primary" style="background:var(--red);color:#fff;box-shadow:none" id="emergencyBtn">📞 Emergencia</button><button class="secondary" data-close="sosModal">Cerrar</button></div></div>
@@ -159,7 +298,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
-const AUTH='rueda_v1_user'; let user=null, selected={type:'Motorina',price:180,eta:3}, promo=false, tripTimer=null, driverTimer=null, routeLine=null, driverMarker=null, tripPhase=0, gpsWatch=null;
+const AUTH='rueda_v1_user'; let user=null, registerRole='passenger', selected={type:'Motorina',price:180,eta:3}, promo=false, tripTimer=null, driverTimer=null, routeLine=null, driverMarker=null, tripPhase=0, gpsWatch=null;
 function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
 
 function setNotice(msg){$('#lastNotice').textContent=msg;localStorage.setItem('rueda_last_notice',msg)}
@@ -173,12 +312,156 @@ function updateTripStage(stage){
   });
 }
 function saveSession(u){localStorage.setItem(AUTH,JSON.stringify(u));user=u;openApp()}
-function openApp(){user=user||JSON.parse(localStorage.getItem(AUTH)||'null');if(!user)return;$('#auth').classList.add('hidden');const name=user.name||'Usuario Rueda';$('#helloName').textContent=name.split(' ')[0];$('#accountName').textContent=name;$('#drawerName').textContent=name;$('#accountEmail').textContent=user.email||user.phone||'Cuenta verificada';$('#lastNotice').textContent=localStorage.getItem('rueda_last_notice')||'No tienes alertas nuevas.'}
+function openApp(){
+  user=user||JSON.parse(localStorage.getItem(AUTH)||'null');
+  if(!user)return;
+  $('#auth').classList.add('hidden');
+  const name=user.name||'Usuario Rueda';
+  const role=user.role||'passenger';
+  $('#helloName').textContent=name.split(' ')[0];
+  $('#accountName').textContent=name;
+  $('#drawerName').textContent=name;
+  $('#accountEmail').textContent=user.email||user.phone||'Cuenta verificada';
+  $('#lastNotice').textContent=localStorage.getItem('rueda_last_notice')||'No tienes alertas nuevas.';
+  $('#accountRole').textContent=role==='driver'?'🛵 Conductor':'🙋 Usuario';
+  $('#accountAvatar').textContent=role==='driver'?'🛵':'👤';
+  $('#drawerRole').textContent=role==='driver'?'Conductor '+(user.approved?'aprobado':'pendiente de aprobación'):'Usuario verificado';
+  $('#roleStatus').textContent=role==='driver'?(user.approved?'Cuenta de conductor activa.':'Identificación pendiente de revisión.'):'Cuenta de usuario activa.';
+  $('#identityBadge').textContent=role==='driver'?(user.approved?'Aprobada':'Pendiente'):'Verificada';
+  $('#switchPassenger').classList.toggle('active',role==='passenger');
+  $('#switchDriver').classList.toggle('active',role==='driver');
+  $$('[data-mode]').forEach(b=>b.style.display=(role==='passenger'&&b.dataset.mode==='driver')?'none':'');
+  if(role==='driver'){$$('[data-mode]').forEach(x=>x.classList.toggle('active',x.dataset.mode==='driver'));$('#homePanel').classList.add('hidden');$('#driverPanel').classList.remove('hidden');}
+}
 function logout(){if(!confirm('¿Deseas cerrar sesión en Rueda?'))return;localStorage.removeItem(AUTH);sessionStorage.clear();user=null;$('#auth').classList.remove('hidden');$('#drawer').classList.remove('open');$('#backdrop').classList.add('hidden');$('#loginEmail').value='';$('#loginPass').value='';toast('Sesión cerrada correctamente')}
 $$('[data-auth]').forEach(b=>b.onclick=()=>{$$('[data-auth]').forEach(x=>x.classList.remove('active'));b.classList.add('active');const login=b.dataset.auth==='login';$('#loginForm').classList.toggle('hidden',!login);$('#registerForm').classList.toggle('hidden',login)})
-$('#loginBtn').onclick=()=>{const email=$('#loginEmail').value.trim(),pass=$('#loginPass').value;if(!email||!pass)return toast('Completa correo y contraseña');saveSession({name:email.split('@')[0],email})}
-$('#registerBtn').onclick=()=>{const name=$('#regName').value.trim(),email=$('#regEmail').value.trim(),pass=$('#regPass').value;if(!name||!email||pass.length<4)return toast('Completa los datos correctamente');saveSession({name,email})}
-$('#phoneBtn').onclick=()=>saveSession({name:'Usuario Rueda',phone:'+53 5XX XXX XX'});$('#googleBtn').onclick=()=>saveSession({name:'José Ramón',email:'jose@rueda.demo'});$('#logoutBtn').onclick=logout;
+$$('[data-register-role]').forEach(b=>b.onclick=()=>{
+  registerRole=b.dataset.registerRole;
+  $$('[data-register-role]').forEach(x=>x.classList.toggle('active',x===b));
+  const driver=registerRole==='driver';
+  $('#driverFields').classList.toggle('hidden',!driver);
+  $('#registerBtn').textContent=driver?'Enviar solicitud de conductor':'Crear cuenta de usuario';
+})
+$('#driverDocument').onchange=()=>{
+  const file=$('#driverDocument').files[0];
+  if(!file){
+    $('#documentPreview').classList.add('hidden');
+    $('#documentName').textContent='Ninguna foto seleccionada';
+    return;
+  }
+  $('#documentName').textContent=file.name;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    $('#documentPreview').src=e.target.result;
+    $('#documentPreview').classList.remove('hidden');
+  };
+  reader.readAsDataURL(file);
+}
+$('#loginBtn').onclick=()=>{const email=$('#loginEmail').value.trim(),pass=$('#loginPass').value;if(!email||!pass)return toast('Completa correo y contraseña');saveSession({name:email.split('@')[0],email,role:'passenger'})}
+$('#registerBtn').onclick=()=>{
+  const name=$('#regName').value.trim();
+  const email=$('#regEmail').value.trim();
+  const phone=$('#regPhone').value.trim();
+  const pass=$('#regPass').value;
+  if(!name||!email||!phone||pass.length<4)return toast('Completa los datos correctamente');
+
+  const data={name,email,phone,role:registerRole};
+
+  if(registerRole==='driver'){
+    const vehicle=$('#driverVehicle').value;
+    const documentFile=$('#driverDocument').files[0];
+    const accepted=$('#driverTerms').checked;
+    if(!vehicle)return toast('Selecciona el tipo de vehículo');
+    if(!documentFile)return toast('Sube una foto de tu identificación');
+    if(!accepted)return toast('Acepta la revisión de la identificación');
+
+    Object.assign(data,{
+      vehicle,
+      documentName:documentFile.name,
+      approved:false,
+      verificationStatus:'pending'
+    });
+    setNotice('Tu identificación fue enviada. La solicitud está pendiente de revisión.');
+  }
+
+  saveSession(data);
+}
+$('#phoneBtn').onclick=()=>saveSession({name:'Usuario Rueda',phone:'+53 5XX XXX XX',role:'passenger'});$('#googleBtn').onclick=()=>saveSession({name:'José Ramón',email:'jose@rueda.demo',role:'passenger'});$('#logoutBtn').onclick=logout;
+$('#switchPassenger').onclick=()=>{
+  if(!user)return;
+  user.role='passenger';
+  localStorage.setItem(AUTH,JSON.stringify(user));
+  openApp();showPage('home');toast('Cambiaste a modo usuario');
+}
+$('#switchDriver').onclick=()=>{
+  if(!user)return;
+  if(user.role==='driver'){toast(user.approved?'Modo conductor activo':'Tu cuenta de conductor está pendiente de aprobación');return}
+  const go=confirm('Para ser conductor debes completar el registro y enviar tus documentos. ¿Deseas cerrar sesión y registrarte como conductor?');
+  if(go){logout();setTimeout(()=>{document.querySelector('[data-auth="register"]').click();document.querySelector('[data-register-role="driver"]').click()},200)}
+}
+$('#roleInfoBtn').onclick=()=>toast('Usuario solicita viajes. Conductor recibe solicitudes y necesita aprobación.')
+
+
+
+// Panel inferior deslizable: arriba para ver opciones, abajo para agrandar el mapa
+const mainSheet=$('#mainSheet');
+const sheetHandle=$('#sheetHandle');
+let sheetStartY=0;
+let sheetStartHeight=0;
+let sheetDragging=false;
+
+function sheetLimits(){
+  const viewport=document.querySelector('.app').clientHeight;
+  return {
+    min:Math.max(135,viewport*.20),
+    mid:viewport*.56,
+    max:viewport*.92
+  };
+}
+function setSheetHeight(px,animate=true){
+  const limits=sheetLimits();
+  const height=Math.max(limits.min,Math.min(limits.max,px));
+  mainSheet.classList.toggle('dragging',!animate);
+  mainSheet.style.height=height+'px';
+  setTimeout(()=>map.invalidateSize(),animate?290:0);
+}
+function snapSheet(){
+  const limits=sheetLimits();
+  const current=mainSheet.getBoundingClientRect().height;
+  const points=[limits.min,limits.mid,limits.max];
+  const target=points.reduce((a,b)=>Math.abs(b-current)<Math.abs(a-current)?b:a);
+  mainSheet.classList.remove('dragging');
+  setSheetHeight(target,true);
+}
+function startSheetDrag(clientY){
+  sheetDragging=true;
+  sheetStartY=clientY;
+  sheetStartHeight=mainSheet.getBoundingClientRect().height;
+  mainSheet.classList.add('dragging');
+}
+function moveSheetDrag(clientY){
+  if(!sheetDragging)return;
+  const delta=sheetStartY-clientY;
+  setSheetHeight(sheetStartHeight+delta,false);
+}
+function endSheetDrag(){
+  if(!sheetDragging)return;
+  sheetDragging=false;
+  snapSheet();
+}
+sheetHandle.addEventListener('pointerdown',e=>{
+  sheetHandle.setPointerCapture?.(e.pointerId);
+  startSheetDrag(e.clientY);
+});
+sheetHandle.addEventListener('pointermove',e=>moveSheetDrag(e.clientY));
+sheetHandle.addEventListener('pointerup',endSheetDrag);
+sheetHandle.addEventListener('pointercancel',endSheetDrag);
+sheetHandle.addEventListener('dblclick',()=>{
+  const limits=sheetLimits();
+  const current=mainSheet.getBoundingClientRect().height;
+  setSheetHeight(current>limits.mid?limits.min:limits.max,true);
+});
+window.addEventListener('resize',()=>setSheetHeight(sheetLimits().mid,false));
 
 const map=L.map('map',{zoomControl:false}).setView([21.84,-78.76],14);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
 const start=[21.84,-78.76], end=[21.847,-78.751];L.marker(start).addTo(map).bindPopup('Tu ubicación');
@@ -200,7 +483,7 @@ function updateFare(){const base=Math.round(selected.price*.67),dist=selected.pr
 $('#promoBtn').onclick=()=>{promo=true;updateFare();toast('Promoción RUEDA20 aplicada')}
 $('#scheduleBtn').onclick=()=>$('#scheduleModal').classList.remove('hidden');$('#confirmSchedule').onclick=()=>{if(!$('#date').value||!$('#time').value)return toast('Selecciona fecha y hora');localStorage.setItem('rueda_schedule',JSON.stringify({date:$('#date').value,time:$('#time').value,destination:$('#destination').value}));$('#scheduleModal').classList.add('hidden');toast('Viaje programado')}
 $$('[data-close]').forEach(b=>b.onclick=()=>$('#'+b.dataset.close).classList.add('hidden'))
-$('#requestBtn').onclick=()=>{drawRoute();$('#homePanel').classList.add('hidden');$('#tripPanel').classList.remove('hidden');const total=selected.price-(promo?Math.round(selected.price*.2):0);$('#eta').textContent=selected.eta+' min';$('#tripPrice').textContent='$'+total;let p=7;if(driverMarker)map.removeLayer(driverMarker);driverMarker=L.marker([21.832,-78.771]).addTo(map).bindPopup('Daniel R.');clearInterval(tripTimer);tripTimer=setInterval(()=>{p+=6;$('#progress').style.width=Math.min(p,100)+'%';const lat=21.832+(start[0]-21.832)*(p/100),lng=-78.771+(start[1]+78.771)*(p/100);driverMarker.setLatLng([lat,lng]);if(p>=100){clearInterval(tripTimer);toast('Tu conductor llegó')}},700)}
+$('#requestBtn').onclick=()=>{setSheetHeight(sheetLimits().min,true);drawRoute();$('#homePanel').classList.add('hidden');$('#tripPanel').classList.remove('hidden');const total=selected.price-(promo?Math.round(selected.price*.2):0);$('#eta').textContent=selected.eta+' min';$('#tripPrice').textContent='$'+total;let p=7;if(driverMarker)map.removeLayer(driverMarker);driverMarker=L.marker([21.832,-78.771]).addTo(map).bindPopup('Daniel R.');clearInterval(tripTimer);tripTimer=setInterval(()=>{p+=6;$('#progress').style.width=Math.min(p,100)+'%';const lat=21.832+(start[0]-21.832)*(p/100),lng=-78.771+(start[1]+78.771)*(p/100);driverMarker.setLatLng([lat,lng]);if(p>=100){clearInterval(tripTimer);toast('Tu conductor llegó')}},700)}
 $('#cancelTrip').onclick=()=>{clearInterval(tripTimer);if(driverMarker){map.removeLayer(driverMarker);driverMarker=null}$('#tripPanel').classList.add('hidden');$('#homePanel').classList.remove('hidden');toast('Viaje cancelado')}
 $('#changePickup').onclick=()=>{
   const point=prompt('Escribe una referencia para recogerte:','Frente a la entrada principal');
@@ -214,7 +497,7 @@ $('#copyCode').onclick=()=>{
 $('#chatBtn').onclick=()=>toast('Chat del viaje abierto');$('#callBtn').onclick=()=>toast('Llamando a Daniel R.');$('#sosBtn').onclick=()=>$('#sosModal').classList.remove('hidden');$('#helpBtn').onclick=()=>{$('#sosModal').classList.remove('hidden');closeDrawer()}
 $('#shareBtn').onclick=()=>{const text='Estoy viajando con Rueda hacia '+$('#destination').value+'. Conductor Daniel R., placa CA-218.';if(navigator.share)navigator.share({title:'Mi viaje en Rueda',text});else navigator.clipboard?.writeText(text);toast('Viaje compartido')}
 $('#emergencyBtn').onclick=()=>toast('Función de emergencia preparada para configuración local')
-function showPage(page){['home','history','saved','account'].forEach(p=>$('#'+p+'Panel').classList.toggle('hidden',p!==page));$('#tripPanel').classList.add('hidden');$('#driverPanel').classList.add('hidden');$$('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page))}
+function showPage(page){setSheetHeight(sheetLimits().mid,true);['home','history','saved','account'].forEach(p=>$('#'+p+'Panel').classList.toggle('hidden',p!==page));$('#tripPanel').classList.add('hidden');$('#driverPanel').classList.add('hidden');$$('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===page))}
 $$('.nav button').forEach(b=>b.onclick=()=>showPage(b.dataset.page));$('#profileBtn').onclick=()=>showPage('account')
 function openDrawer(){$('#drawer').classList.add('open');$('#backdrop').classList.remove('hidden')}function closeDrawer(){$('#drawer').classList.remove('open');$('#backdrop').classList.add('hidden')}$('#menuBtn').onclick=openDrawer;$('#closeDrawer').onclick=closeDrawer;$('#backdrop').onclick=closeDrawer;$$('[data-drawer-page]').forEach(b=>b.onclick=()=>{showPage(b.dataset.drawerPage);closeDrawer()})
 $('#savedCustom').onclick=()=>{const d=prompt('Escribe el destino que quieres guardar:');if(d){localStorage.setItem('rueda_favorite',d);$('#savedCustom').textContent=d;toast('Destino guardado')}}
@@ -235,8 +518,8 @@ $('#driverGpsBtn').onclick=()=>{
     btn.dataset.active='1';btn.textContent='GPS activo';btn.style.background='#10a66a';
   },()=>toast('No se pudo activar el GPS'),{enableHighAccuracy:true});
 }
-updateFare();openApp();
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=110').then(r=>r.update()).catch(()=>{}))}
+updateFare();openApp();setTimeout(()=>setSheetHeight(sheetLimits().mid,false),80);
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=130').then(r=>r.update()).catch(()=>{}))}
 </script>
 </body>
 </html>
