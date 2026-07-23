@@ -1,14 +1,19 @@
-# Sobre Ruedas v1.8.0 — Flujo completo del viaje
+# Sobre Ruedas v1.9.0 — prueba con dos teléfonos
 
-El conductor ahora puede:
-1. Aceptar la solicitud.
-2. Ir al punto de recogida.
-3. Marcar **Llegué al punto de recogida**.
-4. Pulsar **Iniciar viaje** cuando el pasajero suba.
-5. Ver el cambio de etapa hacia el destino.
-6. Pulsar **Finalizar viaje** al llegar.
-7. Confirmar el cierre y ver el resumen.
-8. Volver a quedar disponible.
+Esta versión conecta la página con Supabase.
 
-Abrir:
-https://joserpm169107-droid.github.io/Rueda/?v=180
+## Flujo real
+- El pasajero crea un viaje en la tabla `rides`.
+- Un conductor que esté en **Disponible** lo recibe en tiempo real.
+- Aceptar, Llegué, Iniciar viaje y Finalizar viaje se sincronizan entre ambos teléfonos.
+- Cancelar el viaje también se guarda en Supabase.
+
+## Paso obligatorio antes de probar
+En Supabase → SQL Editor, ejecuta el contenido de:
+
+`CONFIGURAR_PERMISOS_SUPABASE.sql`
+
+Estas políticas son temporales y abiertas únicamente para la prueba de desarrollo. Antes de publicar la aplicación deben reemplazarse por políticas seguras ligadas a usuarios autenticados.
+
+## Abrir después de subir a GitHub
+https://joserpm169107-droid.github.io/Rueda/?v=190

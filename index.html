@@ -664,7 +664,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
   <div id="mapConfirm" class="map-confirm hidden"><button class="cancel" id="cancelPin">Cancelar</button><button class="confirm" id="confirmPin">Confirmar destino</button></div>
   <div class="top">
     <button class="round glass" id="menuBtn">☰</button>
-    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS<small>CIEGO DE ÁVILA 1.8.0</small></div></div>
+    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS<small>CIEGO DE ÁVILA 1.9.0</small></div></div>
     <button class="round glass" id="profileBtn">👤</button>
   </div>
 
@@ -732,7 +732,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
       <div class="earn"><div class="online"><div><small>Estado del conductor</small><strong id="onlineText" style="display:block;margin-top:4px">Desconectado</strong></div><div class="toggle" id="onlineToggle"><i></i></div></div><small style="display:block;margin-top:17px">Ganancias de hoy</small><h2>$2,840 CUP</h2><small>8 viajes completados</small></div>
       <div id="driverSummary"><div class="section-title"><h3>Resumen de hoy</h3><button>Ver semana</button></div><div class="metrics"><div class="metric"><strong>4.9</strong><small>Rating</small></div><div class="metric"><strong>92%</strong><small>Aceptación</small></div><div class="metric"><strong>6.2 h</strong><small>En línea</small></div></div><p class="muted" style="text-align:center;padding:24px 8px">Actívate para recibir solicitudes cercanas según tu tipo de vehículo, incluyendo bicitaxi.</p>
       <div class="driver-live"><div><strong>GPS del conductor</strong><small style="display:block;color:var(--muted)">Compartir ubicación mientras estás disponible</small></div><button id="driverGpsBtn">Activar GPS</button></div></div>
-      <div id="driverRequest" class="hidden"><div class="section-title"><h3>Nueva solicitud</h3><button>1.2 km</button></div><div class="request"><div class="req-top"><div><small>Motorina · efectivo</small><h2 style="margin-top:3px">$180 CUP</h2></div><div class="count" id="count">15</div></div><div class="route"><p>● Calle Independencia</p><p>◆ Parque Martí</p></div><div class="req-actions"><button class="decline" id="declineBtn">Rechazar</button><button class="accept" id="acceptBtn">Aceptar</button></div></div></div>
+      <div id="driverRequest" class="hidden"><div class="section-title"><h3>Nueva solicitud</h3><button>1.2 km</button></div><div class="request"><div class="req-top"><div><small id="incomingRideMeta">Motorina · efectivo</small><h2 id="incomingRidePrice" style="margin-top:3px">$180 CUP</h2></div><div class="count" id="count">15</div></div><div class="route"><p id="incomingPickup">● Punto de recogida</p><p id="incomingDestination">◆ Destino</p></div><div class="req-actions"><button class="decline" id="declineBtn">Rechazar</button><button class="accept" id="acceptBtn">Aceptar</button></div></div></div>
       <div id="driverActiveTrip" class="hidden">
         <div class="driver-trip-head">
           <div><small id="driverTripEyebrow">RECOGIDA</small><h2 id="driverTripTitle">En camino al pasajero</h2><p id="driverTripSubtitle">Sigue la ruta hasta el punto de recogida.</p></div>
@@ -788,6 +788,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 window.SOBRE_RUEDAS_DEV = {
@@ -799,7 +800,14 @@ window.SOBRE_RUEDAS_DEV = {
 
 <script>
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
-const AUTH='rueda_v1_user'; let user=null, registerRole='passenger', selected={type:'Motorina',price:180,eta:3}, promo=false, tripTimer=null, driverTimer=null, routeLine=null, driverMarker=null, tripPhase=0, gpsWatch=null, destinationMarker=null, destinationPoint=null, currentStart=[21.84206,-78.76000], pinPicking=false, pinPurpose='destination', pendingDestination=null, gpsReady=true, driverTripState='idle', driverTripStartedAt=null;
+const AUTH='rueda_v1_user';
+const SUPABASE_URL='https://zrrabfleykuhxyqldxid.supabase.co';
+const SUPABASE_KEY='sb_publishable_kE2y3Hjee9FjjrpQxJQRVg_nE50COrD';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const DEVICE_KEY='rueda_device_id';
+const deviceId=localStorage.getItem(DEVICE_KEY)||('device_'+crypto.randomUUID());
+localStorage.setItem(DEVICE_KEY,deviceId);
+let user=null, registerRole='passenger', selected={type:'Motorina',price:180,eta:3}, promo=false, tripTimer=null, driverTimer=null, routeLine=null, driverMarker=null, tripPhase=0, gpsWatch=null, destinationMarker=null, destinationPoint=null, currentStart=[21.84206,-78.76000], pinPicking=false, pinPurpose='destination', pendingDestination=null, gpsReady=true, driverTripState='idle', driverTripStartedAt=null, currentRideId=null, incomingRide=null, passengerChannel=null, driverChannel=null, driverOnline=false;
 function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
 
 function setNotice(msg){$('#lastNotice').textContent=msg;localStorage.setItem('rueda_last_notice',msg)}
@@ -812,6 +820,129 @@ function updateTripStage(stage){
     el.classList.toggle('active',i===stage);
   });
 }
+
+function backendError(error, fallback='No se pudo conectar con el servidor'){
+  console.error(error);
+  const msg=error?.message||fallback;
+  if(msg.includes('row-level security')||msg.includes('permission denied')){
+    toast('Faltan los permisos de Supabase');
+  }else{
+    toast(fallback);
+  }
+}
+function stopPassengerChannel(){
+  if(passengerChannel){sb.removeChannel(passengerChannel);passengerChannel=null}
+}
+function stopDriverChannel(){
+  if(driverChannel){sb.removeChannel(driverChannel);driverChannel=null}
+}
+function rideStatusText(status){
+  return {
+    searching:'Buscando conductor',
+    accepted:'Conductor en camino',
+    arrived:'El conductor llegó',
+    in_progress:'Viaje en curso',
+    finished:'Viaje finalizado',
+    canceled:'Viaje cancelado'
+  }[status]||'Actualizando viaje';
+}
+function applyPassengerRide(ride){
+  if(!ride||ride.id!==currentRideId)return;
+  $('#tripStatus').textContent=rideStatusText(ride.status);
+  if(ride.status==='searching'){
+    $('#eta').textContent='Buscando';
+    updateTripStage(1);
+  }
+  if(ride.status==='accepted'){
+    $('#eta').textContent='3 min';
+    updateTripStage(1);
+    const card=$('#tripPanel .driver-card');
+    if(card){
+      const strong=card.querySelector('strong');
+      const small=card.querySelector('small');
+      if(strong)strong.textContent=ride.driver_name||'Conductor asignado';
+      if(small)small.textContent=(ride.vehicle_type||'Vehículo')+' · pago en efectivo';
+    }
+    toast('Un conductor aceptó tu viaje');
+  }
+  if(ride.status==='arrived'){
+    $('#eta').textContent='Esperando';
+    updateTripStage(2);
+    toast('Tu conductor llegó');
+  }
+  if(ride.status==='in_progress'){
+    $('#eta').textContent='En ruta';
+    updateTripStage(3);
+    toast('Viaje iniciado');
+  }
+  if(ride.status==='finished'){
+    $('#eta').textContent='Completado';
+    updateTripStage(4);
+    toast('Viaje finalizado');
+  }
+  if(ride.status==='canceled'){
+    toast('El viaje fue cancelado');
+    stopPassengerChannel();
+    currentRideId=null;
+    $('#tripPanel').classList.add('hidden');
+    $('#homePanel').classList.remove('hidden');
+  }
+}
+function listenPassengerRide(rideId){
+  stopPassengerChannel();
+  passengerChannel=sb.channel('passenger-'+rideId)
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'rides',filter:'id=eq.'+rideId},payload=>applyPassengerRide(payload.new))
+    .subscribe();
+}
+function showIncomingRide(ride){
+  if(!driverOnline||!ride||ride.status!=='searching')return;
+  incomingRide=ride;
+  $('#incomingRideMeta').textContent=(ride.vehicle_type||'Motorina')+' · '+(ride.payment_method||'efectivo');
+  $('#incomingRidePrice').textContent='$'+Number(ride.price||180)+' CUP';
+  $('#incomingPickup').textContent='● '+ride.pickup_address;
+  $('#incomingDestination').textContent='◆ '+ride.destination_address;
+  $('#driverSummary').classList.add('hidden');
+  $('#driverRequest').classList.remove('hidden');
+  let c=30;
+  $('#count').textContent=c;
+  clearInterval(driverTimer);
+  driverTimer=setInterval(()=>{
+    c--;
+    $('#count').textContent=c;
+    if(c<=0){
+      clearInterval(driverTimer);
+      $('#driverRequest').classList.add('hidden');
+      $('#driverSummary').classList.remove('hidden');
+      incomingRide=null;
+    }
+  },1000);
+  toast('Nueva solicitud de viaje');
+}
+async function findWaitingRide(){
+  const {data,error}=await sb.from('rides').select('*').eq('status','searching').order('created_at',{ascending:true}).limit(1);
+  if(error)return backendError(error,'No se pudieron buscar viajes');
+  if(data?.[0])showIncomingRide(data[0]);
+}
+function listenDriverRequests(){
+  stopDriverChannel();
+  driverChannel=sb.channel('drivers-searching')
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'rides'},payload=>showIncomingRide(payload.new))
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'rides'},payload=>{
+      if(incomingRide?.id===payload.new.id&&payload.new.status!=='searching'){
+        $('#driverRequest').classList.add('hidden');
+        incomingRide=null;
+      }
+    })
+    .subscribe();
+  findWaitingRide();
+}
+async function updateRideStatus(status, extra={}){
+  if(!currentRideId)return;
+  const {data,error}=await sb.from('rides').update({status,...extra}).eq('id',currentRideId).select().single();
+  if(error){backendError(error,'No se pudo actualizar el viaje');throw error}
+  return data;
+}
+
 function saveSession(u){localStorage.setItem(AUTH,JSON.stringify(u));user=u;openApp()}
 function openApp(){
   user=user||JSON.parse(localStorage.getItem(AUTH)||'null');
@@ -834,7 +965,7 @@ function openApp(){
   $$('[data-mode]').forEach(b=>b.style.display=(role==='passenger'&&b.dataset.mode==='driver')?'none':'');
   if(role==='driver'){$$('[data-mode]').forEach(x=>x.classList.toggle('active',x.dataset.mode==='driver'));$('#homePanel').classList.add('hidden');$('#driverPanel').classList.remove('hidden');}
 }
-function logout(){if(!confirm('¿Deseas cerrar sesión en Sobre Ruedas?'))return;localStorage.removeItem(AUTH);sessionStorage.clear();user=null;$('#auth').classList.remove('hidden');$('#drawer').classList.remove('open');$('#backdrop').classList.add('hidden');$('#loginEmail').value='';$('#loginPass').value='';toast('Sesión cerrada correctamente')}
+function logout(){if(!confirm('¿Deseas cerrar sesión en Sobre Ruedas?'))return;stopPassengerChannel();stopDriverChannel();localStorage.removeItem(AUTH);sessionStorage.clear();user=null;$('#auth').classList.remove('hidden');$('#drawer').classList.remove('open');$('#backdrop').classList.add('hidden');$('#loginEmail').value='';$('#loginPass').value='';toast('Sesión cerrada correctamente')}
 $$('[data-auth]').forEach(b=>b.onclick=()=>{$$('[data-auth]').forEach(x=>x.classList.remove('active'));b.classList.add('active');const login=b.dataset.auth==='login';$('#loginForm').classList.toggle('hidden',!login);$('#registerForm').classList.toggle('hidden',login)})
 $$('[data-register-role]').forEach(b=>b.onclick=()=>{
   registerRole=b.dataset.registerRole;
@@ -1352,30 +1483,39 @@ function updateFare(){const base=Math.round(selected.price*.67),dist=selected.pr
 $('#promoBtn').onclick=()=>{promo=true;updateFare();toast('Promoción SOBRE RUEDAS20 aplicada')}
 $('#scheduleBtn').onclick=()=>$('#scheduleModal').classList.remove('hidden');$('#confirmSchedule').onclick=()=>{if(!$('#date').value||!$('#time').value)return toast('Selecciona fecha y hora');localStorage.setItem('rueda_schedule',JSON.stringify({date:$('#date').value,time:$('#time').value,destination:$('#destination').value}));$('#scheduleModal').classList.add('hidden');toast('Viaje programado')}
 $$('[data-close]').forEach(b=>b.onclick=()=>$('#'+b.dataset.close).classList.add('hidden'))
-$('#requestBtn').onclick=async()=>{const routeReady=await prepareRealRoute(false);if(!routeReady)return;setSheetHeight(sheetLimits().min,true);$('#homePanel').classList.add('hidden');$('#tripPanel').classList.remove('hidden');const total=selected.price-(promo?Math.round(selected.price*.2):0);$('#eta').textContent=selected.eta+' min';$('#tripPrice').textContent='$'+total;
-  const vehicleLabels={
-    Motorina:'Motorina azul · CA-218',
-    Moto:'Moto roja · CA-442',
-    Triciclo:'Triciclo amarillo · CA-031',
-    Bicitaxi:'Bicitaxi verde · CA-107'
-  };
-  const driverNames={
-    Motorina:'Daniel R.',
-    Moto:'Alejandro M.',
-    Triciclo:'Roberto L.',
-    Bicitaxi:'Yunier P.'
-  };
-  const card=$('#tripPanel .driver-card');
-  if(card){
-    const strong=card.querySelector('strong');
-    const small=card.querySelector('small');
-    if(strong)strong.textContent=driverNames[selected.type]||'Daniel R.';
-    if(small)small.textContent=vehicleLabels[selected.type]||'Vehículo Rueda';
-  }let p=7;if(driverMarker)map.removeLayer(driverMarker);driverMarker=L.marker([21.832,-78.771]).addTo(map).bindPopup('Daniel R.');clearInterval(tripTimer);tripTimer=setInterval(()=>{p+=6;$('#progress').style.width=Math.min(p,100)+'%';const lat=21.832+(currentStart[0]-21.832)*(p/100),lng=-78.771+(currentStart[1]+78.771)*(p/100);driverMarker.setLatLng([lat,lng]);if(p>=100){clearInterval(tripTimer);updateTripStage(2);$('#tripStatus').textContent='El conductor llegó';$('#eta').textContent='Esperando';toast('Tu conductor llegó')}},700)}
-$('#cancelTrip').onclick=()=>{clearInterval(tripTimer);if(driverMarker){map.removeLayer(driverMarker);driverMarker=null}$('#tripPanel').classList.add('hidden');$('#homePanel').classList.remove('hidden');toast('Viaje cancelado')}
-$('#changePickup').onclick=()=>{
-  const point=prompt('Escribe una referencia para recogerte:','Frente a la entrada principal');
-  if(point){$('#pickupText').textContent=point;setNotice('Punto de recogida actualizado: '+point);toast('Punto de recogida cambiado')}
+$('#requestBtn').onclick=async()=>{
+  const routeReady=await prepareRealRoute(false);
+  if(!routeReady)return;
+  const total=selected.price-(promo?Math.round(selected.price*.2):0);
+  const pickup=$('#pickupText').textContent.trim();
+  const destination=$('#destination').value.trim();
+  if(!destination)return toast('Selecciona un destino');
+  $('#requestBtn').disabled=true;
+  $('#requestBtn').textContent='Enviando solicitud...';
+  const {data,error}=await sb.from('rides').insert({
+    passenger_id:deviceId,
+    passenger_name:user?.name||'Pasajero',
+    pickup_address:pickup,
+    destination_address:destination,
+    vehicle_type:selected.type,
+    price:total,
+    payment_method:'efectivo',
+    status:'searching'
+  }).select().single();
+  $('#requestBtn').disabled=false;
+  updateFare();
+  if(error)return backendError(error,'No se pudo solicitar el viaje');
+  currentRideId=data.id;
+  listenPassengerRide(currentRideId);
+  setSheetHeight(sheetLimits().min,true);
+  $('#homePanel').classList.add('hidden');
+  $('#tripPanel').classList.remove('hidden');
+  $('#tripStatus').textContent='Buscando conductor';
+  $('#eta').textContent='Buscando';
+  $('#tripPrice').textContent='$'+total;
+  $('#progress').style.width='8%';
+  updateTripStage(1);
+  toast('Solicitud enviada a los conductores');
 }
 $('#copyCode').onclick=()=>{
   const code=$('#tripCode').textContent;
@@ -1390,9 +1530,55 @@ $$('.nav button').forEach(b=>b.onclick=()=>showPage(b.dataset.page));$('#profile
 function openDrawer(){$('#drawer').classList.add('open');$('#backdrop').classList.remove('hidden')}function closeDrawer(){$('#drawer').classList.remove('open');$('#backdrop').classList.add('hidden')}$('#menuBtn').onclick=openDrawer;$('#closeDrawer').onclick=closeDrawer;$('#backdrop').onclick=closeDrawer;$$('[data-drawer-page]').forEach(b=>b.onclick=()=>{showPage(b.dataset.drawerPage);closeDrawer()})
 $('#savedCustom').onclick=()=>{const d=prompt('Escribe el destino que quieres guardar:');if(d){localStorage.setItem('rueda_favorite',d);$('#savedCustom').textContent=d;toast('Destino guardado')}}
 $$('[data-mode]').forEach(b=>b.onclick=()=>{$$('[data-mode]').forEach(x=>x.classList.remove('active'));b.classList.add('active');const driver=b.dataset.mode==='driver';$('#homePanel').classList.toggle('hidden',driver);$('#tripPanel').classList.add('hidden');$('#historyPanel').classList.add('hidden');$('#savedPanel').classList.add('hidden');$('#accountPanel').classList.add('hidden');$('#driverPanel').classList.toggle('hidden',!driver)})
-$('#onlineToggle').onclick=()=>{const on=$('#onlineToggle').classList.toggle('on');$('#onlineText').textContent=on?'Disponible':'Desconectado';$('#driverSummary').classList.toggle('hidden',on);$('#driverRequest').classList.toggle('hidden',!on);if(on){let c=15;$('#count').textContent=c;clearInterval(driverTimer);driverTimer=setInterval(()=>{c--;$('#count').textContent=c;if(c<=0){clearInterval(driverTimer);$('#driverRequest').classList.add('hidden');$('#driverSummary').classList.remove('hidden');toast('Solicitud expirada')}},1000)}}
-$('#declineBtn').onclick=()=>{$('#driverRequest').classList.add('hidden');$('#driverSummary').classList.remove('hidden');toast('Solicitud rechazada')}
-$('#acceptBtn').onclick=()=>{clearInterval(driverTimer);driverTripState='to_pickup';driverTripStartedAt=null;$('#driverRequest').classList.add('hidden');$('#driverSummary').classList.add('hidden');$('#driverActiveTrip').classList.remove('hidden');$('#driverPickupAddress').textContent=$('#pickupText').textContent||'Parque José Martí';$('#driverDestinationAddress').textContent=$('#destination').value.trim()||'Destino seleccionado';setDriverTripState('to_pickup');setSheetHeight(sheetLimits().max,true);toast('Viaje aceptado. Dirígete al pasajero')}
+$('#onlineToggle').onclick=()=>{
+  driverOnline=$('#onlineToggle').classList.toggle('on');
+  $('#onlineText').textContent=driverOnline?'Disponible':'Desconectado';
+  $('#driverSummary').classList.toggle('hidden',driverOnline);
+  if(driverOnline){
+    listenDriverRequests();
+    toast('Conductor disponible y escuchando viajes');
+  }else{
+    stopDriverChannel();
+    clearInterval(driverTimer);
+    incomingRide=null;
+    $('#driverRequest').classList.add('hidden');
+    $('#driverActiveTrip').classList.add('hidden');
+    $('#driverSummary').classList.remove('hidden');
+    toast('Conductor desconectado');
+  }
+}
+$('#declineBtn').onclick=()=>{
+  clearInterval(driverTimer);
+  $('#driverRequest').classList.add('hidden');
+  $('#driverSummary').classList.remove('hidden');
+  incomingRide=null;
+  toast('Solicitud omitida');
+  setTimeout(findWaitingRide,800);
+}
+$('#acceptBtn').onclick=async()=>{
+  if(!incomingRide)return toast('La solicitud ya no está disponible');
+  clearInterval(driverTimer);
+  const ride=incomingRide;
+  const {data,error}=await sb.from('rides').update({
+    status:'accepted',
+    driver_id:deviceId,
+    driver_name:user?.name||'Conductor',
+    accepted_at:new Date().toISOString()
+  }).eq('id',ride.id).eq('status','searching').select().single();
+  if(error)return backendError(error,'Otro conductor pudo aceptar este viaje');
+  currentRideId=data.id;
+  incomingRide=null;
+  driverTripState='to_pickup';
+  driverTripStartedAt=null;
+  $('#driverRequest').classList.add('hidden');
+  $('#driverSummary').classList.add('hidden');
+  $('#driverActiveTrip').classList.remove('hidden');
+  $('#driverPickupAddress').textContent=data.pickup_address;
+  $('#driverDestinationAddress').textContent=data.destination_address;
+  setDriverTripState('to_pickup');
+  setSheetHeight(sheetLimits().max,true);
+  toast('Viaje aceptado. Dirígete al pasajero');
+}
 
 function setDriverTripState(state){
   driverTripState=state;
@@ -1403,10 +1589,10 @@ function setDriverTripState(state){
   if(state==='arrived'){ $('#driverTripEyebrow').textContent='PASAJERO AVISADO';$('#driverTripTitle').textContent='Llegaste al punto de recogida';$('#driverTripSubtitle').textContent='Espera a que el pasajero suba al vehículo.';$('#driverTripBadge').textContent='Esperando';$('#driverStepPickup').classList.add('active');start.classList.remove('hidden');setNotice('El conductor llegó. El pasajero fue notificado.'); }
   if(state==='in_progress'){ $('#driverTripEyebrow').textContent='VIAJE EN CURSO';$('#driverTripTitle').textContent='Navegando hacia el destino';$('#driverTripSubtitle').textContent='La ruta cambió automáticamente hacia el lugar donde dejarás al pasajero.';$('#driverTripBadge').textContent='8 min';$('#driverStepPickup').classList.add('done');$('#driverStepRide').classList.add('active');finish.classList.remove('hidden');driverTripStartedAt=Date.now();setNotice('Viaje iniciado. Navegación activa hacia el destino.'); }
 }
-$('#driverArrivedBtn').onclick=()=>{setDriverTripState('arrived');toast('Pasajero avisado: el conductor llegó')};
-$('#driverStartTripBtn').onclick=()=>{setDriverTripState('in_progress');toast('Viaje iniciado hacia el destino')};
-$('#driverFinishTripBtn').onclick=()=>{if(driverTripState!=='in_progress')return toast('Primero debes iniciar el viaje');if(!confirm('¿Llegaron al destino y deseas finalizar el viaje?'))return;$('#driverStepPickup').classList.add('done');$('#driverStepRide').classList.add('done');$('#driverStepFinish').classList.add('active');const elapsed=driverTripStartedAt?Math.max(1,Math.round((Date.now()-driverTripStartedAt)/60000)):8;$('#finishDuration').textContent=elapsed+' min';$('#finishDistance').textContent=$('#distance').textContent||'1.4 km';$('#finishPrice').textContent=$('#tripPrice').textContent+' CUP';$('#tripFinishedModal').classList.remove('hidden');setNotice('Viaje finalizado correctamente.')};
-$('#finishDoneBtn').onclick=()=>{$('#tripFinishedModal').classList.add('hidden');$('#driverActiveTrip').classList.add('hidden');$('#driverSummary').classList.remove('hidden');driverTripState='idle';driverTripStartedAt=null;$('#onlineToggle').classList.add('on');$('#onlineText').textContent='Disponible';toast('Viaje terminado. Ya puedes recibir otro')};
+$('#driverArrivedBtn').onclick=async()=>{try{await updateRideStatus('arrived',{arrived_at:new Date().toISOString()});setDriverTripState('arrived');toast('Pasajero avisado: el conductor llegó')}catch(e){}};
+$('#driverStartTripBtn').onclick=async()=>{try{await updateRideStatus('in_progress',{started_at:new Date().toISOString()});setDriverTripState('in_progress');toast('Viaje iniciado hacia el destino')}catch(e){}};
+$('#driverFinishTripBtn').onclick=async()=>{if(driverTripState!=='in_progress')return toast('Primero debes iniciar el viaje');if(!confirm('¿Llegaron al destino y deseas finalizar el viaje?'))return;try{await updateRideStatus('finished',{finished_at:new Date().toISOString()})}catch(e){return}$('#driverStepPickup').classList.add('done');$('#driverStepRide').classList.add('done');$('#driverStepFinish').classList.add('active');const elapsed=driverTripStartedAt?Math.max(1,Math.round((Date.now()-driverTripStartedAt)/60000)):8;$('#finishDuration').textContent=elapsed+' min';$('#finishDistance').textContent=$('#distance').textContent||'1.4 km';$('#finishPrice').textContent=(incomingRide?.price||selected.price)+' CUP';$('#tripFinishedModal').classList.remove('hidden');setNotice('Viaje finalizado correctamente.')};
+$('#finishDoneBtn').onclick=()=>{$('#tripFinishedModal').classList.add('hidden');$('#driverActiveTrip').classList.add('hidden');$('#driverSummary').classList.add('hidden');driverTripState='idle';driverTripStartedAt=null;currentRideId=null;driverOnline=true;$('#onlineToggle').classList.add('on');$('#onlineText').textContent='Disponible';listenDriverRequests();toast('Viaje terminado. Ya puedes recibir otro')};
 $('#driverCallPassenger').onclick=()=>toast('Llamando al pasajero');
 $('#driverTripProblemBtn').onclick=()=>$('#sosModal').classList.remove('hidden');
 
@@ -1431,7 +1617,7 @@ setTimeout(()=>{
   startMarker.setLatLng(currentStart).bindPopup('Ubicación de prueba: Parque José Martí, Ciego de Ávila');
   map.setView(currentStart,16);
 },400);
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=180').then(r=>r.update()).catch(()=>{}))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=190').then(r=>r.update()).catch(()=>{}))}
 </script>
 
 <script>
