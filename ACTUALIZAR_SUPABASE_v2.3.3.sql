@@ -1,5 +1,5 @@
--- Sobre Ruedas v2.3.3 · Configuración completa del panel administrativo
--- Seguro para instalaciones existentes desde v2.2.0 o v2.3.1.
+-- Sobre Ruedas v2.3.3 · Cobro exclusivamente por kilómetro
+-- Migración segura e idempotente desde v2.2.0 o v2.3.1.
 -- No borra viajes ni usuarios existentes.
 
 begin;

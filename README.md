@@ -1,24 +1,30 @@
-# Sobre Ruedas v2.3.2
+# Sobre Ruedas v2.4.0
 
-Versión estable para GitHub Pages y Supabase.
+Versión para GitHub Pages y Supabase con cobro exclusivamente por kilómetro.
 
-## Actualización desde v2.2.0 o v2.3.1
+## Actualización desde v2.3.2
 
 1. Conserva una copia de la versión anterior.
 2. Sustituye en GitHub los archivos por el contenido de este paquete.
-3. En Supabase SQL Editor ejecuta **una sola vez** `ACTUALIZAR_SUPABASE_v2.3.2.sql`.
-4. Abre la aplicación con `?v=232` para evitar que el navegador use archivos antiguos.
-5. Abre el panel en `admin.html?v=232`.
+3. En Supabase SQL Editor ejecuta **una sola vez** `ACTUALIZAR_SUPABASE_v2.4.0.sql`.
+4. Abre la aplicación con `?v=233` para evitar archivos antiguos en caché.
+5. Abre el panel en `admin.html?v=233`.
 
-El SQL es idempotente: puede volver a ejecutarse si una ejecución se interrumpe. No elimina viajes ni usuarios existentes.
+## Tarifas
+
+- El total se calcula como: **distancia en km × precio por km**.
+- No se suma tarifa base.
+- No se aplica precio mínimo.
+- El panel administrativo solo solicita el precio por km de cada vehículo.
+- La aplicación de pasajeros lee esos valores directamente desde `fare_settings` en Supabase.
 
 ## Archivos principales
 
 - `index.html`: aplicación para pasajeros y conductores.
-- `admin.html`: panel administrativo con reportes.
-- `ACTUALIZAR_SUPABASE_v2.3.2.sql`: migración completa y recomendada.
-- `CONFIGURAR_PANEL_ADMIN.sql`: instalación completa del panel; contiene la misma protección de compatibilidad.
-- `sw.js` y `manifest.webmanifest`: aplicación web instalable y caché v2.3.2.
+- `admin.html`: panel administrativo y configuración por km.
+- `ACTUALIZAR_SUPABASE_v2.4.0.sql`: migración completa e idempotente.
+- `CONFIGURAR_PANEL_ADMIN.sql`: instalación completa para una base nueva.
+- `sw.js` y `manifest.webmanifest`: caché v2.4.0.
 
 ## Seguridad de beta
 

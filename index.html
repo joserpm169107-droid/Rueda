@@ -708,12 +708,12 @@ body.theme-dark{--bg:#101114;--card:#191b20;--text:#f7f7f7;--muted:#aeb2ba;--lin
       <div class="quick"><button class="chip" data-dest="Casa">🏠 Casa</button><button class="chip" data-dest="Trabajo">💼 Trabajo</button><button class="chip" data-dest="Terminal de Ómnibus">🚌 Terminal</button><button class="chip" data-dest="Hospital Provincial">🏥 Hospital</button></div>
       <div class="section-title"><h3>Elige cómo viajar</h3><button id="scheduleBtn">Programar</button></div>
       <div class="vehicles">
-        <button class="vehicle" data-type="Bicitaxi" data-price="120" data-eta="4"><span>🚲</span><div><strong>Bicitaxi</strong><small>Económico · trayectos cortos</small></div><b>$120</b></button>
-        <article class="vehicle active" data-type="Motorina" data-price="180" data-eta="3"><div class="vicon">🛵</div><div><strong>Motorina</strong><small>1 pasajero · 3 min</small></div><div class="price">$180<small>CUP</small></div></article>
-        <article class="vehicle" data-type="Moto" data-price="220" data-eta="5"><div class="vicon">🏍️</div><div><strong>Moto</strong><small>1 pasajero · 5 min</small></div><div class="price">$220<small>CUP</small></div></article>
-        <article class="vehicle" data-type="Triciclo" data-price="350" data-eta="7"><div class="vicon">🛺</div><div><strong>Triciclo</strong><small>Hasta 3 · 7 min</small></div><div class="price">$350<small>CUP</small></div></article>
+        <button class="vehicle" data-type="Bicitaxi" data-price="28" data-eta="4"><span>🚲</span><div><strong>Bicitaxi</strong><small>Económico · trayectos cortos</small></div><b>$28<small>CUP/km</small></b></button>
+        <article class="vehicle active" data-type="Motorina" data-price="38" data-eta="3"><div class="vicon">🛵</div><div><strong>Motorina</strong><small>1 pasajero · 3 min</small></div><div class="price">$38<small>CUP/km</small></div></article>
+        <article class="vehicle" data-type="Moto" data-price="45" data-eta="5"><div class="vicon">🏍️</div><div><strong>Moto</strong><small>1 pasajero · 5 min</small></div><div class="price">$45<small>CUP/km</small></div></article>
+        <article class="vehicle" data-type="Triciclo" data-price="48" data-eta="7"><div class="vicon">🛺</div><div><strong>Triciclo</strong><small>Hasta 3 · 7 min</small></div><div class="price">$48<small>CUP/km</small></div></article>
       </div>
-      <div class="fare"><div class="row"><span>Tarifa base</span><strong id="baseFare">$120</strong></div><div class="row"><span>Distancia</span><strong id="distanceFare">$60</strong></div><div class="row hidden" id="discountRow"><span>Descuento</span><strong id="discount">-$36</strong></div><div class="row total"><span>Total estimado</span><strong id="totalFare">$180 CUP</strong></div></div>
+      <div class="fare"><div class="row"><span>Precio por km</span><strong id="perKmFare">$38 CUP/km</strong></div><div class="row"><span>Distancia × tarifa</span><strong id="distanceFare">1.4 km × $38</strong></div><div class="row hidden" id="discountRow"><span>Descuento</span><strong id="discount">-$0</strong></div><div class="row total"><span>Total estimado</span><strong id="totalFare">$53 CUP</strong></div></div>
       <button class="primary" id="requestBtn">Pedir Motorina · $180 CUP</button>
     </div>
 
@@ -724,7 +724,7 @@ body.theme-dark{--bg:#101114;--card:#191b20;--text:#f7f7f7;--muted:#aeb2ba;--lin
       <div class="pickup-card"><div><strong>Punto de recogida</strong><small id="pickupText" style="display:block;color:var(--muted)">Tu ubicación actual</small></div><button id="changePickup">Cambiar</button></div>
       <div class="trip-code"><div><small style="display:block;color:#c7cad0">Código de seguridad</small><strong id="tripCode">4821</strong></div><button id="copyCode">Copiar</button></div>
       <div class="progress"><div id="progress"></div></div>
-      <div class="metrics"><div class="metric"><strong id="distance">1.4 km</strong><small>Distancia</small></div><div class="metric"><strong>8 min</strong><small>Viaje</small></div><div class="metric"><strong id="tripPrice">$180</strong><small>CUP</small></div></div>
+      <div class="metrics"><div class="metric"><strong id="distance">1.4 km</strong><small>Distancia</small></div><div class="metric"><strong>8 min</strong><small>Viaje</small></div><div class="metric"><strong id="tripPrice">$53</strong><small>CUP</small></div></div>
       <div class="actions"><button id="chatBtn">💬 Chat</button><button id="callBtn">📞 Llamar</button><button class="sos" id="sosBtn">🆘 SOS</button></div>
       <button class="secondary" id="cancelTrip">Cancelar viaje</button>
     </div>
@@ -809,7 +809,10 @@ const DEVICE_KEY='rueda_device_id';
 const deviceId=localStorage.getItem(DEVICE_KEY)||('device_'+crypto.randomUUID());
 localStorage.setItem(DEVICE_KEY,deviceId);
 let routeRequestId=0;
-let user=null, registerRole='passenger', selected={type:'Motorina',price:180,eta:3}, tripTimer=null, driverTimer=null, routeLine=null, driverMarker=null, tripPhase=0, gpsWatch=null, destinationMarker=null, destinationPoint=null, currentStart=[21.84206,-78.76000], pinPicking=false, pinPurpose='destination', pendingDestination=null, gpsReady=true, driverTripState='idle', driverTripStartedAt=null, currentRideId=null, incomingRide=null, passengerChannel=null, driverChannel=null, driverOnline=false, activeRidePrice=0, ratingShownRideId=null, ratingSubmitting=false;
+let user=null, registerRole='passenger', selected={type:'Motorina',price:0,eta:3}, tripTimer=null, driverTimer=null, routeLine=null, driverMarker=null, tripPhase=0, gpsWatch=null, destinationMarker=null, destinationPoint=null, currentStart=[21.84206,-78.76000], pinPicking=false, pinPurpose='destination', pendingDestination=null, gpsReady=true, driverTripState='idle', driverTripStartedAt=null, currentRideId=null, incomingRide=null, passengerChannel=null, driverChannel=null, driverOnline=false, activeRidePrice=0, ratingShownRideId=null, ratingSubmitting=false;
+const DEFAULT_PER_KM={Motorina:38,Moto:45,Bicitaxi:28,Triciclo:48};
+let fareRates={...DEFAULT_PER_KM};
+let fareChannel=null;
 function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
 
 function setNotice(msg){$('#lastNotice').textContent=msg;localStorage.setItem('rueda_last_notice',msg)}
@@ -1488,8 +1491,49 @@ $('#refreshLocation').onclick=()=>{
   setNotice('Ubicación de prueba: Parque José Martí, Ciego de Ávila.');
 }
 $$('[data-dest]').forEach(b=>b.onclick=()=>{$('#destination').value=b.dataset.dest;destinationPoint=null;clearRouteStatus();showPage('home');toast('Destino seleccionado')})
-$$('.vehicle').forEach(v=>v.onclick=()=>{$$('.vehicle').forEach(x=>x.classList.remove('active'));v.classList.add('active');selected={type:v.dataset.type,price:+v.dataset.price,eta:+v.dataset.eta};updateFare()})
-function updateFare(){const km=parseFloat($('#distance').textContent)||0;const rates={'Motorina':[90,38,140],'Moto':[110,45,170],'Bicitaxi':[70,28,110],'Triciclo':[120,48,190]},r=rates[selected.type]||rates.Motorina,total=Math.max(r[2],Math.round((r[0]+km*r[1])/10)*10);selected.price=total;$('#baseFare').textContent='$'+r[0];$('#distanceFare').textContent='$'+Math.max(0,total-r[0]);$('#discountRow').classList.add('hidden');$('#totalFare').textContent='$'+total+' CUP';$('#requestBtn').textContent=`Pedir ${selected.type} · $${total} CUP`}
+$$('.vehicle').forEach(v=>v.onclick=()=>{$$('.vehicle').forEach(x=>x.classList.remove('active'));v.classList.add('active');selected={type:v.dataset.type,price:0,eta:+v.dataset.eta};updateFare()})
+function renderPerKmLabels(){
+  $$('.vehicle[data-type]').forEach(card=>{
+    const rate=Number(fareRates[card.dataset.type]??DEFAULT_PER_KM[card.dataset.type]??0);
+    card.dataset.price=String(rate);
+    const holder=card.querySelector('.price')||card.querySelector('b');
+    if(holder)holder.innerHTML='$'+rate+'<small>CUP/km</small>';
+  });
+}
+async function loadFareSettings(){
+  try{
+    const {data,error}=await sb.from('fare_settings').select('vehicle_type,per_km,active');
+    if(error)throw error;
+    (data||[]).forEach(row=>{
+      if(row.active!==false&&Number.isFinite(Number(row.per_km))&&Number(row.per_km)>=0){
+        fareRates[row.vehicle_type]=Number(row.per_km);
+      }
+    });
+    renderPerKmLabels();
+    updateFare();
+  }catch(error){
+    console.warn('No se pudieron cargar las tarifas por km; se usarán valores de respaldo.',error?.message||error);
+    renderPerKmLabels();
+    updateFare();
+  }
+}
+function listenFareSettings(){
+  if(fareChannel)sb.removeChannel(fareChannel);
+  fareChannel=sb.channel('public-fare-settings')
+    .on('postgres_changes',{event:'*',schema:'public',table:'fare_settings'},()=>loadFareSettings())
+    .subscribe();
+}
+function updateFare(){
+  const km=Math.max(0,parseFloat($('#distance').textContent)||0);
+  const rate=Number(fareRates[selected.type]??DEFAULT_PER_KM[selected.type]??0);
+  const total=Math.max(0,Math.round(km*rate));
+  selected.price=total;
+  $('#perKmFare').textContent='$'+rate+' CUP/km';
+  $('#distanceFare').textContent=km.toFixed(1)+' km × $'+rate;
+  $('#discountRow').classList.add('hidden');
+  $('#totalFare').textContent='$'+total+' CUP';
+  $('#requestBtn').textContent=`Pedir ${selected.type} · $${total} CUP`;
+}
 $('#scheduleBtn').onclick=()=>$('#scheduleModal').classList.remove('hidden');$('#confirmSchedule').onclick=()=>{if(!$('#date').value||!$('#time').value)return toast('Selecciona fecha y hora');localStorage.setItem('rueda_schedule',JSON.stringify({date:$('#date').value,time:$('#time').value,destination:$('#destination').value}));$('#scheduleModal').classList.add('hidden');toast('Viaje programado')}
 $$('[data-close]').forEach(b=>b.onclick=()=>$('#'+b.dataset.close).classList.add('hidden'))
 $('#requestBtn').onclick=async()=>{
@@ -1634,7 +1678,7 @@ function applyTheme(c){localStorage.setItem('rueda_theme',c);document.body.class
 async function earnings(){if(user?.role!=='driver')return;$('#driverEarningsPanel').classList.remove('hidden');const {data}=await sb.from('rides').select('price,finished_at').eq('driver_id',deviceId).eq('status','finished');const n=new Date(),d=new Date(n.getFullYear(),n.getMonth(),n.getDate()),w=new Date(d);w.setDate(d.getDate()-((n.getDay()+6)%7));const m=new Date(n.getFullYear(),n.getMonth(),1),sum=x=>(data||[]).filter(r=>new Date(r.finished_at)>=x).reduce((a,r)=>a+Number(r.price||0),0);$('#earnToday').textContent=sum(d)+' CUP';$('#earnWeek').textContent=sum(w)+' CUP';$('#earnMonth').textContent=sum(m)+' CUP'}$('#refreshEarningsBtn').onclick=earnings;
 const oa=openApp;openApp=function(){oa();if(user?.role==='driver')earnings();setTimeout(restore,250)};addEventListener('offline',()=>$('#connectionOverlay').classList.remove('hidden'));addEventListener('online',()=>{$('#connectionOverlay').classList.add('hidden');restore()});
 
-updateFare();openApp();setTimeout(()=>document.getElementById('brandSplash')?.classList.add('hide'),1200);setTimeout(()=>setSheetHeight(sheetLimits().mid,false),80);
+renderPerKmLabels();updateFare();loadFareSettings();listenFareSettings();openApp();setTimeout(()=>document.getElementById('brandSplash')?.classList.add('hide'),1200);setTimeout(()=>setSheetHeight(sheetLimits().mid,false),80);
 // Modo de prueba: no usar el GPS real del teléfono automáticamente.
 setTimeout(()=>{
   currentStart=[21.84206,-78.76000];
@@ -1642,7 +1686,7 @@ setTimeout(()=>{
   startMarker.setLatLng(currentStart).bindPopup('Ubicación de prueba: Parque José Martí, Ciego de Ávila');
   map.setView(currentStart,16);
 },400);
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=232').then(r=>r.update()).catch(()=>{}))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=233').then(r=>r.update()).catch(()=>{}))}
 </script>
 
 <script>
@@ -1697,6 +1741,6 @@ window.addEventListener('load', function () {
 });
 </script>
 
-<div style="position:fixed;right:8px;bottom:8px;z-index:9999;background:#111;color:#fff;padding:5px 8px;border-radius:9px;font:700 10px system-ui;opacity:.72">v2.3.2</div>
+<div style="position:fixed;right:8px;bottom:8px;z-index:9999;background:#111;color:#fff;padding:5px 8px;border-radius:9px;font:700 10px system-ui;opacity:.72">v2.4.0</div>
 </body>
 </html>

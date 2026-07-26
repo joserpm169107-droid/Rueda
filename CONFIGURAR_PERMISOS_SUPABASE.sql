@@ -1,6 +1,6 @@
--- Sobre Ruedas v2.3.2
+-- Sobre Ruedas v2.3.3
 -- Permisos temporales para la beta web.
--- El script ACTUALIZAR_SUPABASE_v2.3.2.sql ya incluye estos permisos.
+-- El script ACTUALIZAR_SUPABASE_v2.3.3.sql ya incluye estos permisos.
 
 alter table if exists public.rides enable row level security;
 alter table if exists public.profiles enable row level security;

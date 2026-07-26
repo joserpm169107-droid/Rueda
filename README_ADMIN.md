@@ -1,8 +1,8 @@
-# Panel administrativo · Sobre Ruedas v2.3.2
+# Panel administrativo · Sobre Ruedas v2.4.0
 
-1. Ejecuta `ACTUALIZAR_SUPABASE_v2.3.2.sql` en Supabase SQL Editor.
+1. Ejecuta `ACTUALIZAR_SUPABASE_v2.4.0.sql` en Supabase SQL Editor.
 2. Sube todos los archivos del paquete a GitHub.
-3. Abre `admin.html?v=232` desde GitHub Pages.
+3. Abre `admin.html?v=233` desde GitHub Pages.
 4. Durante la beta, el código temporal es `RUEDA2026`.
 
 ## Módulo de Reportes
@@ -22,3 +22,7 @@
 - Rojo: 5 o más reportes.
 
 **Importante:** el acceso por código y las políticas abiertas son solo para pruebas. Antes del lanzamiento público hay que activar Supabase Auth, roles reales y políticas RLS privadas.
+
+## Actualización v2.4.0
+Ejecuta `ACTUALIZAR_SUPABASE_v2.4.0.sql` una sola vez. Después recarga `admin.html` con Ctrl+F5.
+Los cuadros del resumen son botones y abren vistas filtradas. Las decisiones sobre conductores y reportes se guardan en Supabase.

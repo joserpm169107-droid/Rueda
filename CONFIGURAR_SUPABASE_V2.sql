@@ -1,6 +1,6 @@
--- Sobre Ruedas v2.3.2
+-- Sobre Ruedas v2.3.3
 -- Compatibilidad de columnas de viajes. Para una actualización completa usa
--- ACTUALIZAR_SUPABASE_v2.3.2.sql.
+-- ACTUALIZAR_SUPABASE_v2.3.3.sql.
 
 alter table public.rides add column if not exists passenger_id text;
 alter table public.rides add column if not exists passenger_name text;
