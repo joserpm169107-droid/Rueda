@@ -1,5 +1,5 @@
--- Sobre Ruedas v2.3.2 · Configuración completa del panel administrativo
--- Seguro para instalaciones existentes desde v2.2.0 o v2.3.1.
+-- Sobre Ruedas v2.3.1 · Compatibilidad corregida por v2.3.2
+-- Este archivo ya no crea driver_id como uuid y es seguro desde v2.2.0.
 -- No borra viajes ni usuarios existentes.
 
 begin;
