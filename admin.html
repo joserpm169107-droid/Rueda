@@ -6,18 +6,29 @@
   <meta name="theme-color" content="#111317">
   <title>Sobre Ruedas · Administración</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
   <style>
     :root{--y:#ffd400;--ink:#111317;--bg:#f4f5f7;--card:#fff;--muted:#747983;--line:#e5e7eb;--green:#16a34a;--red:#dc2626;--blue:#2563eb;--orange:#f59e0b;--shadow:0 4px 16px #1111}
     *{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
     .login{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at top,#343842 0,#15171b 42%,#08090b 100%)}.login-card{width:min(430px,100%);background:#fff;border-radius:28px;padding:28px;box-shadow:0 30px 80px #0008}.brand{display:flex;align-items:center;gap:12px;margin-bottom:24px}.mark{width:54px;height:54px;border-radius:17px;background:var(--y);display:grid;place-items:center;font-weight:1000;font-size:28px}.brand h1{font-size:22px;margin:0}.brand small{color:var(--muted)}label{display:block;font-size:12px;font-weight:800;margin:14px 0 6px}.field{width:100%;border:1px solid var(--line);border-radius:14px;padding:14px;background:#fafafa}.primary{width:100%;border:0;border-radius:15px;background:var(--y);color:#111;padding:14px;font-weight:950;margin-top:18px}.note{font-size:12px;color:var(--muted);line-height:1.45;margin-top:14px}
     .shell{min-height:100vh;display:grid;grid-template-columns:245px 1fr}.sidebar{background:#111317;color:#fff;padding:22px 16px;position:sticky;top:0;height:100vh;z-index:20}.side-brand{display:flex;align-items:center;gap:10px;padding:0 8px 24px}.side-brand .mark{width:42px;height:42px;border-radius:13px;font-size:21px;color:#111}.side-brand strong{display:block}.side-brand small{color:#aeb2ba}.nav-btn{display:flex;width:100%;gap:10px;align-items:center;border:0;color:#c9cdd4;background:transparent;padding:12px;border-radius:12px;text-align:left;margin:3px 0;font-weight:750}.nav-btn.active,.nav-btn:hover{background:#272a31;color:#fff}.sidebar-foot{position:absolute;bottom:18px;left:16px;right:16px}.owner-chip{background:#20232a;border-radius:14px;padding:12px;font-size:12px}.owner-chip strong{display:block;font-size:14px}.main{min-width:0}.topbar{height:76px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:10}.topbar h2{margin:0;font-size:22px}.live{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800}.dot{width:9px;height:9px;background:var(--green);border-radius:50%;box-shadow:0 0 0 5px #16a34a1c}.dot.offline{background:var(--orange);box-shadow:0 0 0 5px #f59e0b20}.content{padding:24px 28px 40px}
-    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}.stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow)}.stat.clickable{cursor:pointer;transition:.18s;position:relative}.stat.clickable:hover{transform:translateY(-2px);box-shadow:0 10px 24px #1112;border-color:#cfd3da}.stat.clickable:focus{outline:3px solid #ffd40066;outline-offset:2px}.stat.clickable::after{content:"Abrir →";position:absolute;right:12px;bottom:10px;font-size:9px;font-weight:900;color:#9ca3af}.stat small{color:var(--muted);font-size:11px;font-weight:800}.stat strong{display:block;font-size:27px;margin-top:8px}.stat .sub{font-size:11px;color:var(--muted);margin-top:5px}.stat.attention{border-color:#f6d365;background:#fffdf2}.stat.critical{border-color:#fecaca;background:#fff8f8}
+    .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px}.stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;box-shadow:var(--shadow)}.stat small{color:var(--muted);font-size:11px;font-weight:800}.stat strong{display:block;font-size:27px;margin-top:8px}.stat .sub{font-size:11px;color:var(--muted);margin-top:5px}.stat.attention{border-color:#f6d365;background:#fffdf2}.stat.critical{border-color:#fecaca;background:#fff8f8}
     .grid{display:grid;grid-template-columns:1.45fr .85fr;gap:16px;margin-top:18px}.panel{background:var(--card);border:1px solid var(--line);border-radius:20px;overflow:hidden}.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 18px;border-bottom:1px solid var(--line)}.panel-head h3{margin:0;font-size:16px}.panel-head button{border:0;background:#f0f1f3;border-radius:10px;padding:8px 10px;font-weight:800}.filters{display:flex;gap:8px;flex-wrap:wrap;padding:14px 18px;border-bottom:1px solid var(--line)}.filters button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800}.filters button.active{background:#111317;color:#fff;border-color:#111317}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;min-width:760px}th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);font-size:12px;vertical-align:top}th{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:#fafafa;position:sticky;top:0;z-index:1}td strong{font-size:13px}.status{display:inline-flex;align-items:center;border-radius:999px;padding:5px 9px;font-weight:850;font-size:10px;white-space:nowrap}.searching{background:#fff7cc;color:#806900}.accepted,.arrived{background:#dbeafe;color:#1d4ed8}.in_progress{background:#dcfce7;color:#15803d}.finished{background:#e5e7eb;color:#374151}.canceled{background:#fee2e2;color:#b91c1c}.reviewed{background:#dcfce7;color:#15803d}.pending{background:#fff7cc;color:#806900}.alert-list{padding:8px 16px}.alert{padding:12px 4px;border-bottom:1px solid var(--line);display:flex;gap:10px}.alert:last-child{border-bottom:0}.alert-icon{width:34px;height:34px;border-radius:11px;background:#fff4d6;display:grid;place-items:center;flex:0 0 auto}.alert strong{display:block;font-size:12px}.alert small{color:var(--muted);display:block;margin-top:2px}.empty{padding:28px;text-align:center;color:var(--muted)}.section-page{display:none}.section-page.active{display:block}.toolbar{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap}.toolbar-group{display:flex;gap:8px;flex-wrap:wrap;flex:1}.search{max-width:360px;width:100%;border:1px solid var(--line);border-radius:13px;padding:11px 13px;background:#fff;color:var(--ink)}select.search{max-width:220px}.clear-btn{border:1px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;font-weight:800}
-    .cards{display:grid;grid-template-columns:repeat(3,minmax(220px,1fr));gap:14px}.person{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}.person-top{display:flex;gap:12px;align-items:center}.avatar{width:48px;height:48px;border-radius:50%;background:#eceef1;display:grid;place-items:center;font-size:22px;overflow:hidden}.avatar img{width:100%;height:100%;object-fit:cover}.person small{color:var(--muted)}.meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.meta div{background:#f7f7f8;border-radius:11px;padding:9px}.meta b{display:block;font-size:13px}.actions{display:flex;gap:7px;margin-top:12px}.actions button{flex:1;border:0;border-radius:10px;padding:9px;font-weight:800}.actions.multi{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.approve{background:#dcfce7;color:#166534}.reject{background:#fff7cc;color:#806900}.suspend{background:#fee2e2;color:#991b1b}.delete{background:#111317;color:#fff}.profile-state{display:inline-flex;border-radius:999px;padding:5px 8px;font-size:10px;font-weight:900}.profile-active{background:#dcfce7;color:#166534}.profile-pending{background:#fff7cc;color:#806900}.profile-suspended,.profile-rejected{background:#fee2e2;color:#991b1b}.ok{background:#dcfce7;color:#15803d}.danger{background:#fee2e2;color:#b91c1c}.neutral{background:#eef2ff;color:#3730a3}
+    .cards{display:grid;grid-template-columns:repeat(3,minmax(220px,1fr));gap:14px}.person{background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}.person-top{display:flex;gap:12px;align-items:center}.avatar{width:48px;height:48px;border-radius:50%;background:#eceef1;display:grid;place-items:center;font-size:22px;overflow:hidden}.avatar img{width:100%;height:100%;object-fit:cover}.person small{color:var(--muted)}.meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}.meta div{background:#f7f7f8;border-radius:11px;padding:9px}.meta b{display:block;font-size:13px}.actions{display:flex;gap:7px;margin-top:12px}.actions button{flex:1;border:0;border-radius:10px;padding:9px;font-weight:800}.ok{background:#dcfce7;color:#15803d}.danger{background:#fee2e2;color:#b91c1c}.neutral{background:#eef2ff;color:#3730a3}
     .fare-grid{display:grid;grid-template-columns:repeat(2,minmax(250px,1fr));gap:14px}.fare-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px}.fare-card h3{margin:0 0 12px}.fare-row{display:grid;grid-template-columns:1fr 120px;align-items:center;gap:10px;margin:10px 0}.fare-row input{border:1px solid var(--line);border-radius:10px;padding:10px}.save{border:0;background:#111317;color:#fff;border-radius:12px;padding:11px 14px;font-weight:850}.save:disabled,.row-action:disabled{opacity:.55;cursor:not-allowed}
     .report-summary{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:12px;margin-bottom:14px}.mini-stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px}.mini-stat small{font-size:10px;font-weight:900;color:var(--muted)}.mini-stat strong{display:block;font-size:24px;margin-top:5px}.risk{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:6px 9px;font-size:10px;font-weight:900;white-space:nowrap}.risk::before{content:"";width:8px;height:8px;border-radius:50%}.risk-green{background:#dcfce7;color:#166534}.risk-green::before{background:#16a34a}.risk-yellow{background:#fef3c7;color:#92400e}.risk-yellow::before{background:#f59e0b}.risk-red{background:#fee2e2;color:#991b1b}.risk-red::before{background:#dc2626}.stars{white-space:nowrap;color:#e0a900;font-size:15px;letter-spacing:1px}.comment{max-width:300px;white-space:normal;line-height:1.4}.report-table{min-width:1120px}.row-actions{display:flex;gap:6px;flex-wrap:wrap}.row-action{border:0;border-radius:9px;padding:7px 9px;font-size:10px;font-weight:850}.row-action.review{background:#dcfce7;color:#166534}.row-action.reopen{background:#fff7cc;color:#806900}.row-action.history{background:#eef2ff;color:#3730a3}.report-warning{margin-bottom:12px;border:1px solid #f6d365;background:#fffbea;border-radius:14px;padding:12px 14px;font-size:12px;color:#765c00}
-    .modal-backdrop{position:fixed;inset:0;background:#0009;display:grid;place-items:center;padding:18px;z-index:50}.modal{width:min(920px,100%);max-height:88vh;overflow:auto;background:#fff;border-radius:22px;box-shadow:0 30px 80px #0008}.modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:2}.modal-head h3{margin:0}.close-btn{width:36px;height:36px;border:0;border-radius:11px;background:#f0f1f3;font-size:18px}.history-list{padding:8px 18px 18px}.modal-body{padding:18px}.radar{min-height:360px;border-radius:22px;background:radial-gradient(circle at center,#173827 0 2%,transparent 3%),repeating-radial-gradient(circle at center,#16a34a22 0 1px,transparent 2px 70px),linear-gradient(#07120d,#0d2518);position:relative;overflow:hidden;margin-bottom:16px}.radar::before,.radar::after{content:"";position:absolute;background:#34d39933}.radar::before{width:1px;height:100%;left:50%}.radar::after{height:1px;width:100%;top:50%}.radar-dot{position:absolute;width:18px;height:18px;border-radius:50%;background:#34d399;border:3px solid #d1fae5;box-shadow:0 0 0 7px #34d39922,0 0 18px #34d399;transform:translate(-50%,-50%)}.radar-dot span{position:absolute;left:22px;top:-4px;color:#fff;background:#0009;border-radius:8px;padding:4px 7px;font-size:10px;white-space:nowrap}.detail-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}.detail-card{border:1px solid var(--line);border-radius:14px;padding:13px;background:#fff}.detail-card small{color:var(--muted)}.confirm-box{padding:18px}.confirm-box textarea{width:100%;min-height:90px;border:1px solid var(--line);border-radius:12px;padding:11px;margin-top:10px}.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}.modal-actions button{border:0;border-radius:11px;padding:10px 14px;font-weight:850}.history-item{display:grid;grid-template-columns:110px 80px 1fr auto;gap:12px;align-items:start;padding:14px 0;border-bottom:1px solid var(--line)}.history-item:last-child{border-bottom:0}.history-item p{margin:4px 0 0;color:#4b5563;line-height:1.4}.mobile-menu{display:none;border:0;background:#f0f1f3;border-radius:10px;padding:8px 10px}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#111;color:#fff;border-radius:12px;padding:12px 16px;opacity:0;pointer-events:none;transition:.2s;z-index:80;max-width:min(90vw,520px);text-align:center}.toast.show{opacity:1}.version{position:fixed;right:8px;bottom:8px;z-index:90;background:#111;color:#fff;padding:5px 8px;border-radius:9px;font:700 10px system-ui;opacity:.72}
+    .stat.actionable{cursor:pointer;position:relative;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}.stat.actionable:hover,.stat.actionable:focus-visible{transform:translateY(-2px);box-shadow:0 10px 28px #1112;border-color:#c9cdd4;outline:none}.stat.actionable::after{content:"Abrir";position:absolute;right:12px;top:10px;font-size:9px;font-weight:900;color:#9aa0aa;opacity:0;transition:.16s}.stat.actionable:hover::after,.stat.actionable:focus-visible::after{opacity:1}.stat.actionable.loading{pointer-events:none;opacity:.6}
+    .approval{display:inline-flex;border-radius:999px;padding:5px 9px;font-size:10px;font-weight:900}.approval-approved{background:#dcfce7;color:#166534}.approval-pending{background:#fff7cc;color:#806900}.approval-rejected,.approval-deleted{background:#fee2e2;color:#991b1b}.person.blocked{border-color:#fecaca;background:#fffafa}.person.pending-card{border-color:#f6d365;background:#fffef6}.actions.wrap{flex-wrap:wrap}.actions.wrap button{flex:1 1 105px}.danger-solid{background:#b91c1c!important;color:#fff!important}.warning{background:#fff7cc;color:#806900}.profile-id{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:10px;color:var(--muted);word-break:break-all}
+    .ops-modal{width:min(1040px,100%)}.ops-body{padding:18px}.ops-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}.ops-kpi{border:1px solid var(--line);border-radius:15px;padding:13px;background:#fafafa}.ops-kpi small{display:block;color:var(--muted);font-size:10px;font-weight:900}.ops-kpi strong{display:block;font-size:22px;margin-top:4px}.ops-list{display:grid;gap:10px}.ops-item{border:1px solid var(--line);border-radius:15px;padding:13px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}.ops-item p{margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.4}.ops-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.ops-actions button{border:0;border-radius:10px;padding:8px 10px;font-size:11px;font-weight:850}.radar-layout{display:grid;grid-template-columns:1.35fr .65fr;gap:14px}.radar-map{height:480px;border-radius:18px;border:1px solid var(--line);overflow:hidden;background:#e9eef2}.radar-side{max-height:480px;overflow:auto}.radar-driver{border:1px solid var(--line);border-radius:13px;padding:11px;margin-bottom:8px;background:#fff}.radar-driver strong{display:block}.radar-driver small{color:var(--muted)}.map-missing{margin-top:10px;padding:10px;border-radius:12px;background:#fff7cc;color:#6b5600;font-size:11px}.report-delete{background:#fee2e2;color:#991b1b}.click-row{cursor:pointer}.click-row:hover td{background:#fafafa}
+    .modal-backdrop{position:fixed;inset:0;background:#0009;display:grid;place-items:center;padding:18px;z-index:50}.modal{width:min(780px,100%);max-height:88vh;overflow:auto;background:#fff;border-radius:22px;box-shadow:0 30px 80px #0008}.modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:18px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:2}.modal-head h3{margin:0}.close-btn{width:36px;height:36px;border:0;border-radius:11px;background:#f0f1f3;font-size:18px}.history-list{padding:8px 18px 18px}.history-item{display:grid;grid-template-columns:110px 80px 1fr auto;gap:12px;align-items:start;padding:14px 0;border-bottom:1px solid var(--line)}.history-item:last-child{border-bottom:0}.history-item p{margin:4px 0 0;color:#4b5563;line-height:1.4}.mobile-menu{display:none;border:0;background:#f0f1f3;border-radius:10px;padding:8px 10px}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#111;color:#fff;border-radius:12px;padding:12px 16px;opacity:0;pointer-events:none;transition:.2s;z-index:80;max-width:min(90vw,520px);text-align:center}.toast.show{opacity:1}.version{position:fixed;right:8px;bottom:8px;z-index:90;background:#111;color:#fff;padding:5px 8px;border-radius:9px;font:700 10px system-ui;opacity:.72}
     @media(max-width:1100px){.cards{grid-template-columns:repeat(2,1fr)}.report-summary{grid-template-columns:repeat(2,1fr)}}
+
+    .people-sync{font-size:11px;color:var(--muted);white-space:nowrap}.people-sync strong{color:var(--ink)}
+    .person.deleted-card{border-color:#d1d5db;background:#f3f4f6;opacity:.88}.person.deleted-card .avatar{filter:grayscale(1)}
+    .live-map-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(260px,.65fr);gap:14px}.live-map-shell{position:relative}.live-map{height:520px;border-radius:18px;border:1px solid var(--line);overflow:hidden;background:#dfe7ec}.live-map-side{max-height:520px;overflow:auto;padding-right:3px}.map-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.map-toolbar button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 11px;font-size:11px;font-weight:850}.map-toolbar button.active{background:#111317;color:#fff;border-color:#111317}.map-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin:9px 2px 0}.map-legend span{display:flex;align-items:center;gap:5px}.legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block}.legend-driver{background:#16a34a}.legend-request{background:#f59e0b}.legend-trip{background:#2563eb}.map-marker{width:34px;height:34px;border-radius:50% 50% 50% 8px;transform:rotate(-45deg);display:grid;place-items:center;border:3px solid #fff;box-shadow:0 3px 10px #0005}.map-marker span{transform:rotate(45deg);font-size:16px}.map-marker.driver{background:#16a34a}.map-marker.request{background:#f59e0b}.map-marker.trip{background:#2563eb}.map-empty{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;z-index:400}.map-empty>div{background:#fffE;border:1px solid var(--line);border-radius:14px;padding:12px 16px;text-align:center;box-shadow:var(--shadow);font-size:12px;color:var(--muted)}
+    .admin-reason{margin-top:5px;font-size:11px;color:#991b1b}.refreshing{opacity:.6;pointer-events:none}
+    @media(max-width:900px){.radar-layout,.live-map-layout{grid-template-columns:1fr}.radar-map,.live-map{height:390px}.radar-side,.live-map-side{max-height:none}}
     @media(max-width:760px){.shell{display:block}.sidebar{position:fixed;width:245px;transform:translateX(-100%);transition:.2s}.sidebar.open{transform:none}.mobile-menu{display:block}.topbar{padding:0 15px}.content{padding:17px 14px 30px}.grid{grid-template-columns:1fr}.cards,.fare-grid{grid-template-columns:1fr}.topbar h2{font-size:18px}.live span:last-child{display:none}.report-summary{grid-template-columns:repeat(2,1fr)}.history-item{grid-template-columns:1fr}.toolbar-group>*{max-width:none!important;flex:1 1 150px}}
   </style>
 </head>
@@ -57,14 +68,14 @@
       <div class="content">
         <section id="page-dashboard" class="section-page active">
           <div class="stats">
-            <div class="stat clickable" tabindex="0" role="button" data-stat-action="active-drivers"><small>CONDUCTORES ACTIVOS</small><strong id="sDrivers">0</strong><div class="sub">Con actividad ahora</div></div>
-            <div class="stat clickable" tabindex="0" role="button" data-stat-action="active-rides"><small>VIAJES ACTIVOS</small><strong id="sActive">0</strong><div class="sub">En operación</div></div>
-            <div class="stat clickable" tabindex="0" role="button" data-stat-action="radar"><small>BUSCANDO CONDUCTOR</small><strong id="sSearching">0</strong><div class="sub">Esperando aceptación</div></div>
-            <div class="stat clickable" tabindex="0" role="button" data-stat-action="finished-today"><small>TERMINADOS HOY</small><strong id="sFinished">0</strong><div class="sub">Servicios completados</div></div>
-            <div class="stat clickable" tabindex="0" role="button" data-stat-action="canceled-today"><small>CANCELADOS HOY</small><strong id="sCanceled">0</strong><div class="sub">Requieren seguimiento</div></div>
-            <div class="stat clickable" tabindex="0" role="button" data-stat-action="revenue-today"><small>VOLUMEN HOY</small><strong id="sRevenue">0 CUP</strong><div class="sub">Viajes finalizados</div></div>
-            <div class="stat attention clickable" tabindex="0" role="button" data-stat-action="pending-reports"><small>REPORTES PENDIENTES</small><strong id="sReports">0</strong><div class="sub">Calificaciones de 1–3 estrellas</div></div>
-            <div class="stat critical clickable" tabindex="0" role="button" data-stat-action="repeat-drivers"><small>REINCIDENTES</small><strong id="sRepeat">0</strong><div class="sub">3 o más reportes</div></div>
+            <div class="stat actionable" role="button" tabindex="0" data-stat-action="active-drivers"><small>CONDUCTORES ACTIVOS</small><strong id="sDrivers">0</strong><div class="sub">Toca para verlos y administrarlos</div></div>
+            <div class="stat actionable" role="button" tabindex="0" data-stat-action="active-rides"><small>VIAJES ACTIVOS</small><strong id="sActive">0</strong><div class="sub">Toca para abrir los viajes en operación</div></div>
+            <div class="stat actionable" role="button" tabindex="0" data-stat-action="radar"><small>BUSCANDO CONDUCTOR</small><strong id="sSearching">0</strong><div class="sub">Mapa en vivo de conductores y solicitudes</div></div>
+            <div class="stat actionable" role="button" tabindex="0" data-stat-action="finished"><small>TERMINADOS HOY</small><strong id="sFinished">0</strong><div class="sub">Detalle de servicios completados</div></div>
+            <div class="stat actionable" role="button" tabindex="0" data-stat-action="canceled"><small>CANCELADOS HOY</small><strong id="sCanceled">0</strong><div class="sub">Ver motivos y seguimiento</div></div>
+            <div class="stat actionable" role="button" tabindex="0" data-stat-action="revenue"><small>VOLUMEN HOY</small><strong id="sRevenue">0 CUP</strong><div class="sub">Desglose de ingresos del día</div></div>
+            <div class="stat actionable attention" role="button" tabindex="0" data-stat-action="pending-reports"><small>REPORTES PENDIENTES</small><strong id="sReports">0</strong><div class="sub">Resolver, reabrir o eliminar</div></div>
+            <div class="stat actionable critical" role="button" tabindex="0" data-stat-action="repeat-drivers"><small>REINCIDENTES</small><strong id="sRepeat">0</strong><div class="sub">Administrar conductores de riesgo</div></div>
           </div>
           <div class="grid">
             <div class="panel">
@@ -78,18 +89,49 @@
         <section id="page-rides" class="section-page">
           <div class="toolbar"><div class="toolbar-group"><input id="rideSearch" class="search" placeholder="Buscar por pasajero, conductor o dirección…"><input id="rideDate" class="search" type="date" style="max-width:190px"></div></div>
           <div class="panel">
-            <div class="filters" id="rideFilters"><button class="active" data-filter="all">Todos</button><button data-filter="searching">Buscando</button><button data-filter="accepted">Aceptados</button><button data-filter="arrived">Llegó</button><button data-filter="in_progress">En curso</button><button data-filter="finished">Terminados</button><button data-filter="canceled">Cancelados</button></div>
+            <div class="filters" id="rideFilters"><button class="active" data-filter="all">Todos</button><button data-filter="active">Activos</button><button data-filter="searching">Buscando</button><button data-filter="accepted">Aceptados</button><button data-filter="arrived">Llegó</button><button data-filter="in_progress">En curso</button><button data-filter="finished">Terminados</button><button data-filter="canceled">Cancelados</button></div>
             <div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Pasajero</th><th>Conductor</th><th>Recogida</th><th>Destino</th><th>Vehículo</th><th>Estado</th><th>Precio</th></tr></thead><tbody id="rideRows"></tbody></table></div>
           </div>
         </section>
 
-        <section id="page-drivers" class="section-page"><div class="toolbar"><div class="toolbar-group"><input id="driverSearch" class="search" placeholder="Buscar conductor…"><select id="driverStatus" class="search"><option value="">Todos los estados</option><option value="active">Aprobados</option><option value="pending">Pendientes</option><option value="suspended">Suspendidos</option><option value="rejected">Desaprobados</option></select></div></div><div id="driverCards" class="cards"></div></section>
-        <section id="page-passengers" class="section-page"><div class="toolbar"><input id="passengerSearch" class="search" placeholder="Buscar pasajero…"></div><div id="passengerCards" class="cards"></div></section>
+        <section id="page-drivers" class="section-page">
+          <div class="toolbar">
+            <div class="toolbar-group">
+              <input id="driverSearch" class="search" placeholder="Buscar conductor…">
+              <select id="driverStatus" class="search">
+                <option value="all">Todos los estados</option>
+                <option value="online">En línea</option>
+                <option value="approved">Aprobados</option>
+                <option value="pending">Pendientes</option>
+                <option value="rejected">Desaprobados</option>
+                <option value="deleted">Eliminados</option>
+              </select>
+              <button id="refreshDrivers" class="clear-btn">Actualizar ahora</button>
+            </div>
+            <div class="people-sync"><strong id="driverCount">0</strong> conductor(es) · <span id="driverUpdated">Sin actualizar</span></div>
+          </div>
+          <div id="driverCards" class="cards"></div>
+        </section>
+        <section id="page-passengers" class="section-page">
+          <div class="toolbar">
+            <div class="toolbar-group">
+              <input id="passengerSearch" class="search" placeholder="Buscar pasajero…">
+              <select id="passengerStatus" class="search">
+                <option value="all">Todos</option>
+                <option value="active">Activos</option>
+                <option value="deleted">Eliminados</option>
+              </select>
+              <button id="refreshPassengers" class="clear-btn">Actualizar ahora</button>
+            </div>
+            <div class="people-sync"><strong id="passengerCount">0</strong> usuario(s) · <span id="passengerUpdated">Sin actualizar</span></div>
+          </div>
+          <div id="passengerCards" class="cards"></div>
+        </section>
 
         <section id="page-fares" class="section-page"><div class="empty" style="margin-bottom:14px">La tarifa se calcula únicamente por distancia: kilómetros recorridos × precio por km.</div><div class="fare-grid" id="fareGrid"></div><div style="margin-top:14px"><button id="saveFares" class="save">Guardar precios por km</button></div></section>
 
         <section id="page-reports" class="section-page">
-          <div id="reportWarning" class="report-warning hidden">El panel está mostrando calificaciones directamente desde los viajes, pero la tabla de reportes no está disponible. Ejecuta <strong>ACTUALIZAR_SUPABASE_v2.4.0.sql</strong> para guardar decisiones y acciones administrativas.</div>
+          <div id="reportWarning" class="report-warning hidden">El panel está mostrando calificaciones directamente desde los viajes, pero la tabla de reportes no está disponible. Ejecuta <strong>ACTUALIZAR_SUPABASE_v2.4.1.sql</strong> para guardar revisiones e historial.</div>
           <div class="report-summary">
             <div class="mini-stat"><small>PENDIENTES</small><strong id="rPending">0</strong></div>
             <div class="mini-stat"><small>REVISADOS</small><strong id="rReviewed">0</strong></div>
@@ -101,7 +143,7 @@
               <input id="reportSearch" class="search" placeholder="Buscar conductor, pasajero o comentario…">
               <select id="reportDriver" class="search"><option value="">Todos los conductores</option></select>
               <select id="reportRating" class="search"><option value="">Todas las calificaciones</option><option value="1">1 estrella</option><option value="2">2 estrellas</option><option value="3">3 estrellas</option></select>
-              <select id="reportStatus" class="search"><option value="">Todos los estados</option><option value="pending">Pendientes</option><option value="reviewed">Revisados</option><option value="dismissed">Eliminados</option></select>
+              <select id="reportStatus" class="search"><option value="">Todos los estados</option><option value="pending">Pendientes</option><option value="reviewed">Revisados</option></select>
               <input id="reportDate" class="search" type="date" style="max-width:190px">
               <button id="clearReportFilters" class="clear-btn">Limpiar filtros</button>
             </div>
@@ -122,15 +164,15 @@
     </div>
   </div>
 
-  <div id="actionModal" class="modal-backdrop hidden" role="dialog" aria-modal="true">
-    <div class="modal">
-      <div class="modal-head"><div><h3 id="actionTitle">Detalle</h3><small id="actionSubtitle" style="color:var(--muted)"></small></div><button id="closeAction" class="close-btn" aria-label="Cerrar">✕</button></div>
-      <div id="actionBody" class="modal-body"></div>
+  <div id="opsModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="opsTitle">
+    <div class="modal ops-modal">
+      <div class="modal-head"><div><h3 id="opsTitle">Detalle operativo</h3><small id="opsSubtitle" style="color:var(--muted)"></small></div><button id="closeOps" class="close-btn" aria-label="Cerrar">✕</button></div>
+      <div id="opsBody" class="ops-body"></div>
     </div>
   </div>
 
   <div id="toast" class="toast"></div>
-  <div class="version">Admin v2.4.0</div>
+  <div class="version">Admin v2.4.1</div>
 
   <script>
     const SUPABASE_URL='https://zrrabfleykuhxyqldxid.supabase.co';
@@ -145,14 +187,18 @@
     let reports=[];
     let fares=[];
     let profiles=[];
-    let profileTableAvailable=true;
     let rideFilter='all';
-    let driverViewMode='all';
-    let reportRepeatOnly=false;
     let channel=null;
     let reportsTableAvailable=true;
     let fareTableAvailable=true;
+    let profilesTableAvailable=true;
     let refreshTimer=null;
+    let liveMap=null;
+    let liveMapLayers=null;
+    let liveMapFilters={drivers:true,requests:true,trips:true};
+    let liveMapHasFitted=false;
+    let periodicRefresh=null;
+    let lastPeopleUpdate=null;
 
     function toast(message){const el=$('#toast');el.textContent=message;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),2500)}
     function esc(value){return String(value??'—').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]))}
@@ -165,6 +211,17 @@
     function statusClass(status){return ACTIVE_STATUSES.concat(['finished','canceled']).includes(status)?status:'finished'}
     function stars(rating){const n=Math.round(Math.max(0,Math.min(5,Number(rating||0))));return '★'.repeat(n)+'☆'.repeat(5-n)}
     function ownerIdentity(){return localStorage.getItem('sr_admin_email')||'administración'}
+    function todayKey(){return localDateKey(new Date())}
+    function profileKey(profile){return String(profile?.device_id||profile?.id||'')}
+    function profileFor(id){const key=String(id||'');return profiles.find(profile=>profileKey(profile)===key||String(profile?.id||'')===key)||null}
+    function approvalLabel(value){return({approved:'Aprobado',pending:'Pendiente',rejected:'Desaprobado',deleted:'Eliminado',blocked:'Bloqueado'})[value]||'Pendiente'}
+    function approvalClass(value){return ['approved','pending','rejected','deleted'].includes(value)?value:'pending'}
+    function isProfileOnline(profile){if(!profile||profile.status==='deleted'||profile.approval_status==='rejected')return false;const seen=safeDate(profile.last_seen_at)?.getTime()||0;return Boolean(profile.is_online)&&(Date.now()-seen<90*1000||!seen)}
+    function latestRideForDriver(driverId){return rides.filter(ride=>String(ride.driver_id||'')===String(driverId||'')).sort((a,b)=>(safeDate(b.updated_at||b.created_at)?.getTime()||0)-(safeDate(a.updated_at||a.created_at)?.getTime()||0))[0]||null}
+    function activeDriverIds(){const ids=new Set();profiles.filter(profile=>profile.role==='driver'&&isProfileOnline(profile)).forEach(profile=>ids.add(profileKey(profile)));rides.filter(ride=>ACTIVE_STATUSES.includes(ride.status)&&ride.driver_id).forEach(ride=>{const profile=profileFor(ride.driver_id);if(profile?.status==='deleted'||profile?.status==='blocked'||profile?.approval_status==='rejected')return;ids.add(String(ride.driver_id))});return ids}
+    function closeOpsModal(){if(liveMap){liveMap.remove();liveMap=null;liveMapLayers=null;liveMapHasFitted=false}$('#opsModal').classList.add('hidden')}
+    function openOpsModal(title,subtitle,html){$('#opsTitle').textContent=title;$('#opsSubtitle').textContent=subtitle||'';$('#opsBody').innerHTML=html;$('#opsModal').classList.remove('hidden')}
+
 
     function reportRide(report){const id=String(report.ride_id||report.trip_id||'');return rides.find(ride=>String(ride.id)===id)||null}
     function normalizeReport(raw,derived=false){
@@ -181,8 +238,6 @@
         rating:Number(source.rating??ride?.rating??0),
         passenger_comment:source.passenger_comment??source.description??ride?.rating_comment??'',
         reviewed:Boolean(source.reviewed??(source.status==='resolved')),
-        dismissed:Boolean(source.dismissed??(source.status==='dismissed')),
-        resolution_notes:source.resolution_notes||'',
         reviewed_at:source.reviewed_at||source.resolved_at||null,
         reviewed_by:source.reviewed_by||null,
         created_at:source.created_at||ride?.rated_at||ride?.created_at||new Date().toISOString(),
@@ -198,7 +253,7 @@
       reports=[...normalized,...missing].sort((a,b)=>(safeDate(b.created_at)?.getTime()||0)-(safeDate(a.created_at)?.getTime()||0));
     }
 
-    function reportGroups(){const map=new Map();reports.forEach(report=>{if(report.dismissed||!report.driver_id)return;const group=map.get(report.driver_id)||{driver_id:report.driver_id,driver_name:report.driver_name,count:0,pending:0};group.count++;if(!report.reviewed)group.pending++;if(report.driver_name&&report.driver_name!=='Conductor sin nombre')group.driver_name=report.driver_name;map.set(report.driver_id,group)});return map}
+    function reportGroups(){const map=new Map();reports.forEach(report=>{if(!report.driver_id)return;const group=map.get(report.driver_id)||{driver_id:report.driver_id,driver_name:report.driver_name,count:0,pending:0};group.count++;if(!report.reviewed)group.pending++;if(report.driver_name&&report.driver_name!=='Conductor sin nombre')group.driver_name=report.driver_name;map.set(report.driver_id,group)});return map}
     function riskForDriver(driverId){const count=reportGroups().get(String(driverId))?.count||0;return count>=5?'red':count>=3?'yellow':'green'}
     function riskLabel(level){return({green:'Verde',yellow:'Amarillo',red:'Rojo'})[level]||'Verde'}
 
@@ -210,7 +265,7 @@
       localStorage.setItem('sr_admin_beta','1');
       localStorage.setItem('sr_admin_email',email);
       $('#ownerName').textContent=email;
-      openApp();
+      openApp();startPeriodicRefresh();
     }
     $('#logoutBtn').onclick=()=>{localStorage.removeItem('sr_admin_beta');localStorage.removeItem('sr_admin_email');location.reload()};
 
@@ -222,7 +277,7 @@
       setupRealtime();
     }
 
-    $$('.nav-btn[data-page]').forEach(button=>button.onclick=()=>{if(button.dataset.page==='drivers')driverViewMode='all';if(button.dataset.page==='reports')reportRepeatOnly=false;showPage(button.dataset.page);if(button.dataset.page==='drivers')renderPeople();if(button.dataset.page==='reports')renderReports()});
+    $$('.nav-btn[data-page]').forEach(button=>button.onclick=()=>showPage(button.dataset.page));
     $$('[data-go]').forEach(button=>button.onclick=()=>showPage(button.dataset.go));
     function showPage(page){
       $$('.nav-btn[data-page]').forEach(button=>button.classList.toggle('active',button.dataset.page===page));
@@ -249,11 +304,11 @@
     }
     async function loadProfiles(){
       const {data,error}=await sb.from('profiles').select('*').order('created_at',{ascending:false}).limit(2000);
-      profileTableAvailable=!error;
+      profilesTableAvailable=!error;
       if(error){console.warn('profiles no disponible:',error.message);profiles=[];return false}
-      profiles=data||[];return true;
+      profiles=data||[];
+      return true;
     }
-
     async function loadFares(){
       const defaults=[['Motorina',0,38,0],['Moto',0,45,0],['Bicitaxi',0,28,0],['Triciclo',0,48,0]];
       const {data,error}=await sb.from('fare_settings').select('*').order('vehicle_type');
@@ -263,52 +318,156 @@
     }
     async function loadAll(){
       setSyncState(false,'Cargando datos…');
-      const ridesOk=await loadRides();
-      if(ridesOk)await loadReports();
-      await loadProfiles();
-      await loadFares();
-      renderAll();
-      setSyncState(true,'Datos actualizados');
+      try{
+        const [ridesOk]=await Promise.all([loadRides(),loadProfiles(),loadFares()]);
+        if(ridesOk)await loadReports();
+        lastPeopleUpdate=new Date();
+        renderAll();
+        setSyncState(true,'Datos actualizados');
+      }catch(error){console.error(error);setSyncState(false,'Error al actualizar');toast('No se pudieron actualizar todos los datos')}
     }
     async function refreshOperations(){
+      if(refreshOperations.running)return;
+      refreshOperations.running=true;
+      document.body.classList.add('refreshing');
       setSyncState(false,'Actualizando…');
-      const ridesOk=await loadRides();
-      if(ridesOk)await loadReports();
-      await loadProfiles();
-      await loadFares();
-      renderAll(false);
-      setSyncState(true,'Conectado en tiempo real');
+      try{
+        const [ridesOk]=await Promise.all([loadRides(),loadProfiles(),loadFares()]);
+        if(ridesOk)await loadReports();
+        lastPeopleUpdate=new Date();
+        renderAll(false);
+        setSyncState(true,'Conectado en tiempo real');
+      }catch(error){console.error(error);setSyncState(false,'Error al actualizar')}
+      finally{refreshOperations.running=false;document.body.classList.remove('refreshing')}
     }
     function setSyncState(connected,text){$('#syncDot').classList.toggle('offline',!connected);$('#syncText').textContent=text}
 
-    function renderAll(includeFares=true){renderDashboard();renderRideTable();renderPeople();renderReports();if(includeFares)renderFares()}
+    function renderAll(includeFares=true){renderDashboard();renderRideTable();renderPeople();renderReports();if(includeFares)renderFares();if(liveMap&&$('#liveMap'))renderLiveMap(false)}
     function renderDashboard(){
       const todayRides=rides.filter(isToday);
       const activeRides=rides.filter(ride=>ACTIVE_STATUSES.includes(ride.status));
-      const activeDrivers=new Set(activeRides.filter(ride=>ride.driver_id).map(ride=>String(ride.driver_id)));
+      const finishedToday=rides.filter(ride=>ride.status==='finished'&&localDateKey(ride.finished_at||ride.updated_at||ride.created_at)===todayKey());
+      const canceledToday=rides.filter(ride=>ride.status==='canceled'&&localDateKey(ride.canceled_at||ride.updated_at||ride.created_at)===todayKey());
+      const activeDrivers=activeDriverIds();
       const groups=[...reportGroups().values()];
       $('#sDrivers').textContent=activeDrivers.size;
       $('#sActive').textContent=activeRides.length;
       $('#sSearching').textContent=todayRides.filter(ride=>ride.status==='searching').length;
-      $('#sFinished').textContent=todayRides.filter(ride=>ride.status==='finished').length;
-      $('#sCanceled').textContent=todayRides.filter(ride=>ride.status==='canceled').length;
-      $('#sRevenue').textContent=money(todayRides.filter(ride=>ride.status==='finished').reduce((sum,ride)=>sum+Number(ride.price||0),0));
-      $('#sReports').textContent=reports.filter(report=>!report.reviewed&&!report.dismissed).length;
+      $('#sFinished').textContent=finishedToday.length;
+      $('#sCanceled').textContent=canceledToday.length;
+      $('#sRevenue').textContent=money(finishedToday.reduce((sum,ride)=>sum+Number(ride.price||0),0));
+      $('#sReports').textContent=reports.filter(report=>!report.reviewed).length;
       $('#sRepeat').textContent=groups.filter(group=>group.count>=3).length;
       renderRows(activeRides.slice(0,10),'#liveRows',true);
       renderAlerts();
     }
+
+    function setRideView(filter,date=''){
+      rideFilter=filter;
+      $$('#rideFilters button').forEach(button=>button.classList.toggle('active',button.dataset.filter===filter));
+      $('#rideDate').value=date;
+      showPage('rides');
+      renderRideTable();
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+    function driverLocation(driverId){
+      const profile=profileFor(driverId);
+      if(Number.isFinite(Number(profile?.last_lat))&&Number.isFinite(Number(profile?.last_lng)))return {lat:Number(profile.last_lat),lng:Number(profile.last_lng),source:'GPS del perfil'};
+      const ride=latestRideForDriver(driverId);
+      if(Number.isFinite(Number(ride?.driver_lat))&&Number.isFinite(Number(ride?.driver_lng)))return {lat:Number(ride.driver_lat),lng:Number(ride.driver_lng),source:'Último viaje'};
+      return null;
+    }
+    function activeDriverPeople(){
+      const ids=activeDriverIds();
+      return uniquePeople('driver').filter(person=>ids.has(person.id));
+    }
+    function openActiveDrivers(){
+      const list=activeDriverPeople();
+      const html=`<div class="ops-summary"><div class="ops-kpi"><small>ACTIVOS AHORA</small><strong>${list.length}</strong></div><div class="ops-kpi"><small>APROBADOS</small><strong>${list.filter(item=>item.approval_status==='approved').length}</strong></div></div><div class="ops-list">${list.map(person=>opsDriverItem(person)).join('')||'<div class="empty">No hay conductores activos en este momento.</div>'}</div>`;
+      openOpsModal('Conductores activos','Lista en tiempo real con acciones administrativas',html);
+    }
+    function opsDriverItem(person){
+      const loc=driverLocation(person.id);
+      return `<div class="ops-item"><div><strong>${esc(person.name||'Sin nombre')}</strong> <span class="approval approval-${approvalClass(person.approval_status)}">${approvalLabel(person.approval_status)}</span><p>${esc(person.vehicle||'Vehículo sin definir')} · ${person.trips} viaje(s)${loc?' · ubicación disponible':' · sin GPS reciente'}</p></div><div class="ops-actions"><button class="neutral" data-ops-action="trips" data-person-id="${esc(person.id)}">Viajes</button><button class="ok" data-ops-action="approve" data-person-id="${esc(person.id)}">Aprobar</button><button class="warning" data-ops-action="reject" data-person-id="${esc(person.id)}">Desaprobar</button><button class="danger" data-ops-action="delete-driver" data-person-id="${esc(person.id)}">Eliminar</button></div></div>`;
+    }
+    function mapIcon(kind,emoji){
+      return L.divIcon({className:'',html:`<div class="map-marker ${kind}"><span>${emoji}</span></div>`,iconSize:[34,34],iconAnchor:[17,32],popupAnchor:[0,-30]});
+    }
+    function validPoint(lat,lng){return Number.isFinite(Number(lat))&&Number.isFinite(Number(lng))&&Math.abs(Number(lat))<=90&&Math.abs(Number(lng))<=180}
+    function openLiveMap(){
+      const drivers=activeDriverPeople();
+      const searching=rides.filter(ride=>ride.status==='searching');
+      const activeTrips=rides.filter(ride=>['accepted','arrived','in_progress'].includes(ride.status));
+      const controls=`<div class="map-toolbar"><button class="active" data-map-filter="drivers">Conductores</button><button class="active" data-map-filter="requests">Solicitudes</button><button class="active" data-map-filter="trips">Viajes activos</button><button data-map-action="center">Centrar</button><button data-map-action="refresh">Actualizar</button></div>`;
+      const html=`${controls}<div class="live-map-layout"><div class="live-map-shell"><div id="liveMap" class="live-map"></div><div id="liveMapEmpty" class="map-empty hidden"><div>No hay ubicaciones GPS disponibles todavía.<br>Los conductores aparecerán al conectarse.</div></div><div class="map-legend"><span><i class="legend-dot legend-driver"></i> Conductores</span><span><i class="legend-dot legend-request"></i> Solicitudes</span><span><i class="legend-dot legend-trip"></i> Viajes en curso</span></div></div><div id="liveMapSide" class="live-map-side"></div></div>`;
+      openOpsModal('Mapa operativo en vivo',`${drivers.length} conductor(es) · ${searching.length} solicitud(es) · ${activeTrips.length} viaje(s)`,html);
+      setTimeout(()=>{
+        if(!window.L||!$('#liveMap'))return toast('No se pudo cargar el mapa');
+        liveMap=L.map('liveMap',{zoomControl:true}).setView([21.84206,-78.76000],13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; OpenStreetMap'}).addTo(liveMap);
+        liveMapLayers={drivers:L.layerGroup().addTo(liveMap),requests:L.layerGroup().addTo(liveMap),trips:L.layerGroup().addTo(liveMap)};
+        renderLiveMap(true);
+        setTimeout(()=>liveMap?.invalidateSize(),150);
+      },50);
+    }
+    function renderLiveMap(fit=true){
+      if(!liveMap||!liveMapLayers)return;
+      Object.values(liveMapLayers).forEach(layer=>layer.clearLayers());
+      const bounds=[];
+      const drivers=activeDriverPeople();
+      const searching=rides.filter(ride=>ride.status==='searching');
+      const activeTrips=rides.filter(ride=>['accepted','arrived','in_progress'].includes(ride.status));
+      if(liveMapFilters.drivers){
+        drivers.forEach(person=>{const loc=driverLocation(person.id);if(!loc||!validPoint(loc.lat,loc.lng))return;const marker=L.marker([loc.lat,loc.lng],{icon:mapIcon('driver','🛵')}).addTo(liveMapLayers.drivers);marker.bindPopup(`<strong>${esc(person.name||'Conductor')}</strong><br>${esc(person.vehicle||'Vehículo')}<br>${person.is_online?'En línea':'En viaje'} · ${esc(loc.source)}<br><button onclick="window.adminOpenTrips('${esc(person.id)}')" style="margin-top:7px">Ver viajes</button>`);bounds.push([loc.lat,loc.lng])});
+      }
+      if(liveMapFilters.requests){
+        searching.forEach(ride=>{if(!validPoint(ride.pickup_lat,ride.pickup_lng))return;const lat=Number(ride.pickup_lat),lng=Number(ride.pickup_lng);L.marker([lat,lng],{icon:mapIcon('request','🙋')}).addTo(liveMapLayers.requests).bindPopup(`<strong>Solicitud buscando conductor</strong><br>${esc(ride.passenger_name||'Pasajero')}<br>${esc(ride.pickup_address||'Recogida')}<br>Destino: ${esc(ride.destination_address||'—')}`);bounds.push([lat,lng])});
+      }
+      if(liveMapFilters.trips){
+        activeTrips.forEach(ride=>{const points=[];if(validPoint(ride.driver_lat,ride.driver_lng))points.push([Number(ride.driver_lat),Number(ride.driver_lng)]);else{const loc=driverLocation(ride.driver_id);if(loc)points.push([loc.lat,loc.lng])}if(validPoint(ride.pickup_lat,ride.pickup_lng))points.push([Number(ride.pickup_lat),Number(ride.pickup_lng)]);if(validPoint(ride.destination_lat,ride.destination_lng))points.push([Number(ride.destination_lat),Number(ride.destination_lng)]);if(!points.length)return;const main=points[0];L.marker(main,{icon:mapIcon('trip','🚕')}).addTo(liveMapLayers.trips).bindPopup(`<strong>Viaje ${esc(statusLabel(ride.status))}</strong><br>${esc(ride.driver_name||'Sin conductor')} · ${esc(ride.passenger_name||'Pasajero')}<br>${esc(ride.pickup_address||'Recogida')} → ${esc(ride.destination_address||'Destino')}`);if(points.length>1)L.polyline(points,{color:'#2563eb',weight:4,opacity:.65,dashArray:'7,7'}).addTo(liveMapLayers.trips);points.forEach(point=>bounds.push(point))});
+      }
+      const missing=drivers.filter(person=>!driverLocation(person.id)).length;
+      const side=$('#liveMapSide');
+      if(side)side.innerHTML=`<div class="ops-summary"><div class="ops-kpi"><small>CONDUCTORES</small><strong>${drivers.length}</strong></div><div class="ops-kpi"><small>SIN GPS</small><strong>${missing}</strong></div></div>${drivers.map(person=>{const loc=driverLocation(person.id);return `<div class="radar-driver"><strong>${esc(person.name||'Sin nombre')}</strong><small>${esc(person.vehicle||'Vehículo')} · ${loc?'GPS actualizado '+dateFmt(person.profile?.last_seen_at||person.last):'Sin ubicación reciente'}</small><div class="ops-actions" style="margin-top:8px"><button class="neutral" data-ops-action="trips" data-person-id="${esc(person.id)}">Viajes</button><button class="warning" data-ops-action="reject" data-person-id="${esc(person.id)}">Bloquear</button><button class="danger" data-ops-action="delete-driver" data-person-id="${esc(person.id)}">Eliminar</button></div></div>`}).join('')||'<div class="empty">No hay conductores activos.</div>'}`;
+      $('#liveMapEmpty')?.classList.toggle('hidden',bounds.length>0);
+      $('#opsSubtitle').textContent=`${drivers.length} conductor(es) · ${searching.length} solicitud(es) · ${activeTrips.length} viaje(s) · actualización ${new Date().toLocaleTimeString('es-US',{hour:'numeric',minute:'2-digit',second:'2-digit'})}`;
+      if(bounds.length&&(fit||!liveMapHasFitted)){liveMap.fitBounds(bounds,{padding:[40,40],maxZoom:15});liveMapHasFitted=true}
+    }
+    window.adminOpenTrips=id=>openPersonTrips(id,'driver');
+    function openRevenue(){
+      const finished=rides.filter(ride=>ride.status==='finished'&&localDateKey(ride.finished_at||ride.updated_at||ride.created_at)===todayKey());
+      const total=finished.reduce((sum,ride)=>sum+Number(ride.price||0),0);
+      const byVehicle=new Map();finished.forEach(ride=>byVehicle.set(ride.vehicle_type||'Sin vehículo',(byVehicle.get(ride.vehicle_type||'Sin vehículo')||0)+Number(ride.price||0)));
+      const html=`<div class="ops-summary"><div class="ops-kpi"><small>VOLUMEN TOTAL</small><strong>${money(total)}</strong></div><div class="ops-kpi"><small>VIAJES TERMINADOS</small><strong>${finished.length}</strong></div><div class="ops-kpi"><small>PROMEDIO</small><strong>${money(finished.length?total/finished.length:0)}</strong></div></div><div class="ops-list">${[...byVehicle.entries()].map(([vehicle,value])=>`<div class="ops-item"><div><strong>${esc(vehicle)}</strong><p>Ingresos generados hoy</p></div><strong>${money(value)}</strong></div>`).join('')||'<div class="empty">Todavía no hay viajes terminados hoy.</div>'}</div>`;
+      openOpsModal('Volumen de hoy','Desglose de viajes terminados',html);
+    }
+    function openRepeatDrivers(){
+      const groups=[...reportGroups().values()].filter(group=>group.count>=3).sort((a,b)=>b.count-a.count);
+      const html=`<div class="ops-list">${groups.map(group=>{const person=uniquePeople('driver').find(item=>item.id===group.driver_id)||{id:group.driver_id,name:group.driver_name,vehicle:'Vehículo sin definir',approval_status:profileFor(group.driver_id)?.approval_status||'pending',trips:0};return `<div class="ops-item"><div><strong>${esc(group.driver_name)}</strong> <span class="risk risk-${riskForDriver(group.driver_id)}">${riskLabel(riskForDriver(group.driver_id))}</span><p>${group.count} reporte(s) · ${group.pending} pendiente(s)</p></div><div class="ops-actions"><button class="neutral" data-ops-action="reports" data-person-id="${esc(group.driver_id)}">Reportes</button><button class="warning" data-ops-action="reject" data-person-id="${esc(group.driver_id)}">Desaprobar</button><button class="danger" data-ops-action="delete-driver" data-person-id="${esc(group.driver_id)}">Eliminar</button></div></div>`}).join('')||'<div class="empty">No hay conductores reincidentes.</div>'}</div>`;
+      openOpsModal('Conductores reincidentes','Tres o más calificaciones bajas',html);
+    }
+    function handleStatAction(action){
+      if(action==='active-drivers')return openActiveDrivers();
+      if(action==='active-rides')return setRideView('active');
+      if(action==='radar')return openLiveMap();
+      if(action==='finished')return setRideView('finished',todayKey());
+      if(action==='canceled')return setRideView('canceled',todayKey());
+      if(action==='revenue')return openRevenue();
+      if(action==='pending-reports'){showPage('reports');$('#reportStatus').value='pending';renderReports();return}
+      if(action==='repeat-drivers')return openRepeatDrivers();
+    }
+    $$('.stat[data-stat-action]').forEach(card=>{card.onclick=()=>handleStatAction(card.dataset.statAction);card.onkeydown=event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();handleStatAction(card.dataset.statAction)}}});
 
     function renderRows(list,target,compact=false){
       const emptyColumns=compact?6:8;
       $(target).innerHTML=list.map(ride=>compact?`<tr><td><strong>#${esc(String(ride.id).slice(0,6))}</strong></td><td>${esc(ride.passenger_name)}</td><td>${esc(ride.driver_name||'Sin asignar')}</td><td><strong>${esc(ride.pickup_address)}</strong><br><small>→ ${esc(ride.destination_address)}</small></td><td><span class="status ${statusClass(ride.status)}">${esc(statusLabel(ride.status))}</span></td><td>${money(ride.price)}</td></tr>`:`<tr><td>${dateFmt(ride.created_at)}</td><td><strong>${esc(ride.passenger_name)}</strong></td><td>${esc(ride.driver_name||'Sin asignar')}</td><td>${esc(ride.pickup_address)}</td><td>${esc(ride.destination_address)}</td><td>${esc(ride.vehicle_type)}</td><td><span class="status ${statusClass(ride.status)}">${esc(statusLabel(ride.status))}</span></td><td><strong>${money(ride.price)}</strong></td></tr>`).join('')||`<tr><td colspan="${emptyColumns}" class="empty">No hay viajes para mostrar.</td></tr>`;
     }
     function renderRideTable(){
-      let list=rideFilter==='all'?rides:(rideFilter==='active'?rides.filter(ride=>ACTIVE_STATUSES.includes(ride.status)):rides.filter(ride=>ride.status===rideFilter));
+      let list=rideFilter==='all'?rides:rideFilter==='active'?rides.filter(ride=>ACTIVE_STATUSES.includes(ride.status)):rides.filter(ride=>ride.status===rideFilter);
       const query=$('#rideSearch').value.toLowerCase().trim();
       const date=$('#rideDate').value;
-      if(query)list=list.filter(ride=>[ride.passenger_name,ride.driver_name,ride.pickup_address,ride.destination_address,ride.vehicle_type,ride.id].some(value=>String(value||'').toLowerCase().includes(query)));
-      if(date)list=list.filter(ride=>localDateKey(ride.created_at)===date);
+      if(query)list=list.filter(ride=>[ride.passenger_name,ride.driver_name,ride.passenger_id,ride.driver_id,ride.pickup_address,ride.destination_address,ride.vehicle_type,ride.id].some(value=>String(value||'').toLowerCase().includes(query)));
+      if(date)list=list.filter(ride=>localDateKey(rideFilter==='finished'?(ride.finished_at||ride.created_at):rideFilter==='canceled'?(ride.canceled_at||ride.created_at):ride.created_at)===date);
       renderRows(list,'#rideRows');
     }
     $$('#rideFilters button').forEach(button=>button.onclick=()=>{rideFilter=button.dataset.filter;$$('#rideFilters button').forEach(item=>item.classList.toggle('active',item===button));renderRideTable()});
@@ -317,40 +476,149 @@
 
     function uniquePeople(type){
       const map=new Map();
-      profiles.filter(profile=>{const role=String(profile.role||'').toLowerCase();return type==='driver'?['driver','conductor','chofer'].includes(role):['passenger','pasajero'].includes(role)}).forEach(profile=>{
-        const key=String(profile.device_id||profile.id);
-        map.set(key,{id:key,profile_id:profile.id,name:profile.full_name||profile.name||'Sin nombre',phone:profile.phone||'',email:profile.email||'',status:profile.status||'pending',trips:0,total:0,canceled:0,last:profile.updated_at||profile.created_at,photo:profile.photo_url||null,vehicle:profile.vehicle_type||null,plate:profile.vehicle_plate||'',ratingSum:0,ratingCount:0});
+      profiles.filter(profile=>profile.role===type).forEach(profile=>{
+        const key=profileKey(profile);if(!key)return;
+        map.set(key,{id:key,profile_id:profile.id,name:profile.full_name||profile.email||profile.phone||'Sin nombre',trips:0,total:0,canceled:0,last:profile.last_seen_at||profile.updated_at||profile.created_at,photo:profile.photo_url||null,vehicle:profile.vehicle_type||null,ratingSum:0,ratingCount:0,approval_status:profile.approval_status||(type==='driver'?'pending':'approved'),status:profile.status||'active',is_online:isProfileOnline(profile),profile});
       });
       rides.forEach(ride=>{
-        const id=ride[type+'_id'];if(!id)return;const key=String(id);
-        const item=map.get(key)||{id:key,profile_id:null,name:ride[type+'_name'],phone:'',email:'',status:'active',trips:0,total:0,canceled:0,last:null,photo:null,vehicle:null,plate:'',ratingSum:0,ratingCount:0};
-        item.trips++;if(ride.status==='finished')item.total+=Number(ride.price||0);if(ride.status==='canceled')item.canceled++;
-        if(!item.last||(safeDate(ride.created_at)?.getTime()||0)>(safeDate(item.last)?.getTime()||0))item.last=ride.created_at;
-        if(type==='driver'){item.photo=ride.driver_photo||item.photo;item.vehicle=ride.vehicle_type||item.vehicle;const rating=Number(ride.rating);if(rating>=1&&rating<=5){item.ratingSum+=rating;item.ratingCount++}if(ride.driver_name)item.name=ride.driver_name}else if(ride.passenger_name)item.name=ride.passenger_name;
+        const rawId=ride[type+'_id'];if(!rawId)return;
+        const profile=profileFor(rawId);const key=profile?profileKey(profile):String(rawId);
+        const item=map.get(key)||{id:key,profile_id:profile?.id||null,name:ride[type+'_name']||'Sin nombre',trips:0,total:0,canceled:0,last:null,photo:profile?.photo_url||null,vehicle:profile?.vehicle_type||null,ratingSum:0,ratingCount:0,approval_status:profile?.approval_status||(type==='driver'?'pending':'approved'),status:profile?.status||'active',is_online:isProfileOnline(profile),profile};
+        item.trips++;
+        if(ride.status==='finished')item.total+=Number(ride.price||0);
+        if(ride.status==='canceled')item.canceled++;
+        if(!item.last||(safeDate(ride.updated_at||ride.created_at)?.getTime()||0)>(safeDate(item.last)?.getTime()||0))item.last=ride.updated_at||ride.created_at;
+        if(type==='driver'){
+          item.photo=ride.driver_photo||item.photo;item.vehicle=ride.vehicle_type||item.vehicle;
+          const rating=Number(ride.rating);if(rating>=1&&rating<=5){item.ratingSum+=rating;item.ratingCount++}
+          if(ride.driver_name)item.name=ride.driver_name;
+          item.is_online=item.is_online||ACTIVE_STATUSES.includes(ride.status);
+        }else if(ride.passenger_name)item.name=ride.passenger_name;
         map.set(key,item);
       });
-      return [...map.values()];
+      return [...map.values()].sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'es'));
     }
-    function profileStateLabel(status){return({active:'Aprobado',pending:'Pendiente',suspended:'Suspendido',rejected:'Desaprobado'})[status]||status||'Pendiente'}
     function personCard(person,type){
-      const reportCount=type==='driver'?(reportGroups().get(person.id)?.count||0):0;const level=type==='driver'?riskForDriver(person.id):'green';const average=person.ratingCount?person.ratingSum/person.ratingCount:null;const photo=person.photo?`<img src="${esc(person.photo)}" alt="Foto">`:(type==='driver'?'🛵':'👤');
-      const state=person.status||'pending';
-      const driverActions=person.profile_id?`<div class="actions multi"><button class="approve" data-profile-action="approve" data-profile-id="${esc(person.profile_id)}">Aprobar</button><button class="reject" data-profile-action="reject" data-profile-id="${esc(person.profile_id)}">Desaprobar</button><button class="suspend" data-profile-action="suspend" data-profile-id="${esc(person.profile_id)}">Suspender</button><button class="delete" data-profile-action="delete" data-profile-id="${esc(person.profile_id)}">Eliminar</button></div>`:`<div class="note">Este conductor aparece por sus viajes, pero aún no tiene perfil administrativo enlazado.</div>`;
-      return `<article class="person" data-person-id="${esc(person.id)}"><div class="person-top"><div class="avatar">${photo}</div><div><strong>${esc(person.name||'Sin nombre')}</strong><br><small>${type==='driver'?esc(person.vehicle||'Vehículo sin definir'):'Pasajero registrado'}</small>${type==='driver'?`<br><span class="profile-state profile-${esc(state)}">${esc(profileStateLabel(state))}</span>`:''}</div></div><div class="meta"><div><small>Viajes</small><b>${person.trips}</b></div><div><small>${type==='driver'?'Ganado':'Gastado'}</small><b>${money(person.total)}</b></div><div><small>Cancelados</small><b>${person.canceled}</b></div><div><small>${type==='driver'?'Promedio':'Última actividad'}</small><b>${type==='driver'?(average?'⭐ '+average.toFixed(1):'Sin evaluar'):dateFmt(person.last)}</b></div>${type==='driver'?`<div><small>Reportes</small><b>${reportCount}</b></div><div><small>Riesgo</small><b><span class="risk risk-${level}">${riskLabel(level)}</span></b></div>`:''}</div>${type==='driver'?`<div class="actions"><button class="neutral" data-driver-reports="${esc(person.id)}">Historial de reportes</button></div>${driverActions}`:''}</article>`;
+      const reportCount=type==='driver'?(reportGroups().get(person.id)?.count||0):0;
+      const level=type==='driver'?riskForDriver(person.id):'green';
+      const average=person.ratingCount?person.ratingSum/person.ratingCount:null;
+      const photo=person.photo?`<img src="${esc(person.photo)}" alt="Foto">`:(type==='driver'?'🛵':'👤');
+      const approval=type==='driver'?(person.approval_status||'pending'):(person.status==='deleted'?'deleted':'approved');
+      const deleted=person.status==='deleted'||approval==='deleted';
+      const cardClass=deleted?' deleted-card':approval==='rejected'?' blocked':approval==='pending'?' pending-card':'';
+      let actions='';
+      if(type==='driver'){
+        actions=deleted?`<div class="actions wrap"><button class="ok" data-person-action="restore-driver" data-person-id="${esc(person.id)}">Restaurar conductor</button><button class="neutral" data-person-action="trips" data-person-id="${esc(person.id)}">Historial</button></div>`:`<div class="actions wrap"><button class="neutral" data-person-action="trips" data-person-id="${esc(person.id)}">Viajes</button><button class="neutral" data-person-action="reports" data-person-id="${esc(person.id)}">Reportes</button><button class="ok" data-person-action="approve" data-person-id="${esc(person.id)}">Aprobar</button><button class="warning" data-person-action="reject" data-person-id="${esc(person.id)}">Desaprobar</button><button class="danger" data-person-action="delete-driver" data-person-id="${esc(person.id)}">Eliminar</button></div>`;
+      }else{
+        actions=deleted?`<div class="actions wrap"><button class="ok" data-person-action="restore-passenger" data-person-id="${esc(person.id)}">Restaurar usuario</button><button class="neutral" data-person-action="trips" data-person-id="${esc(person.id)}">Historial</button></div>`:`<div class="actions wrap"><button class="neutral" data-person-action="trips" data-person-id="${esc(person.id)}">Viajes</button><button class="danger" data-person-action="delete-passenger" data-person-id="${esc(person.id)}">Eliminar</button></div>`;
+      }
+      const reason=person.profile?.deleted_reason||person.profile?.rejection_reason||'';
+      return `<article class="person${cardClass}" data-person-id="${esc(person.id)}" data-status="${esc(deleted?'deleted':approval)}" data-online="${person.is_online?'1':'0'}"><div class="person-top"><div class="avatar">${photo}</div><div><strong>${esc(person.name||'Sin nombre')}</strong><br><small>${type==='driver'?esc(person.vehicle||'Vehículo sin definir'):'Usuario registrado'}</small><br><span class="approval approval-${approvalClass(approval)}">${approvalLabel(approval)}</span>${type==='driver'&&person.is_online?' <span class="status in_progress">En línea</span>':''}${reason?`<div class="admin-reason">Motivo: ${esc(reason)}</div>`:''}</div></div><div class="meta"><div><small>Viajes</small><b>${person.trips}</b></div><div><small>${type==='driver'?'Ganado':'Gastado'}</small><b>${money(person.total)}</b></div><div><small>Cancelados</small><b>${person.canceled}</b></div><div><small>${type==='driver'?'Promedio':'Última actividad'}</small><b>${type==='driver'?(average?'⭐ '+average.toFixed(1):'Sin evaluar'):dateFmt(person.last)}</b></div>${type==='driver'?`<div><small>Reportes</small><b>${reportCount}</b></div><div><small>Riesgo</small><b><span class="risk risk-${level}">${riskLabel(level)}</span></b></div>`:''}</div><div class="profile-id">ID: ${esc(person.id)}</div>${actions}</article>`;
     }
     function renderPeople(){
-      let drivers=uniquePeople('driver');
-      if(driverViewMode==='active'){const activeIds=new Set(rides.filter(ride=>ACTIVE_STATUSES.includes(ride.status)&&ride.driver_id).map(ride=>String(ride.driver_id)));drivers=drivers.filter(driver=>activeIds.has(driver.id))}
-      const statusFilter=$('#driverStatus').value;if(statusFilter)drivers=drivers.filter(driver=>(driver.status||'pending')===statusFilter);
-      const passengers=uniquePeople('passenger');
-      $('#driverCards').innerHTML=drivers.map(person=>personCard(person,'driver')).join('')||'<div class="empty">Aún no hay conductores con viajes.</div>';
-      $('#passengerCards').innerHTML=passengers.map(person=>personCard(person,'passenger')).join('')||'<div class="empty">Aún no hay pasajeros.</div>';
+      const drivers=uniquePeople('driver');const passengers=uniquePeople('passenger');
+      $('#driverCards').innerHTML=drivers.map(person=>personCard(person,'driver')).join('')||'<div class="empty">Aún no hay conductores registrados o con viajes.</div>';
+      $('#passengerCards').innerHTML=passengers.map(person=>personCard(person,'passenger')).join('')||'<div class="empty">Aún no hay usuarios registrados o con viajes.</div>';
+      $('#driverCount').textContent=drivers.length;$('#passengerCount').textContent=passengers.length;
+      const stamp=lastPeopleUpdate?lastPeopleUpdate.toLocaleTimeString('es-US',{hour:'numeric',minute:'2-digit',second:'2-digit'}):'Sin actualizar';
+      $('#driverUpdated').textContent='Actualizado '+stamp;$('#passengerUpdated').textContent='Actualizado '+stamp;
+      applyPeopleFilters('driver');applyPeopleFilters('passenger');
     }
-    $('#driverCards').onclick=event=>{const reportsButton=event.target.closest('[data-driver-reports]');if(reportsButton)return openDriverReports(reportsButton.dataset.driverReports);const actionButton=event.target.closest('[data-profile-action]');if(actionButton)handleProfileAction(actionButton.dataset.profileId,actionButton.dataset.profileAction)};
-    $('#driverSearch').oninput=event=>filterCards('#driverCards',event.target.value);
-    $('#driverStatus').onchange=()=>{driverViewMode='all';renderPeople()};
-    $('#passengerSearch').oninput=event=>filterCards('#passengerCards',event.target.value);
-    function filterCards(container,query){const normalized=query.toLowerCase();$$(`${container} .person`).forEach(card=>card.classList.toggle('hidden',!card.textContent.toLowerCase().includes(normalized)))}
+    function applyPeopleFilters(type){
+      const query=$('#'+type+'Search').value.toLowerCase().trim();
+      const status=$('#'+type+'Status').value;
+      $$(`#${type}Cards .person`).forEach(card=>{
+        const text=card.textContent.toLowerCase();const cardStatus=card.dataset.status;const online=card.dataset.online==='1';
+        let ok=!query||text.includes(query);
+        if(type==='driver'&&status!=='all'){if(status==='online')ok=ok&&online;else ok=ok&&cardStatus===status}
+        if(type==='passenger'&&status!=='all')ok=ok&&(status==='deleted'?cardStatus==='deleted':cardStatus!=='deleted');
+        card.classList.toggle('hidden',!ok);
+      });
+    }
+    async function ensureProfile(personId,role='driver'){
+      let profile=profileFor(personId);if(profile)return profile;
+      const person=uniquePeople(role).find(item=>item.id===String(personId));
+      const payload={device_id:String(personId),role,full_name:person?.name||null,status:'active',vehicle_type:person?.vehicle||null,approval_status:role==='driver'?'pending':'approved',updated_at:new Date().toISOString()};
+      const {data,error}=await sb.from('profiles').upsert(payload,{onConflict:'device_id'}).select().single();
+      if(error){console.error(error);toast('No se pudo crear el perfil administrativo');return null}
+      profiles=[data,...profiles.filter(item=>profileKey(item)!==String(personId))];return data;
+    }
+    async function logAdminAction(action,targetId,targetRole,reason,metadata={}){
+      const payload={action,target_id:String(targetId),target_role:targetRole,reason:reason||null,admin_name:ownerIdentity(),metadata,created_at:new Date().toISOString()};
+      const {error}=await sb.from('admin_action_log').insert(payload);if(error)console.warn('No se pudo registrar auditoría:',error.message);
+    }
+    async function setDriverApproval(personId,approval){
+      const profile=await ensureProfile(personId,'driver');if(!profile)return;
+      let reason=null;
+      if(approval==='rejected'){reason=prompt('Escribe el motivo de la desaprobación o bloqueo:','Documentación pendiente o no válida');if(reason===null)return;reason=reason.trim();if(!reason)return toast('El motivo es obligatorio')}
+      const approved=approval==='approved';
+      const payload={approval_status:approval,status:approved?'active':'blocked',is_online:approved?Boolean(profile.is_online):false,approved_at:approved?new Date().toISOString():null,approved_by:approved?ownerIdentity():null,rejection_reason:approved?null:reason,updated_at:new Date().toISOString()};
+      const {error}=await sb.from('profiles').update(payload).eq('id',profile.id);
+      if(error){console.error(error);return toast('No se pudo actualizar el conductor. Ejecuta SQL v2.4.1')}
+      await logAdminAction(approved?'approve_driver':'reject_driver',personId,'driver',reason);
+      toast(approved?'Conductor aprobado':'Conductor desaprobado y bloqueado');if(!$('#opsModal').classList.contains('hidden'))closeOpsModal();await refreshOperations();
+    }
+    async function deleteDriver(personId){
+      const person=uniquePeople('driver').find(item=>item.id===String(personId));
+      const name=person?.name||'este conductor';
+      const reason=prompt(`Escribe el motivo para eliminar a ${name}:`,'Incumplimiento de las normas de la plataforma');
+      if(reason===null)return;if(!reason.trim())return toast('El motivo de eliminación es obligatorio');
+      if(!confirm(`CONFIRMACIÓN FINAL
+
+¿Eliminar a ${name} de la plataforma?
+
+No podrá iniciar sesión ni aceptar viajes. El historial se conservará.`))return;
+      const profile=await ensureProfile(personId,'driver');if(!profile)return;
+      const driverKeys=new Set([String(personId),String(profile.id||''),String(profile.device_id||'')]);
+      const active=rides.filter(ride=>driverKeys.has(String(ride.driver_id||''))&&['accepted','arrived','in_progress'].includes(ride.status));
+      if(active.length){if(!confirm(`Este conductor tiene ${active.length} viaje(s) activo(s). ¿Cancelarlos y continuar con la eliminación?`))return;const {error:rideError}=await sb.from('rides').update({status:'canceled',canceled_at:new Date().toISOString(),canceled_by:'admin',updated_at:new Date().toISOString()}).in('id',active.map(ride=>ride.id));if(rideError){console.error(rideError);return toast('No se pudieron cancelar los viajes activos')}}
+      const now=new Date().toISOString();
+      const {error}=await sb.from('profiles').update({status:'deleted',approval_status:'deleted',is_online:false,deleted_at:now,deleted_reason:reason.trim(),deleted_by:ownerIdentity(),updated_at:now}).eq('id',profile.id);
+      if(error){console.error(error);return toast('No se pudo eliminar el conductor')}
+      await logAdminAction('delete_driver',personId,'driver',reason.trim(),{active_rides_canceled:active.length});
+      toast('Conductor eliminado y acceso bloqueado');closeOpsModal();await refreshOperations();
+    }
+    async function restoreDriver(personId){
+      const profile=await ensureProfile(personId,'driver');if(!profile)return;
+      if(!confirm('¿Restaurar este conductor como pendiente de aprobación?'))return;
+      const {error}=await sb.from('profiles').update({status:'active',approval_status:'pending',is_online:false,deleted_at:null,deleted_reason:null,deleted_by:null,updated_at:new Date().toISOString()}).eq('id',profile.id);
+      if(error)return toast('No se pudo restaurar el conductor');await logAdminAction('restore_driver',personId,'driver','Restaurado por administración');toast('Conductor restaurado como pendiente');await refreshOperations();
+    }
+    async function deletePassenger(personId){
+      const person=uniquePeople('passenger').find(item=>item.id===String(personId));
+      const reason=prompt(`Motivo para eliminar a ${person?.name||'este usuario'}:`,'Solicitud administrativa');if(reason===null)return;if(!reason.trim())return toast('El motivo es obligatorio');
+      if(!confirm(`¿Eliminar a ${person?.name||'este usuario'}? Sus viajes históricos se conservarán.`))return;
+      const profile=await ensureProfile(personId,'passenger');if(!profile)return;
+      const {error}=await sb.from('profiles').update({status:'deleted',approval_status:'deleted',is_online:false,deleted_at:new Date().toISOString(),deleted_reason:reason.trim(),deleted_by:ownerIdentity(),updated_at:new Date().toISOString()}).eq('id',profile.id);
+      if(error){console.error(error);return toast('No se pudo eliminar el usuario')}
+      await logAdminAction('delete_passenger',personId,'passenger',reason.trim());toast('Usuario eliminado');await refreshOperations();
+    }
+    async function restorePassenger(personId){
+      const profile=await ensureProfile(personId,'passenger');if(!profile)return;
+      const {error}=await sb.from('profiles').update({status:'active',approval_status:'approved',deleted_at:null,deleted_reason:null,deleted_by:null,updated_at:new Date().toISOString()}).eq('id',profile.id);
+      if(error)return toast('No se pudo restaurar el usuario');await logAdminAction('restore_passenger',personId,'passenger','Restaurado por administración');toast('Usuario restaurado');await refreshOperations();
+    }
+    function openPersonTrips(personId,type='driver'){
+      $('#rideSearch').value=String(personId);$('#rideDate').value='';rideFilter='all';$$('#rideFilters button').forEach(button=>button.classList.toggle('active',button.dataset.filter==='all'));showPage('rides');renderRideTable();closeOpsModal();
+    }
+    async function handlePersonAction(action,personId,type='driver'){
+      if(action==='trips')return openPersonTrips(personId,type);
+      if(action==='reports'){closeOpsModal();return openDriverReports(personId)}
+      if(action==='approve')return setDriverApproval(personId,'approved');
+      if(action==='reject')return setDriverApproval(personId,'rejected');
+      if(action==='delete-driver')return deleteDriver(personId);
+      if(action==='restore-driver')return restoreDriver(personId);
+      if(action==='delete-passenger')return deletePassenger(personId);
+      if(action==='restore-passenger')return restorePassenger(personId);
+    }
+    $('#driverCards').onclick=event=>{const button=event.target.closest('[data-person-action]');if(button)handlePersonAction(button.dataset.personAction,button.dataset.personId,'driver')};
+    $('#passengerCards').onclick=event=>{const button=event.target.closest('[data-person-action]');if(button)handlePersonAction(button.dataset.personAction,button.dataset.personId,'passenger')};
+    $('#driverSearch').oninput=()=>applyPeopleFilters('driver');
+    $('#passengerSearch').oninput=()=>applyPeopleFilters('passenger');
+    $('#driverStatus').onchange=()=>applyPeopleFilters('driver');
+    $('#passengerStatus').onchange=()=>applyPeopleFilters('passenger');
+    $('#refreshDrivers').onclick=refreshOperations;
+    $('#refreshPassengers').onclick=refreshOperations;
 
     function renderAlerts(){
       const now=Date.now();
@@ -359,7 +627,7 @@
       reports.filter(report=>!report.reviewed&&report.rating===1).slice(0,3).forEach(report=>alerts.push({icon:'⭐',title:'Reporte crítico pendiente',text:`${report.driver_name} recibió 1 estrella`}));
       rides.filter(ride=>ride.status==='searching').forEach(ride=>{const minutes=Math.max(0,Math.round((now-(safeDate(ride.created_at)?.getTime()||now))/60000));if(minutes>=2)alerts.push({icon:'⏳',title:'Viaje sin conductor',text:`${ride.passenger_name||'Pasajero'} espera hace ${minutes} min`})});
       rides.filter(ride=>['accepted','arrived','in_progress'].includes(ride.status)).forEach(ride=>{const minutes=Math.max(0,Math.round((now-(safeDate(ride.updated_at||ride.created_at)?.getTime()||now))/60000));if(minutes>=30)alerts.push({icon:'📡',title:'Viaje sin actualización',text:`#${String(ride.id).slice(0,6)} lleva ${minutes} min`})});
-      rides.filter(ride=>isToday(ride)&&ride.status==='canceled').slice(0,3).forEach(ride=>alerts.push({icon:'✕',title:'Cancelación reciente',text:`${ride.passenger_name||'Pasajero'} · ${ride.pickup_address||'Sin dirección'}`}));
+      rides.filter(ride=>ride.status==='canceled'&&localDateKey(ride.canceled_at||ride.updated_at||ride.created_at)===todayKey()).slice(0,3).forEach(ride=>alerts.push({icon:'✕',title:'Cancelación reciente',text:`${ride.passenger_name||'Pasajero'} · ${ride.pickup_address||'Sin dirección'}`}));
       $('#alerts').innerHTML=alerts.slice(0,10).map(alert=>`<div class="alert"><div class="alert-icon">${alert.icon}</div><div><strong>${esc(alert.title)}</strong><small>${esc(alert.text)}</small></div></div>`).join('')||'<div class="empty">No hay alertas importantes.</div>';
     }
 
@@ -376,6 +644,15 @@
       fares=rows;toast('Tarifas actualizadas');
     };
 
+
+    $('#opsBody').addEventListener('click',event=>{
+      const filter=event.target.closest('[data-map-filter]');
+      if(filter){const key=filter.dataset.mapFilter;liveMapFilters[key]=!liveMapFilters[key];filter.classList.toggle('active',liveMapFilters[key]);return renderLiveMap(false)}
+      const action=event.target.closest('[data-map-action]');
+      if(action?.dataset.mapAction==='refresh')return refreshOperations();
+      if(action?.dataset.mapAction==='center'){liveMapHasFitted=false;return renderLiveMap(true)}
+    });
+
     function renderReportDriverOptions(){
       const select=$('#reportDriver');
       const selected=select.value;
@@ -390,14 +667,11 @@
       const status=$('#reportStatus').value;
       const date=$('#reportDate').value;
       return reports.filter(report=>{
-        if(reportRepeatOnly&&(reportGroups().get(report.driver_id)?.count||0)<3)return false;
         if(query&&![report.driver_name,report.passenger_name,report.passenger_comment,report.ride_id].some(value=>String(value||'').toLowerCase().includes(query)))return false;
         if(driver&&report.driver_id!==driver)return false;
         if(rating&&Number(report.rating)!==Number(rating))return false;
         if(status==='pending'&&report.reviewed)return false;
-        if(status==='reviewed'&&(!report.reviewed||report.dismissed))return false;
-        if(status==='dismissed'&&!report.dismissed)return false;
-        if(!status&&report.dismissed)return false;
+        if(status==='reviewed'&&!report.reviewed)return false;
         if(date&&localDateKey(report.created_at)!==date)return false;
         return true;
       });
@@ -405,29 +679,27 @@
     function renderReports(){
       renderReportDriverOptions();
       const groups=[...reportGroups().values()];
-      $('#rPending').textContent=reports.filter(report=>!report.reviewed&&!report.dismissed).length;
-      $('#rReviewed').textContent=reports.filter(report=>report.reviewed&&!report.dismissed).length;
+      $('#rPending').textContent=reports.filter(report=>!report.reviewed).length;
+      $('#rReviewed').textContent=reports.filter(report=>report.reviewed).length;
       $('#rRepeat').textContent=groups.filter(group=>group.count>=3).length;
       $('#rCritical').textContent=groups.filter(group=>group.count>=5).length;
       $('#reportWarning').classList.toggle('hidden',reportsTableAvailable);
       const list=filteredReports();
       $('#reportRows').innerHTML=list.map(report=>{
         const level=riskForDriver(report.driver_id);
-        const action=report.dismissed?`<button class="row-action reopen" data-report-action="restore" data-report-id="${esc(report.id)}">Restaurar</button>`:(report.reviewed?`<button class="row-action reopen" data-report-action="reopen" data-report-id="${esc(report.id)}">Reabrir</button>`:`<button class="row-action review" data-report-action="review" data-report-id="${esc(report.id)}">Solucionar</button>`);
-        const state=report.dismissed?'Eliminado':(report.reviewed?'Revisado':'Pendiente');const stateClass=report.dismissed?'canceled':(report.reviewed?'reviewed':'pending');
-        return `<tr><td>${dateFmt(report.created_at)}</td><td><span class="risk risk-${level}">${riskLabel(level)}</span></td><td><strong>${esc(report.driver_name)}</strong><br><small>${reportGroups().get(report.driver_id)?.count||1} reporte(s)</small></td><td>${esc(report.passenger_name)}</td><td><span class="stars" title="${report.rating} de 5">${stars(report.rating)}</span><br><small>${report.rating}/5</small></td><td class="comment">${esc(report.passenger_comment||'Sin comentario')}${report.resolution_notes?`<br><small><b>Solución:</b> ${esc(report.resolution_notes)}</small>`:''}</td><td><strong>#${esc(String(report.ride_id||'—').slice(0,8))}</strong></td><td><span class="status ${stateClass}">${state}</span>${report.reviewed_at?`<br><small>${dateFmt(report.reviewed_at)}</small>`:''}</td><td><div class="row-actions">${action}<button class="row-action history" data-report-action="history" data-driver-id="${esc(report.driver_id)}">Historial</button>${!report.dismissed?`<button class="row-action danger" data-report-action="dismiss" data-report-id="${esc(report.id)}">Eliminar</button>`:''}</div></td></tr>`;
+        const action=report.reviewed?`<button class="row-action reopen" data-report-action="reopen" data-report-id="${esc(report.id)}">Reabrir</button>`:`<button class="row-action review" data-report-action="review" data-report-id="${esc(report.id)}">Resolver</button>`;
+        return `<tr><td>${dateFmt(report.created_at)}</td><td><span class="risk risk-${level}">${riskLabel(level)}</span></td><td><strong>${esc(report.driver_name)}</strong><br><small>${reportGroups().get(report.driver_id)?.count||1} reporte(s)</small></td><td>${esc(report.passenger_name)}</td><td><span class="stars" title="${report.rating} de 5">${stars(report.rating)}</span><br><small>${report.rating}/5</small></td><td class="comment">${esc(report.passenger_comment||'Sin comentario')}</td><td><strong>#${esc(String(report.ride_id||'—').slice(0,8))}</strong></td><td><span class="status ${report.reviewed?'reviewed':'pending'}">${report.reviewed?'Revisado':'Pendiente'}</span>${report.reviewed_at?`<br><small>${dateFmt(report.reviewed_at)}</small>`:''}</td><td><div class="row-actions">${action}<button class="row-action history" data-report-action="history" data-driver-id="${esc(report.driver_id)}">Historial</button><button class="row-action neutral" data-report-action="ride" data-ride-id="${esc(report.ride_id)}">Ver viaje</button><button class="row-action report-delete" data-report-action="delete" data-report-id="${esc(report.id)}">Eliminar</button></div></td></tr>`;
       }).join('')||'<tr><td colspan="9" class="empty">No hay reportes que coincidan con los filtros.</td></tr>';
     }
     ['reportSearch','reportDriver','reportRating','reportStatus','reportDate'].forEach(id=>$('#'+id).addEventListener(id==='reportSearch'?'input':'change',renderReports));
-    $('#clearReportFilters').onclick=()=>{reportRepeatOnly=false;['reportSearch','reportDriver','reportRating','reportStatus','reportDate'].forEach(id=>$('#'+id).value='');renderReports()};
+    $('#clearReportFilters').onclick=()=>{['reportSearch','reportDriver','reportRating','reportStatus','reportDate'].forEach(id=>$('#'+id).value='');renderReports()};
     $('#reportRows').onclick=event=>{
       const button=event.target.closest('[data-report-action]');
       if(!button)return;
       if(button.dataset.reportAction==='history')return openDriverHistory(button.dataset.driverId);
-      if(button.dataset.reportAction==='review')return openResolveReport(button.dataset.reportId);
-      if(button.dataset.reportAction==='dismiss')return dismissReport(button.dataset.reportId,true);
-      if(button.dataset.reportAction==='restore')return dismissReport(button.dataset.reportId,false);
-      setReportReviewed(button.dataset.reportId,false);
+      if(button.dataset.reportAction==='ride'){showPage('rides');$('#rideSearch').value=button.dataset.rideId;rideFilter='all';$$('#rideFilters button').forEach(item=>item.classList.toggle('active',item.dataset.filter==='all'));renderRideTable();return}
+      if(button.dataset.reportAction==='delete')return deleteReport(button.dataset.reportId);
+      setReportReviewed(button.dataset.reportId,button.dataset.reportAction==='review');
     };
 
     async function setReportReviewed(reportId,reviewed){
@@ -436,32 +708,23 @@
       const now=new Date().toISOString();
       let error=null;
       if(report._derived){
-        const payload={ride_id:report.ride_id||null,driver_id:report.driver_id||null,driver_name:report.driver_name||null,passenger_id:report.passenger_id||null,passenger_name:report.passenger_name||null,rating:report.rating,passenger_comment:report.passenger_comment||null,reviewed,dismissed:false,resolution_notes:report.resolution_notes||null,reviewed_at:reviewed?now:null,reviewed_by:reviewed?ownerIdentity():null,risk_level:riskForDriver(report.driver_id),created_at:report.created_at||now,updated_at:now};
+        const payload={ride_id:report.ride_id||null,driver_id:report.driver_id||null,driver_name:report.driver_name||null,passenger_id:report.passenger_id||null,passenger_name:report.passenger_name||null,rating:report.rating,passenger_comment:report.passenger_comment||null,reviewed,reviewed_at:reviewed?now:null,reviewed_by:reviewed?ownerIdentity():null,risk_level:riskForDriver(report.driver_id),created_at:report.created_at||now,updated_at:now};
         ({error}=await sb.from('driver_reports').upsert(payload,{onConflict:'ride_id'}));
       }else{
         ({error}=await sb.from('driver_reports').update({reviewed,reviewed_at:reviewed?now:null,reviewed_by:reviewed?ownerIdentity():null,updated_at:now}).eq('id',report.id));
       }
-      if(error){console.error(error);return toast('No se pudo guardar. Ejecuta el SQL v2.4.0 y vuelve a intentar')}
-      toast(reviewed?'Reporte marcado como revisado':'Reporte reabierto');
+      if(error){console.error(error);return toast('No se pudo guardar. Ejecuta el SQL v2.4.1 y vuelve a intentar')}
+      toast(reviewed?'Reporte resuelto':'Reporte reabierto');
       await refreshOperations();
     }
-
-    function closeActionModal(){ $('#actionModal').classList.add('hidden');$('#actionBody').innerHTML=''; }
-    $('#closeAction').onclick=closeActionModal;$('#actionModal').onclick=event=>{if(event.target===$('#actionModal'))closeActionModal()};
-    function showActionModal(title,subtitle,html){$('#actionTitle').textContent=title;$('#actionSubtitle').textContent=subtitle||'';$('#actionBody').innerHTML=html;$('#actionModal').classList.remove('hidden')}
-
-    async function handleProfileAction(profileId,action){
-      const profile=profiles.find(item=>String(item.id)===String(profileId));if(!profile)return toast('No se encontró el perfil');
-      const labels={approve:'aprobar',reject:'desaprobar',suspend:'suspender',delete:'eliminar'};
-      showActionModal(`${labels[action][0].toUpperCase()+labels[action].slice(1)} conductor`,profile.full_name||'Conductor',`<div class="confirm-box"><p>¿Confirmas que quieres <strong>${labels[action]}</strong> a este conductor?</p><p class="note">${action==='delete'?'Se eliminará el perfil. El historial de viajes permanecerá guardado.':'El cambio se reflejará en el panel administrativo.'}</p><div class="modal-actions"><button class="neutral" id="cancelProfileAction">Cancelar</button><button class="${action==='delete'?'danger':'save'}" id="confirmProfileAction">Confirmar</button></div></div>`);
-      $('#cancelProfileAction').onclick=closeActionModal;$('#confirmProfileAction').onclick=async()=>{
-        let error;if(action==='delete')({error}=await sb.from('profiles').delete().eq('id',profileId));else{const status={approve:'active',reject:'rejected',suspend:'suspended'}[action];const now=new Date().toISOString();const update={status,updated_at:now};if(action==='approve'){update.approved_at=now;update.approved_by=ownerIdentity();update.suspended_at=null;update.suspended_by=null}else if(action==='suspend'){update.suspended_at=now;update.suspended_by=ownerIdentity()}({error}=await sb.from('profiles').update(update).eq('id',profileId))}
-        if(error){console.error(error);return toast('No se pudo completar la acción')}closeActionModal();toast('Acción aplicada');await refreshOperations();
-      };
+    async function deleteReport(reportId){
+      const report=reports.find(item=>String(item.id)===String(reportId));if(!report)return toast('No se encontró el reporte');
+      if(!confirm('¿Eliminar este reporte? También se retirará la calificación baja del viaje para que no vuelva a generarse.'))return;
+      let error=null;
+      if(report.ride_id){({error}=await sb.from('rides').update({rating:null,rating_comment:null,rated_at:null}).eq('id',report.ride_id));if(error){console.error(error);return toast('No se pudo retirar la calificación del viaje')}}
+      if(!report._derived){({error}=await sb.from('driver_reports').delete().eq('id',report.id));if(error){console.error(error);return toast('No se pudo eliminar el reporte. Ejecuta SQL v2.4.1')}}
+      toast('Reporte eliminado');await refreshOperations();
     }
-
-    function openResolveReport(reportId){const report=reports.find(item=>String(item.id)===String(reportId));if(!report)return;showActionModal('Solucionar reporte',report.driver_name,`<div class="confirm-box"><p><strong>${stars(report.rating)} · ${esc(report.passenger_comment||'Sin comentario')}</strong></p><label>Nota de solución</label><textarea id="resolutionNotes" placeholder="Ej.: Se habló con el conductor, se verificó el viaje y se emitió una advertencia.">${esc(report.resolution_notes||'')}</textarea><div class="modal-actions"><button class="neutral" id="cancelResolve">Cancelar</button><button class="save" id="confirmResolve">Marcar solucionado</button></div></div>`);$('#cancelResolve').onclick=closeActionModal;$('#confirmResolve').onclick=async()=>{report.resolution_notes=$('#resolutionNotes').value.trim();closeActionModal();await setReportReviewed(reportId,true)}}
-    async function dismissReport(reportId,dismissed){const report=reports.find(item=>String(item.id)===String(reportId));if(!report)return;const now=new Date().toISOString();if(report._derived){const payload={ride_id:report.ride_id,driver_id:report.driver_id,driver_name:report.driver_name,passenger_id:report.passenger_id,passenger_name:report.passenger_name,rating:report.rating,passenger_comment:report.passenger_comment,reviewed:false,dismissed,resolution_notes:report.resolution_notes||null,dismissed_at:dismissed?now:null,dismissed_by:dismissed?ownerIdentity():null,created_at:report.created_at,updated_at:now};const {error}=await sb.from('driver_reports').upsert(payload,{onConflict:'ride_id'});if(error){console.error(error);return toast('No se pudo eliminar el reporte')}}else{const {error}=await sb.from('driver_reports').update({dismissed,dismissed_at:dismissed?now:null,dismissed_by:dismissed?ownerIdentity():null,updated_at:now}).eq('id',report.id);if(error){console.error(error);return toast('No se pudo actualizar el reporte')}}toast(dismissed?'Reporte eliminado del seguimiento':'Reporte restaurado');await refreshOperations()}
 
     function openDriverReports(driverId){showPage('reports');$('#reportDriver').value=String(driverId);renderReports();window.scrollTo({top:0,behavior:'smooth'})}
     function openDriverHistory(driverId){
@@ -475,31 +738,30 @@
     }
     $('#closeHistory').onclick=()=>$('#historyModal').classList.add('hidden');
     $('#historyModal').onclick=event=>{if(event.target===$('#historyModal'))$('#historyModal').classList.add('hidden')};
-    document.addEventListener('keydown',event=>{if(event.key==='Escape'){ $('#historyModal').classList.add('hidden');closeActionModal() }});
-
-    function setRideView(filter,dateToday=false){showPage('rides');rideFilter=filter;$$('#rideFilters button').forEach(item=>item.classList.toggle('active',item.dataset.filter===filter));$('#rideDate').value=dateToday?localDateKey(new Date()):'';renderRideTable();window.scrollTo({top:0,behavior:'smooth'})}
-    function openRadar(){const active=uniquePeople('driver').filter(driver=>rides.some(ride=>String(ride.driver_id)===driver.id&&ACTIVE_STATUSES.includes(ride.status)));const points=active.map((driver,index)=>{const ride=rides.find(item=>String(item.driver_id)===driver.id&&ACTIVE_STATUSES.includes(item.status));const angle=(index/Math.max(active.length,1))*Math.PI*2;const radius=18+(index%3)*14;const x=50+Math.cos(angle)*radius,y=50+Math.sin(angle)*radius;return `<div class="radar-dot" style="left:${x}%;top:${y}%"><span>${esc(driver.name)}</span></div>`}).join('');const cards=active.map(driver=>{const ride=rides.find(item=>String(item.driver_id)===driver.id&&ACTIVE_STATUSES.includes(item.status));return `<div class="detail-card"><strong>${esc(driver.name)}</strong><br><small>${esc(driver.vehicle||'Vehículo')} · ${esc(statusLabel(ride?.status))}</small><p>${ride?.driver_lat&&ride?.driver_lng?`📍 ${Number(ride.driver_lat).toFixed(5)}, ${Number(ride.driver_lng).toFixed(5)}`:'Ubicación aún no reportada'}</p></div>`}).join('')||'<div class="empty">No hay conductores activos ahora.</div>';showActionModal('Radar de conductores',`${active.length} conductor(es) activo(s)`,`<div class="radar">${points}</div><div class="detail-grid">${cards}</div>`)}
-    function handleStatAction(action){if(action==='active-drivers'){showPage('drivers');driverViewMode='active';$('#driverStatus').value='';renderPeople()}else if(action==='active-rides')setRideView('active',false);else if(action==='radar')openRadar();else if(action==='finished-today'||action==='revenue-today')setRideView('finished',true);else if(action==='canceled-today')setRideView('canceled',true);else if(action==='pending-reports'){showPage('reports');reportRepeatOnly=false;$('#reportStatus').value='pending';renderReports()}else if(action==='repeat-drivers'){showPage('reports');reportRepeatOnly=true;$('#reportStatus').value='';$('#reportSearch').value='';renderReports();toast('Mostrando solo conductores reincidentes')}}
-    $$('.stat[data-stat-action]').forEach(card=>{card.onclick=()=>handleStatAction(card.dataset.statAction);card.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();handleStatAction(card.dataset.statAction)}}});
+    $('#closeOps').onclick=closeOpsModal;
+    $('#opsModal').onclick=event=>{if(event.target===$('#opsModal'))closeOpsModal()};
+    $('#opsBody').onclick=event=>{const button=event.target.closest('[data-ops-action]');if(button)handlePersonAction(button.dataset.opsAction,button.dataset.personId,'driver')};
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'){$('#historyModal').classList.add('hidden');closeOpsModal()}});
 
     function setupRealtime(){
       if(channel)sb.removeChannel(channel);
-      channel=sb.channel('admin-v240').on('postgres_changes',{event:'*',schema:'public',table:'rides'},queueRefresh);
+      channel=sb.channel('admin-v241').on('postgres_changes',{event:'*',schema:'public',table:'rides'},queueRefresh);
       if(reportsTableAvailable)channel.on('postgres_changes',{event:'*',schema:'public',table:'driver_reports'},queueRefresh);
-      if(profileTableAvailable)channel.on('postgres_changes',{event:'*',schema:'public',table:'profiles'},queueRefresh);
+      if(profilesTableAvailable)channel.on('postgres_changes',{event:'*',schema:'public',table:'profiles'},queueRefresh);
       channel.subscribe(status=>{
         if(status==='SUBSCRIBED')setSyncState(true,'Conectado en tiempo real');
         else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT')setSyncState(false,'Conexión inestable');
         else setSyncState(false,'Conectando…');
       });
     }
-    function queueRefresh(){clearTimeout(refreshTimer);refreshTimer=setTimeout(refreshOperations,350)}
+    function queueRefresh(){clearTimeout(refreshTimer);refreshTimer=setTimeout(refreshOperations,250)}
+    function startPeriodicRefresh(){clearInterval(periodicRefresh);periodicRefresh=setInterval(()=>{if(!document.hidden&&localStorage.getItem('sr_admin_beta'))refreshOperations()},10000)}
     window.addEventListener('online',()=>{setSyncState(false,'Reconectando…');refreshOperations();setupRealtime()});
     window.addEventListener('offline',()=>setSyncState(false,'Sin conexión'));
     document.addEventListener('visibilitychange',()=>{if(!document.hidden&&localStorage.getItem('sr_admin_beta'))refreshOperations()});
-    window.addEventListener('beforeunload',()=>{if(channel)sb.removeChannel(channel)});
+    window.addEventListener('beforeunload',()=>{if(channel)sb.removeChannel(channel);clearInterval(periodicRefresh)});
 
-    if(localStorage.getItem('sr_admin_beta'))openApp();
+    if(localStorage.getItem('sr_admin_beta')){openApp();startPeriodicRefresh()}
   </script>
 </body>
 </html>

@@ -1,12 +1,33 @@
-# Sobre Ruedas v2.4.0 — Centro de control administrativo
+# Sobre Ruedas v2.4.0
 
-- Los ocho cuadros del resumen ahora son interactivos.
-- Conductores activos abre el listado de conductores con actividad en curso.
-- Viajes activos, terminados, cancelados y volumen diario abren sus viajes filtrados.
-- Buscando conductor abre un radar operativo con conductores activos y ubicación disponible.
-- Reportes pendientes abre directamente el seguimiento pendiente.
-- Reincidentes abre los reportes de conductores con tres o más incidencias.
-- Conductores permite aprobar, desaprobar, suspender, restaurar y eliminar perfiles.
-- Reportes permite escribir una nota de solución, marcar como solucionado, reabrir, eliminar del seguimiento y restaurar.
-- Se agregó filtro por estado de conductor y estado de reporte.
-- Se conserva el cobro exclusivamente por kilómetro de la v2.3.3.
+## Panel administrativo operativo
+
+- Todos los cuadros del Dashboard ahora son interactivos.
+- **Conductores activos:** abre la lista de conductores conectados con acciones administrativas.
+- **Viajes activos, terminados y cancelados:** abren la sección de viajes con el filtro correcto.
+- **Buscando conductor:** abre un radar con conductores activos, ubicación GPS disponible y viajes esperando aceptación.
+- **Volumen de hoy:** muestra ingresos totales, promedio y desglose por vehículo.
+- **Reportes pendientes:** abre los reportes sin resolver.
+- **Reincidentes:** muestra conductores con tres o más calificaciones bajas.
+
+## Control de conductores y pasajeros
+
+- Aprobar conductor.
+- Desaprobar y bloquear conductor.
+- Eliminar conductor conservando su historial de viajes.
+- Ver viajes y reportes por conductor.
+- Eliminar pasajeros conservando el historial.
+- Los conductores pendientes, bloqueados o eliminados no pueden ponerse en línea ni aceptar viajes.
+
+## Reportes
+
+- Resolver/reabrir reportes.
+- Ver viaje asociado.
+- Ver historial del conductor.
+- Eliminar reportes y retirar la calificación baja asociada para evitar que vuelva a generarse.
+
+## Supabase
+
+- Nuevos campos de aprobación, presencia y ubicación en `profiles`.
+- Permisos de eliminación para `profiles`, `driver_reports` y `reports` durante la beta.
+- Actualizaciones de `profiles` en tiempo real para el panel.

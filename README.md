@@ -1,31 +1,22 @@
-# Sobre Ruedas v2.4.0
+# Sobre Ruedas v2.4.1
 
-Versión para GitHub Pages y Supabase con cobro exclusivamente por kilómetro.
+Aplicación web de transporte para pasajeros, conductores y administración, preparada para GitHub Pages y Supabase.
 
-## Actualización desde v2.3.2
+## Esta versión incluye
 
-1. Conserva una copia de la versión anterior.
-2. Sustituye en GitHub los archivos por el contenido de este paquete.
-3. En Supabase SQL Editor ejecuta **una sola vez** `ACTUALIZAR_SUPABASE_v2.4.0.sql`.
-4. Abre la aplicación con `?v=233` para evitar archivos antiguos en caché.
-5. Abre el panel en `admin.html?v=233`.
+- Cobro exclusivamente por kilómetro.
+- Mapa operativo normal con OpenStreetMap.
+- Conductores, solicitudes y viajes activos en tiempo real.
+- Páginas de Conductores y Usuarios con actualización automática y manual.
+- Aprobación, desaprobación, eliminación y restauración de conductores.
+- Eliminación con motivo, doble confirmación y auditoría.
+- Conservación del historial de viajes, reportes y calificaciones.
+- Reportes de 1, 2 y 3 estrellas con comentarios e indicadores de riesgo.
 
-## Tarifas
+## Actualización
 
-- El total se calcula como: **distancia en km × precio por km**.
-- No se suma tarifa base.
-- No se aplica precio mínimo.
-- El panel administrativo solo solicita el precio por km de cada vehículo.
-- La aplicación de pasajeros lee esos valores directamente desde `fare_settings` en Supabase.
+Después de subir todos los archivos a GitHub, ejecuta una sola vez en Supabase:
 
-## Archivos principales
+`ACTUALIZAR_SUPABASE_v2.4.1.sql`
 
-- `index.html`: aplicación para pasajeros y conductores.
-- `admin.html`: panel administrativo y configuración por km.
-- `ACTUALIZAR_SUPABASE_v2.4.0.sql`: migración completa e idempotente.
-- `CONFIGURAR_PANEL_ADMIN.sql`: instalación completa para una base nueva.
-- `sw.js` y `manifest.webmanifest`: caché v2.4.0.
-
-## Seguridad de beta
-
-El panel todavía usa el código temporal `RUEDA2026` y políticas abiertas para pruebas. Antes de publicar comercialmente deben activarse Supabase Auth, roles administrativos reales y políticas RLS privadas.
+Después actualiza la aplicación y el panel con `Ctrl + F5`.

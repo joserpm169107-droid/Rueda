@@ -1,5 +1,5 @@
--- Sobre Ruedas v2.3.3 · Configuración completa del panel administrativo
--- Seguro para instalaciones existentes desde v2.2.0 o v2.3.1.
+-- Sobre Ruedas · Configuración completa del panel administrativo v2.4.0
+-- Migración segura e idempotente desde v2.2.0, v2.3.1, v2.3.2 o v2.3.3.
 -- No borra viajes ni usuarios existentes.
 
 begin;
@@ -76,9 +76,34 @@ alter table public.profiles add column if not exists status text default 'active
 alter table public.profiles add column if not exists vehicle_type text;
 alter table public.profiles add column if not exists vehicle_plate text;
 alter table public.profiles add column if not exists rating numeric default 5;
+alter table public.profiles add column if not exists approval_status text;
+alter table public.profiles add column if not exists is_online boolean default false;
+alter table public.profiles add column if not exists last_lat double precision;
+alter table public.profiles add column if not exists last_lng double precision;
+alter table public.profiles add column if not exists last_seen_at timestamptz;
+alter table public.profiles add column if not exists admin_note text;
+alter table public.profiles add column if not exists approved_at timestamptz;
+alter table public.profiles add column if not exists approved_by text;
+alter table public.profiles add column if not exists deleted_at timestamptz;
 alter table public.profiles add column if not exists created_at timestamptz default now();
 alter table public.profiles add column if not exists updated_at timestamptz default now();
+
+-- Conserva operativos los perfiles existentes. Los conductores nuevos se registran como pendientes desde la app.
+update public.profiles
+set approval_status=case when role='driver' then 'approved' else 'approved' end,
+    updated_at=coalesce(updated_at,now())
+where approval_status is null;
+alter table public.profiles alter column approval_status set default 'pending';
+update public.profiles set is_online=false where is_online is null;
+
 create unique index if not exists profiles_device_id_uidx on public.profiles(device_id) where device_id is not null;
+create index if not exists profiles_role_status_idx on public.profiles(role,status,approval_status);
+create index if not exists profiles_online_idx on public.profiles(is_online,last_seen_at desc) where role='driver';
+
+drop trigger if exists profiles_set_updated_at on public.profiles;
+create trigger profiles_set_updated_at
+before update on public.profiles
+for each row execute function public.set_updated_at();
 
 create table if not exists public.admin_users (
   id uuid primary key default gen_random_uuid()
@@ -390,12 +415,12 @@ $$;
 
 -- Permisos temporales para la beta web.
 grant select,insert,update on table public.rides to anon,authenticated;
-grant select,insert,update on table public.profiles to anon,authenticated;
+grant select,insert,update,delete on table public.profiles to anon,authenticated;
 grant select on table public.admin_users to anon,authenticated;
 grant select,insert,update on table public.fare_settings to anon,authenticated;
 grant select,insert,update on table public.ride_events to anon,authenticated;
-grant select,insert,update on table public.reports to anon,authenticated;
-grant select,insert,update on table public.driver_reports to anon,authenticated;
+grant select,insert,update,delete on table public.reports to anon,authenticated;
+grant select,insert,update,delete on table public.driver_reports to anon,authenticated;
 grant usage,select on all sequences in schema public to anon,authenticated;
 
 alter table public.rides enable row level security;
@@ -442,6 +467,13 @@ $$;
 do $$
 begin
   alter publication supabase_realtime add table public.driver_reports;
+exception when duplicate_object then null;
+end
+$$;
+
+do $$
+begin
+  alter publication supabase_realtime add table public.profiles;
 exception when duplicate_object then null;
 end
 $$;

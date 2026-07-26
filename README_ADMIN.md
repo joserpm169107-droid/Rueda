@@ -1,28 +1,23 @@
-# Panel administrativo · Sobre Ruedas v2.4.0
+# Panel administrativo · Sobre Ruedas v2.4.1
 
-1. Ejecuta `ACTUALIZAR_SUPABASE_v2.4.0.sql` en Supabase SQL Editor.
-2. Sube todos los archivos del paquete a GitHub.
-3. Abre `admin.html?v=233` desde GitHub Pages.
-4. Durante la beta, el código temporal es `RUEDA2026`.
+Abre `admin.html` desde GitHub Pages.
 
-## Módulo de Reportes
+## Funciones principales
 
-- Importa automáticamente calificaciones de 1, 2 y 3 estrellas.
-- Muestra el comentario del pasajero y los datos del viaje.
-- Mantiene historial por conductor.
-- Calcula riesgo verde, amarillo y rojo.
-- Permite marcar un reporte como revisado o reabrirlo.
-- Incluye filtros por conductor, calificación, estado, fecha y texto.
-- Muestra alertas de reincidencia en el Dashboard.
+- Dashboard interactivo con detalles al tocar cada indicador.
+- Mapa normal de OpenStreetMap con conductores, solicitudes y viajes activos.
+- Actualización por Supabase Realtime y respaldo automático cada 10 segundos.
+- Páginas de Conductores y Usuarios con búsqueda, filtros, contadores y actualización manual.
+- Gestión de viajes activos, buscando conductor, terminados y cancelados.
+- Desglose del volumen diario en CUP.
+- Gestión de conductores: aprobar, desaprobar, eliminar, restaurar, ver viajes y reportes.
+- Eliminación lógica con motivo obligatorio y doble confirmación; conserva el historial.
+- Gestión de usuarios: ver viajes, eliminar y restaurar perfil.
+- Reportes: resolver, reabrir, eliminar, ver viaje e historial.
+- Tarifas exclusivamente por kilómetro.
 
-## Niveles de riesgo
+## Base de datos
 
-- Verde: 1 o 2 reportes.
-- Amarillo: 3 o 4 reportes.
-- Rojo: 5 o más reportes.
+Ejecuta `ACTUALIZAR_SUPABASE_v2.4.1.sql` una sola vez después de subir esta versión. La migración es idempotente y conserva viajes e historial existentes.
 
-**Importante:** el acceso por código y las políticas abiertas son solo para pruebas. Antes del lanzamiento público hay que activar Supabase Auth, roles reales y políticas RLS privadas.
-
-## Actualización v2.4.0
-Ejecuta `ACTUALIZAR_SUPABASE_v2.4.0.sql` una sola vez. Después recarga `admin.html` con Ctrl+F5.
-Los cuadros del resumen son botones y abren vistas filtradas. Las decisiones sobre conductores y reportes se guardan en Supabase.
+> El acceso administrativo sigue siendo beta. Antes del lanzamiento público debe reemplazarse el código de desarrollo por Supabase Auth y permisos administrativos reales.
