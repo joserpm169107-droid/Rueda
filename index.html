@@ -808,6 +808,7 @@ const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const DEVICE_KEY='rueda_device_id';
 const deviceId=localStorage.getItem(DEVICE_KEY)||('device_'+crypto.randomUUID());
 localStorage.setItem(DEVICE_KEY,deviceId);
+let routeRequestId=0;
 let user=null, registerRole='passenger', selected={type:'Motorina',price:180,eta:3}, tripTimer=null, driverTimer=null, routeLine=null, driverMarker=null, tripPhase=0, gpsWatch=null, destinationMarker=null, destinationPoint=null, currentStart=[21.84206,-78.76000], pinPicking=false, pinPurpose='destination', pendingDestination=null, gpsReady=true, driverTripState='idle', driverTripStartedAt=null, currentRideId=null, incomingRide=null, passengerChannel=null, driverChannel=null, driverOnline=false;
 function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200)}
 
@@ -1344,6 +1345,7 @@ function setDestinationPoint(point,label){
   $('#destination').value=label||$('#destination').value;
 }
 async function prepareRealRoute(forceConfirmed=false){
+  const requestId=++routeRequestId;
   const text=$('#destination').value.trim();
   if(!text){toast('Escribe o marca un destino');return false}
 
@@ -1356,6 +1358,7 @@ async function prepareRealRoute(forceConfirmed=false){
   if(!destinationPoint){
     setRouteStatus('Buscando dirección','Interpretando el formato de dirección usado en Cuba.');
     const result=await geocodeCubanAddress(text);
+    if(requestId!==routeRequestId)return false;
     if(!result){
       setRouteStatus('Dirección dudosa','No encontré las dos esquinas con suficiente seguridad. Márcala en el mapa.','warn');
       setSheetHeight(sheetLimits().min,true);
@@ -1375,6 +1378,7 @@ async function prepareRealRoute(forceConfirmed=false){
   setRouteStatus('Calculando ruta por calles',`Buscando vías permitidas para ${selected.type}.`);
   try{
     const route=await getStreetRoute(currentStart,destinationPoint);
+    if(requestId!==routeRequestId)return false;
     if(routeLine)map.removeLayer(routeLine);
     routeLine=L.polyline(route.points,{color:'#1677ff',weight:6,opacity:.9,lineJoin:'round'}).addTo(map);
     map.fitBounds(routeLine.getBounds(),{padding:[60,60]});
@@ -1424,9 +1428,14 @@ $('#resetDemoLocation').onclick=()=>{
   toast('Ubicación restaurada al Parque José Martí');
 }
 $('#searchAddressBtn').onclick=async()=>{
-  destinationPoint=null;
-  const ok=await prepareRealRoute();
-  if(ok)toast('Dirección y ruta listas');
+  const btn=$('#searchAddressBtn');
+  routeRequestId++;
+  destinationPoint=null;pendingDestination=null;
+  $('#confirmLocation').classList.remove('show');
+  clearRoute();
+  btn.disabled=true;btn.textContent='⏳ Buscando…';
+  try{const ok=await prepareRealRoute();if(ok)toast('Dirección y ruta listas')}
+  finally{btn.disabled=false;btn.textContent='🔎 Buscar dirección cubana'}
 }
 $('#pickMapBtn').onclick=()=>startPinMode('destination');
 $('#fixLocationBtn').onclick=()=>{ $('#confirmLocation').classList.remove('show'); startPinMode('destination'); }
@@ -1592,7 +1601,7 @@ function setDriverTripState(state){
 $('#driverArrivedBtn').onclick=async()=>{try{await updateRideStatus('arrived',{arrived_at:new Date().toISOString()});setDriverTripState('arrived');toast('Pasajero avisado: el conductor llegó')}catch(e){}};
 $('#driverStartTripBtn').onclick=async()=>{try{await updateRideStatus('in_progress',{started_at:new Date().toISOString()});setDriverTripState('in_progress');toast('Viaje iniciado hacia el destino')}catch(e){}};
 $('#driverFinishTripBtn').onclick=async()=>{if(driverTripState!=='in_progress')return toast('Primero debes iniciar el viaje');if(!confirm('¿Llegaron al destino y deseas finalizar el viaje?'))return;try{await updateRideStatus('finished',{finished_at:new Date().toISOString()})}catch(e){return}$('#driverStepPickup').classList.add('done');$('#driverStepRide').classList.add('done');$('#driverStepFinish').classList.add('active');const elapsed=driverTripStartedAt?Math.max(1,Math.round((Date.now()-driverTripStartedAt)/60000)):8;$('#finishDuration').textContent=elapsed+' min';$('#finishDistance').textContent=$('#distance').textContent||'1.4 km';$('#finishPrice').textContent=(incomingRide?.price||selected.price)+' CUP';$('#tripFinishedModal').classList.remove('hidden');setNotice('Viaje finalizado correctamente.')};
-$('#finishDoneBtn').onclick=()=>{$('#tripFinishedModal').classList.add('hidden');$('#driverActiveTrip').classList.add('hidden');$('#driverSummary').classList.add('hidden');driverTripState='idle';driverTripStartedAt=null;currentRideId=null;driverOnline=true;$('#onlineToggle').classList.add('on');$('#onlineText').textContent='Disponible';listenDriverRequests();toast('Viaje terminado. Ya puedes recibir otro')};
+$('#finishDoneBtn').onclick=()=>{localStorage.removeItem(ARK);incomingRide=null;$('#tripFinishedModal').classList.add('hidden');$('#driverActiveTrip').classList.add('hidden');$('#driverSummary').classList.add('hidden');driverTripState='idle';driverTripStartedAt=null;currentRideId=null;driverOnline=true;$('#onlineToggle').classList.add('on');$('#onlineText').textContent='Disponible';listenDriverRequests();toast('Viaje terminado. Ya puedes recibir otro');earnings()};
 $('#driverCallPassenger').onclick=()=>toast('Llamando al pasajero');
 $('#driverTripProblemBtn').onclick=()=>$('#sosModal').classList.remove('hidden');
 
@@ -1611,10 +1620,10 @@ $('#driverGpsBtn').onclick=()=>{
 }
 
 const ACTIVE=['searching','accepted','arrived','in_progress'],ARK='rueda_active_ride';let pickedRating=5;
-function persist(r){if(r&&ACTIVE.includes(r.status))localStorage.setItem(ARK,JSON.stringify({id:r.id}));else localStorage.removeItem(ARK)}
+function persist(r){if(r&&ACTIVE.includes(r.status))localStorage.setItem(ARK,JSON.stringify({id:r.id,status:r.status,updated_at:r.updated_at||new Date().toISOString(),snapshot:r}));else localStorage.removeItem(ARK)}
 function avatar(el,p,f='👤'){if(el)el.innerHTML=p?`<img src="${p}" alt="Foto">`:f}
 async function restore(){if(!user)return;const s=JSON.parse(localStorage.getItem(ARK)||'null');let q=sb.from('rides').select('*');q=s?.id?q.eq('id',s.id):(user.role==='driver'?q.eq('driver_id',deviceId).in('status',ACTIVE):q.eq('passenger_id',deviceId).in('status',ACTIVE));const {data}=await q.order('created_at',{ascending:false}).limit(1),r=data?.[0];if(!r||!ACTIVE.includes(r.status)){localStorage.removeItem(ARK);return}currentRideId=r.id;persist(r);if(user.role==='driver'){incomingRide=r;driverOnline=true;$('#onlineToggle').classList.add('on');$('#onlineText').textContent='Disponible';$('#driverSummary').classList.add('hidden');$('#driverActiveTrip').classList.remove('hidden');$('#driverPickupAddress').textContent=r.pickup_address;$('#driverDestinationAddress').textContent=r.destination_address;setDriverTripState(r.status==='accepted'?'to_pickup':r.status)}else{$('#homePanel').classList.add('hidden');$('#tripPanel').classList.remove('hidden');listenPassengerRide(r.id);applyPassengerRide(r)}}
-function resetP(rate=false,r=null){stopPassengerChannel();localStorage.removeItem(ARK);currentRideId=null;$('#tripPanel').classList.add('hidden');$('#homePanel').classList.remove('hidden');if(rate&&r){pickedRating=5;$('#ratingDriverName').textContent=r.driver_name||'Conductor';avatar($('#ratingDriverAvatar'),r.driver_photo,'🛵');$$('#starPicker button').forEach(b=>b.classList.toggle('on',+b.dataset.star<=5));$('#sendRatingBtn').dataset.id=r.id;$('#ratingModal').classList.remove('hidden')}}
+function resetP(rate=false,r=null){stopPassengerChannel();localStorage.removeItem(ARK);currentRideId=null;incomingRide=null;destinationPoint=null;pendingDestination=null;clearRoute();$('#tripPanel').classList.add('hidden');$('#homePanel').classList.remove('hidden');if(rate&&r){pickedRating=5;$('#ratingDriverName').textContent=r.driver_name||'Conductor';avatar($('#ratingDriverAvatar'),r.driver_photo,'🛵');$$('#starPicker button').forEach(b=>b.classList.toggle('on',+b.dataset.star<=5));$('#sendRatingBtn').dataset.id=r.id;$('#ratingModal').classList.remove('hidden')}}
 $$('#starPicker button').forEach(b=>b.onclick=()=>{pickedRating=+b.dataset.star;$$('#starPicker button').forEach(x=>x.classList.toggle('on',+x.dataset.star<=pickedRating))});$('#sendRatingBtn').onclick=async()=>{const {error}=await sb.from('rides').update({rating:pickedRating,rating_comment:$('#ratingComment').value,rated_at:new Date().toISOString()}).eq('id',$('#sendRatingBtn').dataset.id);if(error)return backendError(error);$('#ratingModal').classList.add('hidden');toast('Gracias por calificar')};$('#skipRatingBtn').onclick=()=>$('#ratingModal').classList.add('hidden');
 const ap=applyPassengerRide;applyPassengerRide=function(r){if(!r||r.id!==currentRideId)return;persist(r);ap(r);if(r.driver_photo)avatar($('#passengerDriverAvatar'),r.driver_photo,'🛵');if(r.driver_rating)$('#passengerDriverRating').textContent='⭐ '+Number(r.driver_rating).toFixed(1);if(r.status==='finished')setTimeout(()=>resetP(true,r),600);if(r.status==='canceled')setTimeout(()=>resetP(),250)};
 $('#cancelTrip').onclick=async()=>{if(!currentRideId)return resetP();if(!confirm('¿Cancelar este viaje?'))return;const {error}=await sb.from('rides').update({status:'canceled',canceled_at:new Date().toISOString(),canceled_by:'passenger'}).eq('id',currentRideId).in('status',ACTIVE);if(error)return backendError(error,'No se pudo cancelar');resetP();toast('Viaje cancelado')};
@@ -1686,5 +1695,6 @@ window.addEventListener('load', function () {
 });
 </script>
 
+<div style="position:fixed;right:8px;bottom:8px;z-index:9999;background:#111;color:#fff;padding:5px 8px;border-radius:9px;font:700 10px system-ui;opacity:.72">v2.2.0</div>
 </body>
 </html>
