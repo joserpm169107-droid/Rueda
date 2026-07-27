@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#F6C600">
 <meta name="description" content="Rueda Beta 1.0 — transporte urbano para Cuba.">
-<title>Sobre Ruedas v2.4.2 Ciego de Ávila</title>
+<title>Sobre Ruedas v2.4.3 Ciego de Ávila</title>
 <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-96.png">
 <link rel="preconnect" href="https://unpkg.com">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -769,7 +769,7 @@ body.theme-dark{--bg:#101114;--card:#191b20;--text:#f7f7f7;--muted:#aeb2ba;--lin
         <button id="switchPassenger">🙋 Usuario</button>
         <button id="switchDriver">🛵 Conductor</button>
       </div>
-      <p class="muted" id="roleStatus" style="font-size:12px;margin-top:9px">Cuenta de usuario activa.</p><button class="logout" id="logoutBtn">🚪 Cerrar sesión</button><p class="muted" style="text-align:center;font-size:11px;margin-top:8px">Sobre Ruedas v2.4.2 Ciego de Ávila</p></div>
+      <p class="muted" id="roleStatus" style="font-size:12px;margin-top:9px">Cuenta de usuario activa.</p><button class="logout" id="logoutBtn">🚪 Cerrar sesión</button><p class="muted" style="text-align:center;font-size:11px;margin-top:8px">Sobre Ruedas v2.4.3 Ciego de Ávila</p></div>
 
     <nav class="nav"><button class="active" data-page="home"><span>⌂</span>Inicio</button><button data-page="history"><span>◷</span>Viajes</button><button data-page="saved"><span>♡</span>Guardados</button><button data-page="account"><span>☻</span>Cuenta</button></nav>
     </div>
@@ -882,7 +882,7 @@ async function driverCanOperate(showMessage=true){
   if(user?.role!=='driver')return false;
   const profile=await fetchCurrentProfile()||await saveProfileForUser(user,'pending');
   if(!profile)return false;
-  if(profile.status==='deleted'){
+  if(profile.status==='deleted'||profile.approval_status==='deleted'){
     if(showMessage)toast('Esta cuenta de conductor fue eliminada por administración');
     return false;
   }
@@ -910,7 +910,7 @@ function stopPresenceHeartbeat(){if(presenceTimer){clearInterval(presenceTimer);
 function startPresenceHeartbeat(){stopPresenceHeartbeat();presenceTimer=setInterval(()=>{if(driverOnline)setDriverPresence(true,currentStart)},15000)}
 async function syncProfileUi(){
   const profile=await fetchCurrentProfile();if(!profile||!user)return;
-  if(profile.status==='deleted'){
+  if(profile.status==='deleted'||profile.approval_status==='deleted'){
     stopPassengerChannel();stopDriverChannel();stopProfileChannel();localStorage.removeItem(AUTH);user=null;
     $('#auth').classList.remove('hidden');toast('Esta cuenta fue eliminada por administración');return;
   }
@@ -1865,6 +1865,6 @@ window.addEventListener('load', function () {
 });
 </script>
 
-<div style="position:fixed;right:8px;bottom:8px;z-index:9999;background:#111;color:#fff;padding:5px 8px;border-radius:9px;font:700 10px system-ui;opacity:.72">v2.4.2</div>
+<div style="position:fixed;right:8px;bottom:8px;z-index:9999;background:#111;color:#fff;padding:5px 8px;border-radius:9px;font:700 10px system-ui;opacity:.72">v2.4.3</div>
 </body>
 </html>

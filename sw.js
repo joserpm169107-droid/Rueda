@@ -1,4 +1,4 @@
-const CACHE_NAME='sobre-ruedas-v242';
+const CACHE_NAME='sobre-ruedas-v243';
 const APP_SHELL=[
   './',
   './index.html',

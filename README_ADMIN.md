@@ -1,4 +1,4 @@
-# Panel administrativo · Sobre Ruedas v2.4.2
+# Panel administrativo · Sobre Ruedas v2.4.3
 
 Abre `admin.html` desde GitHub Pages.
 
@@ -18,6 +18,6 @@ Abre `admin.html` desde GitHub Pages.
 
 ## Base de datos
 
-Ejecuta `ACTUALIZAR_SUPABASE_v2.4.2.sql` una sola vez después de subir esta versión. La migración es idempotente y conserva viajes e historial existentes.
+Ejecuta `ACTUALIZAR_SUPABASE_v2.4.3.sql` una sola vez después de subir esta versión. La migración es idempotente y conserva viajes e historial existentes.
 
 > El acceso administrativo sigue siendo beta. Antes del lanzamiento público debe reemplazarse el código de desarrollo por Supabase Auth y permisos administrativos reales.

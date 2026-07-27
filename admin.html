@@ -131,7 +131,7 @@
         <section id="page-fares" class="section-page"><div class="empty" style="margin-bottom:14px">La tarifa se calcula únicamente por distancia: kilómetros recorridos × precio por km.</div><div class="fare-grid" id="fareGrid"></div><div style="margin-top:14px"><button id="saveFares" class="save">Guardar precios por km</button></div></section>
 
         <section id="page-reports" class="section-page">
-          <div id="reportWarning" class="report-warning hidden">El panel está mostrando calificaciones directamente desde los viajes, pero la tabla de reportes no está disponible. Ejecuta <strong>ACTUALIZAR_SUPABASE_v2.4.2.sql</strong> para guardar revisiones e historial.</div>
+          <div id="reportWarning" class="report-warning hidden">El panel está mostrando calificaciones directamente desde los viajes, pero la tabla de reportes no está disponible. Ejecuta <strong>ACTUALIZAR_SUPABASE_v2.4.3.sql</strong> para guardar revisiones e historial.</div>
           <div class="report-summary">
             <div class="mini-stat"><small>PENDIENTES</small><strong id="rPending">0</strong></div>
             <div class="mini-stat"><small>REVISADOS</small><strong id="rReviewed">0</strong></div>
@@ -172,7 +172,7 @@
   </div>
 
   <div id="toast" class="toast"></div>
-  <div class="version">Admin v2.4.2</div>
+  <div class="version">Admin v2.4.3</div>
 
   <script>
     const SUPABASE_URL='https://zrrabfleykuhxyqldxid.supabase.co';
@@ -216,9 +216,9 @@
     function profileFor(id){const key=String(id||'');return profiles.find(profile=>profileKey(profile)===key||String(profile?.id||'')===key)||null}
     function approvalLabel(value){return({approved:'Aprobado',pending:'Pendiente',rejected:'Desaprobado',deleted:'Eliminado',blocked:'Bloqueado'})[value]||'Pendiente'}
     function approvalClass(value){return ['approved','pending','rejected','deleted'].includes(value)?value:'pending'}
-    function isProfileOnline(profile){if(!profile||profile.status==='deleted'||profile.approval_status==='rejected')return false;const seen=safeDate(profile.last_seen_at)?.getTime()||0;return Boolean(profile.is_online)&&(Date.now()-seen<90*1000||!seen)}
+    function isProfileOnline(profile){if(!profile||profile.status==='deleted'||profile.approval_status==='deleted'||profile.approval_status==='rejected')return false;const seen=safeDate(profile.last_seen_at)?.getTime()||0;return Boolean(profile.is_online)&&(Date.now()-seen<90*1000||!seen)}
     function latestRideForDriver(driverId){return rides.filter(ride=>String(ride.driver_id||'')===String(driverId||'')).sort((a,b)=>(safeDate(b.updated_at||b.created_at)?.getTime()||0)-(safeDate(a.updated_at||a.created_at)?.getTime()||0))[0]||null}
-    function activeDriverIds(){const ids=new Set();profiles.filter(profile=>profile.role==='driver'&&isProfileOnline(profile)).forEach(profile=>ids.add(profileKey(profile)));rides.filter(ride=>ACTIVE_STATUSES.includes(ride.status)&&ride.driver_id).forEach(ride=>{const profile=profileFor(ride.driver_id);if(profile?.status==='deleted'||profile?.status==='blocked'||profile?.approval_status==='rejected')return;ids.add(String(ride.driver_id))});return ids}
+    function activeDriverIds(){const ids=new Set();profiles.filter(profile=>profile.role==='driver'&&isProfileOnline(profile)).forEach(profile=>ids.add(profileKey(profile)));rides.filter(ride=>ACTIVE_STATUSES.includes(ride.status)&&ride.driver_id).forEach(ride=>{const profile=profileFor(ride.driver_id);if(profile?.status==='deleted'||profile?.approval_status==='deleted'||profile?.status==='blocked'||profile?.approval_status==='rejected')return;ids.add(String(ride.driver_id))});return ids}
     function closeOpsModal(){if(liveMap){liveMap.remove();liveMap=null;liveMapLayers=null;liveMapHasFitted=false}$('#opsModal').classList.add('hidden')}
     function openOpsModal(title,subtitle,html){$('#opsTitle').textContent=title;$('#opsSubtitle').textContent=subtitle||'';$('#opsBody').innerHTML=html;$('#opsModal').classList.remove('hidden')}
 
@@ -567,7 +567,7 @@
       const approved=approval==='approved';
       const payload={approval_status:approval,status:approved?'active':'blocked',is_online:approved?Boolean(profile.is_online):false,approved_at:approved?new Date().toISOString():null,approved_by:approved?ownerIdentity():null,rejection_reason:approved?null:reason,updated_at:new Date().toISOString()};
       const {error}=await sb.from('profiles').update(payload).eq('id',profile.id);
-      if(error){console.error(error);return toast('No se pudo actualizar el conductor. Ejecuta SQL v2.4.2')}
+      if(error){console.error(error);return toast('No se pudo actualizar el conductor. Ejecuta SQL v2.4.3')}
       await logAdminAction(approved?'approve_driver':'reject_driver',personId,'driver',reason);
       toast(approved?'Conductor aprobado':'Conductor desaprobado y bloqueado');if(!$('#opsModal').classList.contains('hidden'))closeOpsModal();await refreshOperations();
     }
@@ -586,9 +586,12 @@ No podrá iniciar sesión ni aceptar viajes. El historial se conservará.`))retu
       const active=rides.filter(ride=>driverKeys.has(String(ride.driver_id||''))&&['accepted','arrived','in_progress'].includes(ride.status));
       if(active.length){if(!confirm(`Este conductor tiene ${active.length} viaje(s) activo(s). ¿Cancelarlos y continuar con la eliminación?`))return;const {error:rideError}=await sb.from('rides').update({status:'canceled',canceled_at:new Date().toISOString(),canceled_by:'admin',updated_at:new Date().toISOString()}).in('id',active.map(ride=>ride.id));if(rideError){console.error(rideError);return toast('No se pudieron cancelar los viajes activos')}}
       const now=new Date().toISOString();
-      const {error}=await sb.from('profiles').update({status:'deleted',approval_status:'deleted',is_online:false,deleted_at:now,deleted_reason:reason.trim(),deleted_by:ownerIdentity(),updated_at:now}).eq('id',profile.id);
-      if(error){console.error(error);return toast('No se pudo eliminar el conductor')}
-      await logAdminAction('delete_driver',personId,'driver',reason.trim(),{active_rides_canceled:active.length});
+      // Eliminación lógica: approval_status controla el acceso. No forzamos status='deleted'
+      // porque instalaciones antiguas pueden tener una restricción CHECK que no admite ese valor.
+      const deletePayload={approval_status:'deleted',is_online:false,deleted_at:now,deleted_reason:reason.trim(),deleted_by:ownerIdentity(),updated_at:now};
+      const {error}=await sb.from('profiles').update(deletePayload).eq('id',profile.id);
+      if(error){console.error('Error eliminando conductor:',error);return toast('No se pudo eliminar el conductor: '+(error.message||'error de Supabase'))}
+      await logAdminAction('delete_driver',personId,'driver',reason.trim(),{active_rides_canceled:active.length,soft_delete:true});
       toast('Conductor eliminado y acceso bloqueado');closeOpsModal();await refreshOperations();
     }
     async function restoreDriver(personId){
@@ -602,8 +605,9 @@ No podrá iniciar sesión ni aceptar viajes. El historial se conservará.`))retu
       const reason=prompt(`Motivo para eliminar a ${person?.name||'este usuario'}:`,'Solicitud administrativa');if(reason===null)return;if(!reason.trim())return toast('El motivo es obligatorio');
       if(!confirm(`¿Eliminar a ${person?.name||'este usuario'}? Sus viajes históricos se conservarán.`))return;
       const profile=await ensureProfile(personId,'passenger');if(!profile)return;
-      const {error}=await sb.from('profiles').update({status:'deleted',approval_status:'deleted',is_online:false,deleted_at:new Date().toISOString(),deleted_reason:reason.trim(),deleted_by:ownerIdentity(),updated_at:new Date().toISOString()}).eq('id',profile.id);
-      if(error){console.error(error);return toast('No se pudo eliminar el usuario')}
+      const now=new Date().toISOString();
+      const {error}=await sb.from('profiles').update({approval_status:'deleted',is_online:false,deleted_at:now,deleted_reason:reason.trim(),deleted_by:ownerIdentity(),updated_at:now}).eq('id',profile.id);
+      if(error){console.error('Error eliminando usuario:',error);return toast('No se pudo eliminar el usuario: '+(error.message||'error de Supabase'))}
       await logAdminAction('delete_passenger',personId,'passenger',reason.trim());toast('Usuario eliminado');await refreshOperations();
     }
     async function restorePassenger(personId){
@@ -726,7 +730,7 @@ No podrá iniciar sesión ni aceptar viajes. El historial se conservará.`))retu
       }else{
         ({error}=await sb.from('driver_reports').update({reviewed,reviewed_at:reviewed?now:null,reviewed_by:reviewed?ownerIdentity():null,updated_at:now}).eq('id',report.id));
       }
-      if(error){console.error(error);return toast('No se pudo guardar. Ejecuta el SQL v2.4.2 y vuelve a intentar')}
+      if(error){console.error(error);return toast('No se pudo guardar. Ejecuta el SQL v2.4.3 y vuelve a intentar')}
       toast(reviewed?'Reporte resuelto':'Reporte reabierto');
       await refreshOperations();
     }
@@ -735,7 +739,7 @@ No podrá iniciar sesión ni aceptar viajes. El historial se conservará.`))retu
       if(!confirm('¿Eliminar este reporte? También se retirará la calificación baja del viaje para que no vuelva a generarse.'))return;
       let error=null;
       if(report.ride_id){({error}=await sb.from('rides').update({rating:null,rating_comment:null,rated_at:null}).eq('id',report.ride_id));if(error){console.error(error);return toast('No se pudo retirar la calificación del viaje')}}
-      if(!report._derived){({error}=await sb.from('driver_reports').delete().eq('id',report.id));if(error){console.error(error);return toast('No se pudo eliminar el reporte. Ejecuta SQL v2.4.2')}}
+      if(!report._derived){({error}=await sb.from('driver_reports').delete().eq('id',report.id));if(error){console.error(error);return toast('No se pudo eliminar el reporte. Ejecuta SQL v2.4.3')}}
       toast('Reporte eliminado');await refreshOperations();
     }
 
