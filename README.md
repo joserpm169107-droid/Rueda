@@ -1,4 +1,4 @@
-# Sobre Ruedas v2.4.1
+# Sobre Ruedas v2.4.2
 
 Aplicación web de transporte para pasajeros, conductores y administración, preparada para GitHub Pages y Supabase.
 
@@ -17,6 +17,6 @@ Aplicación web de transporte para pasajeros, conductores y administración, pre
 
 Después de subir todos los archivos a GitHub, ejecuta una sola vez en Supabase:
 
-`ACTUALIZAR_SUPABASE_v2.4.1.sql`
+`ACTUALIZAR_SUPABASE_v2.4.2.sql`
 
 Después actualiza la aplicación y el panel con `Ctrl + F5`.
