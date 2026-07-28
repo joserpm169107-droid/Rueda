@@ -1,22 +1,26 @@
-# Sobre Ruedas v2.4.3
+# Sobre Ruedas v2.5.0
 
-Aplicación web de transporte para pasajeros, conductores y administración, preparada para GitHub Pages y Supabase.
+Versión mayor con aplicaciones separadas y un flujo de viaje más profesional.
 
-## Esta versión incluye
+## Accesos
 
-- Cobro exclusivamente por kilómetro.
-- Mapa operativo normal con OpenStreetMap.
-- Conductores, solicitudes y viajes activos en tiempo real.
-- Páginas de Conductores y Usuarios con actualización automática y manual.
-- Aprobación, desaprobación, eliminación y restauración de conductores.
-- Eliminación con motivo, doble confirmación y auditoría.
-- Conservación del historial de viajes, reportes y calificaciones.
-- Reportes de 1, 2 y 3 estrellas con comentarios e indicadores de riesgo.
+- `index.html`: **Sobre Ruedas**, exclusiva para pasajeros.
+- `conductor.html`: **Sobre Ruedas Conductor**, exclusiva para conductores.
+- `admin.html`: **Sobre Ruedas Admin**, centro de operaciones.
 
-## Actualización
+## Principales mejoras
 
-Después de subir todos los archivos a GitHub, ejecuta una sola vez en Supabase:
+- Sesiones y dispositivos separados para pasajero y conductor.
+- Diseño adaptativo para teléfono, tableta, laptop y escritorio.
+- Modo oscuro corregido con contraste completo.
+- Ruta interna al pasajero y después al destino.
+- Botones de navegación con Google Maps y Waze.
+- Seguimiento del conductor y ETA actualizados para el pasajero.
+- Aceptación atómica para impedir que dos conductores tomen el mismo viaje.
+- Historial real desde Supabase.
+- Panel administrativo adaptativo con centro de incidencias y recuperación de viajes atascados.
+- Optimización de caché y recuperación al volver la conexión.
 
-`ACTUALIZAR_SUPABASE_v2.4.3.sql`
+## Instalación
 
-Después actualiza la aplicación y el panel con `Ctrl + F5`.
+Sube todos los archivos a GitHub y ejecuta una sola vez `ACTUALIZAR_SUPABASE_v2.5.0.sql`.

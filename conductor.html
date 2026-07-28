@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#F6C600">
-<meta name="description" content="Aplicación profesional de transporte para pasajeros de Sobre Ruedas.">
-<title>Sobre Ruedas v2.5.0 · Ciego de Ávila</title>
-<link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-96.png">
+<meta name="description" content="Aplicación profesional para conductores de Sobre Ruedas.">
+<title>Sobre Ruedas Conductor v2.5.0 · Ciego de Ávila</title>
+<link rel="manifest" href="conductor.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-96.png">
 <link rel="preconnect" href="https://unpkg.com">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
@@ -663,10 +663,10 @@ body.theme-dark .primary-nav{background:#f6c600!important;color:#111!important;b
 
 </style>
 </head>
-<body data-app-role="passenger" class="app-passenger">
+<body data-app-role="driver" class="app-driver">
   <div class="splash" id="brandSplash">
     <img src="logo-oficial.jpg" alt="Sobre Ruedas">
-    <strong>Tu viaje, tu camino</strong>
+    <strong>Conduce con seguridad</strong>
     <small>Ciego de Ávila</small>
   </div>
 <div class="app">
@@ -687,7 +687,7 @@ body.theme-dark .primary-nav{background:#f6c600!important;color:#111!important;b
       </div>
       <div class="dev-code-note">🧪 Modo desarrollo: no se enviará código por SMS ni correo. La cuenta se crea directamente para poder probar la app.</div>
 <div id="registerForm" class="hidden">
-        <p style="text-align:left;margin:10px 0 2px;font-weight:900;color:#fff">Crea tu cuenta de pasajero</p>
+        <p style="text-align:left;margin:10px 0 2px;font-weight:900;color:#fff">Registro exclusivo de conductor</p>
         <div class="role-choice role-selector-hidden">
           <button type="button" class="role-card active" data-register-role="passenger">
             <div class="role-icon">🙋</div><strong>Usuario</strong><small>Solicitar viajes</small>
@@ -735,7 +735,7 @@ body.theme-dark .primary-nav{background:#f6c600!important;color:#111!important;b
   <div id="mapConfirm" class="map-confirm hidden"><button class="cancel" id="cancelPin">Cancelar</button><button class="confirm" id="confirmPin">Confirmar destino</button></div>
   <div class="top">
     <button class="round glass" id="menuBtn">☰</button>
-    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS<small>CIEGO DE ÁVILA · v2.5.0</small></div></div>
+    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS CONDUCTOR<small>CIEGO DE ÁVILA · v2.5.0</small></div></div>
     <button class="round glass" id="profileBtn">👤</button>
   </div>
 
@@ -745,7 +745,7 @@ body.theme-dark .primary-nav{background:#f6c600!important;color:#111!important;b
     </div>
     <span class="sheet-hint">Desliza</span>
     <div class="sheet-content" id="sheetContent">
-    <div class="app-context"><span>🙋</span><div><strong>Sobre Ruedas</strong><small>Aplicación exclusiva del pasajero</small></div><span class="secure">SEPARADO</span></div>
+    <div class="app-context"><span>🛵</span><div><strong>Sobre Ruedas Conductor</strong><small>Panel exclusivo del conductor</small></div><span class="secure">SEPARADO</span></div>
 
     <div id="homePanel">
       <p class="hello">Hola, <span id="helloName">viajero</span> 👋</p>
@@ -834,13 +834,13 @@ body.theme-dark .primary-nav{background:#f6c600!important;color:#111!important;b
 
     <div id="historyPanel" class="hidden"><h2>Mis viajes</h2><div id="historyList" class="history" style="margin-top:12px"><div class="history-loading">Cargando historial…</div></div></div>
 
-    <div id="savedPanel" class="hidden"><h2>Guardados</h2><div class="saved-card"><span>🏠 Casa</span><button class="chip" data-dest="Casa">Elegir</button></div><div class="saved-card"><span>💼 Trabajo</span><button class="chip" data-dest="Trabajo">Elegir</button></div><div class="saved-card"><span>♡ Destino personal</span><button id="savedCustom" class="chip">Agregar</button></div></div>
+    <div id="savedPanel" class="hidden"><h2>Mis ganancias</h2><div class="history-loading">Cargando resumen…</div><button id="savedCustom" class="hidden"></button></div>
 
     <div id="accountPanel" class="hidden"><h2>Mi cuenta</h2><div class="driver-card" style="margin-top:12px"><div class="avatar" id="accountAvatar">👤</div><div><strong id="accountName">Usuario</strong><small id="accountEmail">Cuenta verificada</small><div style="margin-top:6px"><span class="role-badge" id="accountRole">🙋 Usuario</span></div></div><div class="rating">⭐ 4.9</div></div><div class="section-title"><h3>Seguridad y preferencias</h3><button>Editar</button></div><div class="setting"><span>📱 Teléfono</span><span class="badge">Verificado</span></div><div class="setting"><span>🪪 Identificación</span><span class="badge" id="identityBadge">Verificada</span></div><div class="setting"><span>🔔 Notificaciones</span><span>Activadas ›</span></div><div class="section-title"><h3>Apariencia</h3></div><div class="theme-picker"><button data-theme-choice="light">☀️ Claro</button><button data-theme-choice="dark">🌙 Oscuro</button><button data-theme-choice="auto">◐ Auto</button></div><div id="driverEarningsPanel" class="hidden"><div class="section-title"><h3>Mis ganancias</h3><button id="refreshEarningsBtn">Actualizar</button></div><div class="earnings-grid"><div><small>Hoy</small><strong id="earnToday">0 CUP</strong></div><div><small>Semana</small><strong id="earnWeek">0 CUP</strong></div><div><small>Mes</small><strong id="earnMonth">0 CUP</strong></div></div><div id="dailyBreakdown"></div></div>
       <div class="notice-card"><strong>Última alerta</strong><small style="display:block;margin-top:4px" id="lastNotice">No tienes alertas nuevas.</small></div><div class="setting"><span>💳 Método de pago</span><span>Efectivo ›</span></div>
-      <div class="account-separation-note"><strong>Panel independiente</strong><br>Esta sesión pertenece únicamente a Sobre Ruedas. Los controles de conductor no se muestran aquí.</div>
+      <div class="account-separation-note"><strong>Panel independiente</strong><br>Esta sesión pertenece únicamente a Sobre Ruedas Conductor. Los controles de pasajero no se muestran aquí.</div>
       <p class="muted" id="roleStatus" style="font-size:12px;margin-top:9px">Cuenta activa.</p>
-      <button id="switchPassenger" class="hidden"></button><button id="switchDriver" class="hidden"></button><button id="roleInfoBtn" class="hidden"></button><button class="logout" id="logoutBtn">🚪 Cerrar sesión</button><p class="muted" style="text-align:center;font-size:11px;margin-top:8px">Sobre Ruedas v2.5.0 · Ciego de Ávila</p></div>
+      <button id="switchPassenger" class="hidden"></button><button id="switchDriver" class="hidden"></button><button id="roleInfoBtn" class="hidden"></button><button class="logout" id="logoutBtn">🚪 Cerrar sesión</button><p class="muted" style="text-align:center;font-size:11px;margin-top:8px">Sobre Ruedas Conductor v2.5.0 · Ciego de Ávila</p></div>
 
     <nav class="nav"><button class="active" data-page="home"><span>⌂</span>Inicio</button><button data-page="history"><span>◷</span>Viajes</button><button data-page="saved"><span>♡</span>Guardados</button><button data-page="account"><span>☻</span>Cuenta</button></nav>
     </div>
@@ -1193,7 +1193,7 @@ function openApp(){
   if(APP_ROLE==='driver'){$('#homePanel').classList.add('hidden');$('#driverPanel').classList.remove('hidden');}else{$('#homePanel').classList.remove('hidden');$('#driverPanel').classList.add('hidden');}
   syncProfileUi();listenProfileUpdates();
 }
-function logout(){if(!confirm('¿Deseas cerrar sesión en Sobre Ruedas?'))return;stopPresenceHeartbeat();if(user?.role==='driver')setDriverPresence(false);stopPassengerChannel();stopDriverChannel();stopProfileChannel();localStorage.removeItem(AUTH);sessionStorage.clear();user=null;$('#auth').classList.remove('hidden');$('#drawer').classList.remove('open');$('#backdrop').classList.add('hidden');$('#loginEmail').value='';$('#loginPass').value='';toast('Sesión cerrada correctamente')}
+function logout(){if(!confirm('¿Deseas cerrar sesión en Sobre Ruedas Conductor?'))return;stopPresenceHeartbeat();if(user?.role==='driver')setDriverPresence(false);stopPassengerChannel();stopDriverChannel();stopProfileChannel();localStorage.removeItem(AUTH);sessionStorage.clear();user=null;$('#auth').classList.remove('hidden');$('#drawer').classList.remove('open');$('#backdrop').classList.add('hidden');$('#loginEmail').value='';$('#loginPass').value='';toast('Sesión cerrada correctamente')}
 $$('[data-auth]').forEach(b=>b.onclick=()=>{$$('[data-auth]').forEach(x=>x.classList.remove('active'));b.classList.add('active');const login=b.dataset.auth==='login';$('#loginForm').classList.toggle('hidden',!login);$('#registerForm').classList.toggle('hidden',login)})
 $$('[data-register-role]').forEach(b=>b.onclick=()=>{
   registerRole=b.dataset.registerRole;
@@ -1751,10 +1751,6 @@ $$('[data-close]').forEach(b=>b.onclick=()=>$('#'+b.dataset.close).classList.add
 $('#requestBtn').onclick=async()=>{
   const routeReady=await prepareRealRoute(false);
   if(!routeReady)return;
-  const existingCheck=await sb.from('rides').select('*').eq('passenger_id',deviceId).in('status',['searching','accepted','arrived','in_progress']).order('created_at',{ascending:false}).limit(1);
-  if(existingCheck.error)return backendError(existingCheck.error,'No se pudo comprobar el viaje activo');
-  const existingRide=existingCheck.data?.[0];
-  if(existingRide){currentRideId=existingRide.id;activeRidePrice=Number(existingRide.price||0);persist(existingRide);listenPassengerRide(existingRide.id);$('#homePanel').classList.add('hidden');$('#tripPanel').classList.remove('hidden');applyPassengerRide(existingRide);toast('Ya tienes un viaje activo');return}
   const total=selected.price;
   const pickup=$('#pickupText').textContent.trim();
   const destination=$('#destination').value.trim();

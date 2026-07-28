@@ -1,0 +1,12 @@
+SOBRE RUEDAS v2.5.0
+
+1. Reemplaza en GitHub todos los archivos del proyecto por los contenidos de este ZIP.
+2. En Supabase SQL Editor ejecuta UNA SOLA VEZ:
+   ACTUALIZAR_SUPABASE_v2.5.0.sql
+3. No vuelvas a ejecutar los SQL de versiones anteriores.
+4. Después de publicar, limpia la caché o recarga completamente la página.
+
+Accesos:
+Pasajero: /index.html (o la raíz /)
+Conductor: /conductor.html
+Administrador: /admin.html

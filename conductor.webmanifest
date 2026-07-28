@@ -1,12 +1,12 @@
 {
-  "name": "Sobre Ruedas",
-  "short_name": "Sobre Ruedas",
-  "description": "Aplicación de transporte para pasajeros.",
-  "start_url": "./index.html?v=250",
+  "name": "Sobre Ruedas Conductor",
+  "short_name": "SR Conductor",
+  "description": "Aplicación exclusiva para conductores.",
+  "start_url": "./conductor.html?v=250",
   "scope": "./",
   "display": "standalone",
   "background_color": "#050505",
-  "theme_color": "#F6C600",
+  "theme_color": "#111317",
   "icons": [
     {
       "src": "icon-96.png",

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#111317">
-  <title>Sobre Ruedas · Administración</title>
+  <title>Sobre Ruedas Admin v2.5.0</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -30,6 +30,24 @@
     .admin-reason{margin-top:5px;font-size:11px;color:#991b1b}.refreshing{opacity:.6;pointer-events:none}
     @media(max-width:900px){.radar-layout,.live-map-layout{grid-template-columns:1fr}.radar-map,.live-map{height:390px}.radar-side,.live-map-side{max-height:none}}
     @media(max-width:760px){.shell{display:block}.sidebar{position:fixed;width:245px;transform:translateX(-100%);transition:.2s}.sidebar.open{transform:none}.mobile-menu{display:block}.topbar{padding:0 15px}.content{padding:17px 14px 30px}.grid{grid-template-columns:1fr}.cards,.fare-grid{grid-template-columns:1fr}.topbar h2{font-size:18px}.live span:last-child{display:none}.report-summary{grid-template-columns:repeat(2,1fr)}.history-item{grid-template-columns:1fr}.toolbar-group>*{max-width:none!important;flex:1 1 150px}}
+  
+
+    /* v2.5.0 — centro de operaciones adaptativo y tema oscuro */
+    .top-actions{display:flex;align-items:center;gap:9px}.icon-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:9px 11px;font-weight:900}.stat.incident{border-color:#fdba74;background:#fff8ed}
+    body.admin-dark{--ink:#f7f8fa;--bg:#0d0f13;--card:#171a20;--muted:#abb1bc;--line:#30353e;--shadow:0 4px 18px #0004;color-scheme:dark}
+    body.admin-dark .topbar,body.admin-dark .panel,body.admin-dark .stat,body.admin-dark .person,body.admin-dark .fare-card,body.admin-dark .mini-stat,body.admin-dark .modal,body.admin-dark .search,body.admin-dark .clear-btn,body.admin-dark .icon-btn{background:var(--card);color:var(--ink);border-color:var(--line)}
+    body.admin-dark th{background:#20242b;color:#c2c7d0}body.admin-dark .meta div,body.admin-dark .panel-head button{background:#232730}body.admin-dark .filters button{background:#20242b;color:#dce0e6;border-color:#373c46}body.admin-dark .filters button.active{background:#ffd400;color:#111;border-color:#ffd400}
+    body.admin-dark .stat.attention,body.admin-dark .stat.incident{background:#302807}body.admin-dark .stat.critical{background:#321b20}body.admin-dark .field{background:#20242b;color:#fff;border-color:#373c46}
+    .ops-item.critical-item{border-color:#fecaca;background:#fff8f8}.ride-admin-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.ride-admin-actions button{border:0;border-radius:9px;padding:7px 9px;font-size:10px;font-weight:900}
+    @media(max-width:720px){
+      .topbar{height:auto;min-height:68px;padding-top:max(10px,env(safe-area-inset-top));padding-bottom:10px}.content{padding-bottom:calc(28px + env(safe-area-inset-bottom))}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.stat{padding:13px}.stat strong{font-size:23px}.report-summary{grid-template-columns:1fr 1fr}.top-actions .live{display:none}
+      .table-wrap{overflow:visible}.table-wrap table{min-width:0}.table-wrap thead{display:none}.table-wrap tbody,.table-wrap tr,.table-wrap td{display:block;width:100%}.table-wrap tr{background:var(--card);border:1px solid var(--line);border-radius:16px;margin:10px;padding:8px 11px;box-shadow:var(--shadow)}.table-wrap td{border:0;padding:7px 0;display:grid;grid-template-columns:112px 1fr;gap:8px;word-break:break-word}.table-wrap td::before{font-size:9px;font-weight:950;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}.table-wrap td.empty{display:block;padding:20px}.table-wrap td.empty::before{display:none}
+      #liveRows td:nth-child(1)::before{content:'Viaje'}#liveRows td:nth-child(2)::before{content:'Pasajero'}#liveRows td:nth-child(3)::before{content:'Conductor'}#liveRows td:nth-child(4)::before{content:'Ruta'}#liveRows td:nth-child(5)::before{content:'Estado'}#liveRows td:nth-child(6)::before{content:'Precio'}
+      #rideRows td:nth-child(1)::before{content:'Fecha'}#rideRows td:nth-child(2)::before{content:'Pasajero'}#rideRows td:nth-child(3)::before{content:'Conductor'}#rideRows td:nth-child(4)::before{content:'Recogida'}#rideRows td:nth-child(5)::before{content:'Destino'}#rideRows td:nth-child(6)::before{content:'Vehículo'}#rideRows td:nth-child(7)::before{content:'Estado'}#rideRows td:nth-child(8)::before{content:'Precio'}
+      #reportRows td:nth-child(1)::before{content:'Fecha'}#reportRows td:nth-child(2)::before{content:'Riesgo'}#reportRows td:nth-child(3)::before{content:'Conductor'}#reportRows td:nth-child(4)::before{content:'Pasajero'}#reportRows td:nth-child(5)::before{content:'Calificación'}#reportRows td:nth-child(6)::before{content:'Comentario'}#reportRows td:nth-child(7)::before{content:'Viaje'}#reportRows td:nth-child(8)::before{content:'Estado'}#reportRows td:nth-child(9)::before{content:'Acciones'}
+    }
+    @media(max-width:420px){.stats,.report-summary{grid-template-columns:1fr}.toolbar-group>*{flex-basis:100%}.topbar h2{font-size:16px}.modal{padding:15px}}
+
   </style>
 </head>
 <body>
@@ -63,7 +81,7 @@
     <main class="main">
       <header class="topbar">
         <div style="display:flex;gap:10px;align-items:center"><button id="menuBtn" class="mobile-menu">☰</button><h2 id="pageTitle">Resumen general</h2></div>
-        <div class="live"><span id="syncDot" class="dot"></span><span id="syncText">Conectando…</span></div>
+        <div class="top-actions"><button id="adminThemeBtn" class="icon-btn" title="Cambiar apariencia">◐</button><div class="live"><span id="syncDot" class="dot"></span><span id="syncText">Conectando…</span></div></div>
       </header>
       <div class="content">
         <section id="page-dashboard" class="section-page active">
@@ -76,6 +94,7 @@
             <div class="stat actionable" role="button" tabindex="0" data-stat-action="revenue"><small>VOLUMEN HOY</small><strong id="sRevenue">0 CUP</strong><div class="sub">Desglose de ingresos del día</div></div>
             <div class="stat actionable attention" role="button" tabindex="0" data-stat-action="pending-reports"><small>REPORTES PENDIENTES</small><strong id="sReports">0</strong><div class="sub">Resolver, reabrir o eliminar</div></div>
             <div class="stat actionable critical" role="button" tabindex="0" data-stat-action="repeat-drivers"><small>REINCIDENTES</small><strong id="sRepeat">0</strong><div class="sub">Administrar conductores de riesgo</div></div>
+            <div class="stat actionable incident" role="button" tabindex="0" data-stat-action="incidents"><small>INCIDENCIAS OPERATIVAS</small><strong id="sIncidents">0</strong><div class="sub">Viajes demorados o sin actualización</div></div>
           </div>
           <div class="grid">
             <div class="panel">
@@ -131,7 +150,7 @@
         <section id="page-fares" class="section-page"><div class="empty" style="margin-bottom:14px">La tarifa se calcula únicamente por distancia: kilómetros recorridos × precio por km.</div><div class="fare-grid" id="fareGrid"></div><div style="margin-top:14px"><button id="saveFares" class="save">Guardar precios por km</button></div></section>
 
         <section id="page-reports" class="section-page">
-          <div id="reportWarning" class="report-warning hidden">El panel está mostrando calificaciones directamente desde los viajes, pero la tabla de reportes no está disponible. Ejecuta <strong>ACTUALIZAR_SUPABASE_v2.4.3.sql</strong> para guardar revisiones e historial.</div>
+          <div id="reportWarning" class="report-warning hidden">El panel está mostrando calificaciones directamente desde los viajes, pero la tabla de reportes no está disponible. Ejecuta <strong>ACTUALIZAR_SUPABASE_v2.5.0.sql</strong> para guardar revisiones e historial.</div>
           <div class="report-summary">
             <div class="mini-stat"><small>PENDIENTES</small><strong id="rPending">0</strong></div>
             <div class="mini-stat"><small>REVISADOS</small><strong id="rReviewed">0</strong></div>
@@ -172,7 +191,7 @@
   </div>
 
   <div id="toast" class="toast"></div>
-  <div class="version">Admin v2.4.3</div>
+  <div class="version">Admin v2.5.0</div>
 
   <script>
     const SUPABASE_URL='https://zrrabfleykuhxyqldxid.supabase.co';
@@ -199,6 +218,7 @@
     let liveMapHasFitted=false;
     let periodicRefresh=null;
     let lastPeopleUpdate=null;
+    function applyAdminTheme(){const dark=(localStorage.getItem('sr_admin_theme')||'auto')==='dark'||((localStorage.getItem('sr_admin_theme')||'auto')==='auto'&&matchMedia('(prefers-color-scheme:dark)').matches);document.body.classList.toggle('admin-dark',dark);$('#adminThemeBtn').textContent=dark?'☀':'🌙'}
 
     function toast(message){const el=$('#toast');el.textContent=message;el.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>el.classList.remove('show'),2500)}
     function esc(value){return String(value??'—').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]))}
@@ -343,6 +363,26 @@
     function setSyncState(connected,text){$('#syncDot').classList.toggle('offline',!connected);$('#syncText').textContent=text}
 
     function renderAll(includeFares=true){renderDashboard();renderRideTable();renderPeople();renderReports();if(includeFares)renderFares();if(liveMap&&$('#liveMap'))renderLiveMap(false)}
+
+    function operationalIncidents(){
+      const now=Date.now(),items=[];
+      rides.forEach(ride=>{
+        const created=safeDate(ride.created_at)?.getTime()||now,updated=safeDate(ride.driver_last_update_at||ride.updated_at||ride.created_at)?.getTime()||now;
+        const wait=Math.max(0,Math.round((now-created)/60000)),stale=Math.max(0,Math.round((now-updated)/60000));
+        if(ride.status==='searching'&&wait>=5)items.push({ride,severity:wait>=10?'critical':'warning',title:'Solicitud sin conductor',detail:`Esperando hace ${wait} min`});
+        if(['accepted','arrived','in_progress'].includes(ride.status)&&stale>=15)items.push({ride,severity:stale>=30?'critical':'warning',title:'Viaje sin actualización',detail:`Sin datos nuevos hace ${stale} min`});
+        const profile=profileFor(ride.driver_id);if(['accepted','arrived','in_progress'].includes(ride.status)&&profile&&!isProfileOnline(profile)&&stale>=5)items.push({ride,severity:'critical',title:'Conductor fuera de línea',detail:'Tiene un viaje activo y no reporta presencia'});
+      });return items;
+    }
+    function openIncidents(){const items=operationalIncidents();const html=`<div class="ops-summary"><div class="ops-kpi"><small>TOTAL</small><strong>${items.length}</strong></div><div class="ops-kpi"><small>CRÍTICAS</small><strong>${items.filter(x=>x.severity==='critical').length}</strong></div></div><div class="ops-list">${items.map(item=>`<div class="ops-item ${item.severity==='critical'?'critical-item':''}"><div><strong>${esc(item.title)} · #${esc(String(item.ride.id).slice(0,6))}</strong><p>${esc(item.detail)} · ${esc(item.ride.passenger_name||'Pasajero')} · ${esc(statusLabel(item.ride.status))}</p><div class="ride-admin-actions"><button class="neutral" data-ride-action="open" data-ride-id="${esc(item.ride.id)}">Ver viaje</button><button class="danger" data-ride-action="cancel" data-ride-id="${esc(item.ride.id)}">Cancelar y liberar</button>${item.ride.status==='in_progress'?`<button class="ok" data-ride-action="finish" data-ride-id="${esc(item.ride.id)}">Marcar finalizado</button>`:''}</div></div></div>`).join('')||'<div class="empty">La operación está estable. No hay incidencias.</div>'}</div>`;openOpsModal('Centro de incidencias','Herramientas para recuperar viajes atascados',html)}
+    async function handleRideAdminAction(action,rideId){
+      const ride=rides.find(r=>String(r.id)===String(rideId));if(!ride)return toast('No se encontró el viaje');
+      if(action==='open'){$('#rideSearch').value=String(rideId);rideFilter='all';showPage('rides');renderRideTable();return closeOpsModal()}
+      if(action==='cancel'){const reason=prompt('Motivo para cancelar y liberar el viaje:','Incidencia operativa');if(reason===null)return;const {error}=await sb.from('rides').update({status:'canceled',canceled_at:new Date().toISOString(),canceled_by:'admin',cancel_reason:reason,admin_note:reason,updated_at:new Date().toISOString()}).eq('id',ride.id).in('status',ACTIVE_STATUSES);if(error)return toast('No se pudo cancelar el viaje');await logAdminAction('force_cancel_ride',String(ride.id),'ride',reason);toast('Viaje cancelado y perfiles liberados')}
+      if(action==='finish'){if(!confirm('¿Confirmas que este viaje realmente terminó?'))return;const {error}=await sb.from('rides').update({status:'finished',finished_at:new Date().toISOString(),admin_note:'Finalizado por administración',updated_at:new Date().toISOString()}).eq('id',ride.id).eq('status','in_progress');if(error)return toast('No se pudo finalizar el viaje');await logAdminAction('force_finish_ride',String(ride.id),'ride','Finalizado por administración');toast('Viaje marcado como finalizado')}
+      closeOpsModal();await refreshOperations();
+    }
+
     function renderDashboard(){
       const todayRides=rides.filter(isToday);
       const activeRides=rides.filter(ride=>ACTIVE_STATUSES.includes(ride.status));
@@ -358,6 +398,7 @@
       $('#sRevenue').textContent=money(finishedToday.reduce((sum,ride)=>sum+Number(ride.price||0),0));
       $('#sReports').textContent=reports.filter(report=>!report.reviewed).length;
       $('#sRepeat').textContent=groups.filter(group=>group.count>=3).length;
+      $('#sIncidents').textContent=operationalIncidents().length;
       renderRows(activeRides.slice(0,10),'#liveRows',true);
       renderAlerts();
     }
@@ -455,6 +496,7 @@
       if(action==='revenue')return openRevenue();
       if(action==='pending-reports'){showPage('reports');$('#reportStatus').value='pending';renderReports();return}
       if(action==='repeat-drivers')return openRepeatDrivers();
+      if(action==='incidents')return openIncidents();
     }
     $$('.stat[data-stat-action]').forEach(card=>{card.onclick=()=>handleStatAction(card.dataset.statAction);card.onkeydown=event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();handleStatAction(card.dataset.statAction)}}});
 
@@ -567,7 +609,7 @@
       const approved=approval==='approved';
       const payload={approval_status:approval,status:approved?'active':'blocked',is_online:approved?Boolean(profile.is_online):false,approved_at:approved?new Date().toISOString():null,approved_by:approved?ownerIdentity():null,rejection_reason:approved?null:reason,updated_at:new Date().toISOString()};
       const {error}=await sb.from('profiles').update(payload).eq('id',profile.id);
-      if(error){console.error(error);return toast('No se pudo actualizar el conductor. Ejecuta SQL v2.4.3')}
+      if(error){console.error(error);return toast('No se pudo actualizar el conductor. Ejecuta SQL v2.5.0')}
       await logAdminAction(approved?'approve_driver':'reject_driver',personId,'driver',reason);
       toast(approved?'Conductor aprobado':'Conductor desaprobado y bloqueado');if(!$('#opsModal').classList.contains('hidden'))closeOpsModal();await refreshOperations();
     }
@@ -730,7 +772,7 @@ No podrá iniciar sesión ni aceptar viajes. El historial se conservará.`))retu
       }else{
         ({error}=await sb.from('driver_reports').update({reviewed,reviewed_at:reviewed?now:null,reviewed_by:reviewed?ownerIdentity():null,updated_at:now}).eq('id',report.id));
       }
-      if(error){console.error(error);return toast('No se pudo guardar. Ejecuta el SQL v2.4.3 y vuelve a intentar')}
+      if(error){console.error(error);return toast('No se pudo guardar. Ejecuta el SQL v2.5.0 y vuelve a intentar')}
       toast(reviewed?'Reporte resuelto':'Reporte reabierto');
       await refreshOperations();
     }
@@ -739,7 +781,7 @@ No podrá iniciar sesión ni aceptar viajes. El historial se conservará.`))retu
       if(!confirm('¿Eliminar este reporte? También se retirará la calificación baja del viaje para que no vuelva a generarse.'))return;
       let error=null;
       if(report.ride_id){({error}=await sb.from('rides').update({rating:null,rating_comment:null,rated_at:null}).eq('id',report.ride_id));if(error){console.error(error);return toast('No se pudo retirar la calificación del viaje')}}
-      if(!report._derived){({error}=await sb.from('driver_reports').delete().eq('id',report.id));if(error){console.error(error);return toast('No se pudo eliminar el reporte. Ejecuta SQL v2.4.3')}}
+      if(!report._derived){({error}=await sb.from('driver_reports').delete().eq('id',report.id));if(error){console.error(error);return toast('No se pudo eliminar el reporte. Ejecuta SQL v2.5.0')}}
       toast('Reporte eliminado');await refreshOperations();
     }
 
@@ -757,12 +799,12 @@ No podrá iniciar sesión ni aceptar viajes. El historial se conservará.`))retu
     $('#historyModal').onclick=event=>{if(event.target===$('#historyModal'))$('#historyModal').classList.add('hidden')};
     $('#closeOps').onclick=closeOpsModal;
     $('#opsModal').onclick=event=>{if(event.target===$('#opsModal'))closeOpsModal()};
-    $('#opsBody').onclick=event=>{const button=event.target.closest('[data-ops-action]');if(button)handlePersonAction(button.dataset.opsAction,button.dataset.personId,'driver')};
+    $('#opsBody').onclick=event=>{const rideButton=event.target.closest('[data-ride-action]');if(rideButton)return handleRideAdminAction(rideButton.dataset.rideAction,rideButton.dataset.rideId);const button=event.target.closest('[data-ops-action]');if(button)handlePersonAction(button.dataset.opsAction,button.dataset.personId,'driver')};
     document.addEventListener('keydown',event=>{if(event.key==='Escape'){$('#historyModal').classList.add('hidden');closeOpsModal()}});
 
     function setupRealtime(){
       if(channel)sb.removeChannel(channel);
-      channel=sb.channel('admin-v241').on('postgres_changes',{event:'*',schema:'public',table:'rides'},queueRefresh);
+      channel=sb.channel('admin-v250').on('postgres_changes',{event:'*',schema:'public',table:'rides'},queueRefresh);
       if(reportsTableAvailable)channel.on('postgres_changes',{event:'*',schema:'public',table:'driver_reports'},queueRefresh);
       if(profilesTableAvailable)channel.on('postgres_changes',{event:'*',schema:'public',table:'profiles'},queueRefresh);
       channel.subscribe(status=>{
