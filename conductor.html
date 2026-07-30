@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#F6C600">
 <meta name="description" content="Aplicación profesional para conductores de Sobre Ruedas.">
-<title>Sobre Ruedas Conductor v2.5.0 · Ciego de Ávila</title>
+<title>Sobre Ruedas Conductor v2.6.0 · Ciego de Ávila</title>
 <link rel="manifest" href="conductor.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-96.png">
 <link rel="preconnect" href="https://unpkg.com">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -595,7 +595,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
 body.theme-dark{--bg:#101114;--card:#191b20;--text:#f7f7f7;--muted:#aeb2ba;--line:#30333a;background:#0b0c0f;color:var(--text)}body.theme-dark .sheet,body.theme-dark .modal,body.theme-dark .setting,body.theme-dark input,body.theme-dark textarea,body.theme-dark select{background:#191b20;color:#fff;border-color:#30333a}.theme-picker{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.theme-picker button{padding:12px 5px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--text);font-weight:900}.theme-picker button.active{background:var(--y);color:#111}.earnings-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.earnings-grid div{padding:12px 8px;border:1px solid var(--line);border-radius:15px}.daily-row{display:flex;justify-content:space-between;padding:10px 2px;border-bottom:1px solid var(--line)}.star-picker{display:flex;justify-content:center}.star-picker button{border:0;background:none;font-size:42px;color:#ccc}.star-picker button.on{color:#f6c600}.rating-modal{text-align:center}.rating-modal textarea{width:100%;min-height:90px;border-radius:14px;padding:12px}.avatar img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
 
 
-/* v2.5.0 — paneles separados, diseño adaptativo y tema oscuro completo */
+/* v2.6.0 — paneles separados, diseño adaptativo y tema oscuro completo */
 :root{
   --surface:#ffffff;--surface-2:#f5f6f8;--surface-3:#eceef2;
   --top-glass:rgba(255,255,255,.94);--map-filter:none;
@@ -661,7 +661,47 @@ body.theme-dark .primary-nav{background:#f6c600!important;color:#111!important;b
 @media(min-width:1250px){.sheet{width:500px!important}.pin-mode{left:63%}}
 @media(orientation:landscape) and (max-height:620px){.sheet{top:76px!important;bottom:10px!important;height:calc(100dvh - 86px)!important}.top{padding-top:10px}.headline{font-size:21px}}
 
+
+/* v2.6.0 — rediseño operativo y buscador de direcciones */
+:root{
+  --accent:#ffd400;--accent-strong:#f2c900;--ink:#111318;--muted:#6d737d;
+  --bg:#eef1f4;--card:#fff;--line:#e3e6ea;--surface:#fff;--surface-2:#f4f6f8;
+  --shadow:0 24px 70px rgba(18,22,31,.22);--soft-shadow:0 10px 28px rgba(20,24,32,.10)
+}
+html,body{overscroll-behavior:none}.app{background:#dce2e7}
+#map{background:#dce2e7}.leaflet-control-zoom{border:0!important;box-shadow:var(--soft-shadow)!important}.leaflet-control-zoom a{border:0!important;color:#111!important}
+.top{align-items:center;padding:max(14px,env(safe-area-inset-top)) 14px 8px}.glass{border:1px solid rgba(255,255,255,.65)}
+.brand{position:absolute;left:50%;transform:translateX(-50%);padding:6px 12px 6px 6px;border-radius:16px;max-width:calc(100vw - 140px)}
+.brand .logo{width:36px;height:36px;border-radius:11px;font-size:20px}.brand>div:last-child{font-size:12px;letter-spacing:.035em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.brand small{font-size:8px;margin-top:2px}
+.round{width:46px;height:46px;border-radius:15px;font-weight:900}.top .round:last-child{margin-left:auto}
+.connection-status{top:max(76px,calc(env(safe-area-inset-top) + 66px));font-size:9px;padding:6px 9px}
+.sheet{height:66dvh;border-radius:26px 26px 0 0;padding:8px 16px calc(10px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.75);box-shadow:0 -18px 55px rgba(20,25,34,.19)}
+.sheet-content{height:calc(100% - 24px);padding-bottom:0}.handle{width:38px;height:4px;background:#c9cdd3}.sheet-hint{display:none}
+.app-context{display:none!important}.hello{font-size:12px;letter-spacing:.01em}.headline{font-size:30px;letter-spacing:-.035em;margin:4px 0 15px}
+.route-composer{position:relative;background:#111318;color:#fff;border-radius:20px;padding:5px;box-shadow:0 13px 32px rgba(17,19,24,.22)}
+.route-row{min-height:61px;display:grid;grid-template-columns:18px 1fr 42px;gap:10px;align-items:center;padding:7px 7px 7px 12px}
+.route-row small{display:block;color:#aeb4bd;font-size:10px;font-weight:750;margin-bottom:3px}.route-copy strong{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.route-symbol{width:12px;height:12px;border-radius:50%;display:block}.pickup-symbol{background:#28bd7a;box-shadow:0 0 0 4px rgba(40,189,122,.13)}.destination-symbol{background:var(--accent);border-radius:3px;box-shadow:0 0 0 4px rgba(255,212,0,.12)}
+.route-connector{position:absolute;left:22px;top:56px;width:2px;height:18px;background:#59606a}
+.destination-row{background:#fff;color:#111;border-radius:16px}.destination-row small{color:#737985}.destination-input-wrap{min-width:0}.destination-input-wrap input{display:block;width:100%;padding:0;border:0!important;outline:0;background:transparent!important;color:#111!important;font-size:15px;font-weight:850;margin:0!important;min-width:0}.destination-input-wrap input::placeholder{color:#9da2aa;font-weight:700}
+.route-icon-btn{width:40px;height:40px;border:0;border-radius:13px;background:#292d34;color:#fff;font-size:21px;font-weight:1000}.search-action{background:var(--accent);color:#111}
+.address-suggestions{position:relative;margin-top:9px;background:var(--card);border:1px solid var(--line);border-radius:17px;overflow:hidden;box-shadow:var(--soft-shadow);max-height:250px;overflow-y:auto;z-index:12}.address-suggestion{width:100%;display:grid;grid-template-columns:38px 1fr auto;gap:10px;align-items:center;border:0;border-bottom:1px solid var(--line);background:var(--card);color:var(--ink);padding:11px 12px;text-align:left}.address-suggestion:last-child{border-bottom:0}.address-suggestion .place-icon{width:38px;height:38px;border-radius:12px;background:var(--surface-2);display:grid;place-items:center}.address-suggestion strong{display:block;font-size:13px}.address-suggestion small{display:block;color:var(--muted);font-size:10px;margin-top:3px;line-height:1.25}.address-suggestion .distance-hint{font-size:9px;color:var(--muted);white-space:nowrap}.address-empty{padding:18px;text-align:center;color:var(--muted);font-size:12px}.address-loading{padding:15px;display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px}.address-loading:before{content:'';width:16px;height:16px;border:2px solid #d9dde2;border-top-color:#111;border-radius:50%;animation:routeSpin .8s linear infinite}
+.address-tools{margin-top:9px}.address-tools button{background:transparent;border:1px solid var(--line);padding:11px;color:var(--muted);font-size:12px;box-shadow:none}
+.quick{padding:10px 0 2px}.chip{padding:9px 12px;border:1px solid var(--line);background:var(--surface-2);font-size:12px}
+.dev-tools{margin:10px 0 2px;border:1px solid var(--line);border-radius:15px;background:var(--surface-2);overflow:hidden}.dev-tools summary{list-style:none;display:flex;justify-content:space-between;align-items:center;padding:10px 12px;cursor:pointer;font-size:11px;font-weight:900;color:var(--muted)}.dev-tools summary::-webkit-details-marker{display:none}.dev-tools summary small{font-weight:700}.dev-tools[open] summary{border-bottom:1px solid var(--line)}.dev-tools-body{padding:10px}.dev-tools .live-banner,.dev-tools .demo-location{margin-top:8px}.demo-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.section-title{margin:15px 0 8px}.section-title h3{font-size:14px}.vehicles{gap:7px}.vehicle{min-height:68px;border-radius:16px;padding:8px 10px;box-shadow:none}.vehicle.active{border-color:var(--accent-strong);box-shadow:0 0 0 3px rgba(255,212,0,.16)}.vicon{height:48px;border-radius:13px}.fare{border-radius:16px;background:var(--surface-2)}
+.primary{background:var(--accent);border-radius:16px;box-shadow:0 10px 24px rgba(255,212,0,.25);font-size:15px}.nav{position:sticky;bottom:0;background:var(--card);border-top:1px solid var(--line);margin:12px -16px -10px;padding:7px 10px calc(5px + env(safe-area-inset-bottom));z-index:8}.nav button{font-size:9px}.nav span{font-size:18px}
+.route-status{border-radius:14px}.confirm-location{border-radius:16px}.toast{bottom:calc(18px + env(safe-area-inset-bottom))}
+/* Conductor: una jerarquía clara, una acción principal por etapa */
+.app-driver .sheet{height:54dvh}.app-driver .earn{border-radius:20px;padding:17px;background:linear-gradient(145deg,#111318,#242934)}.app-driver .earn h2{font-size:34px;letter-spacing:-.04em}.app-driver .driver-live{border-radius:16px}.app-driver .driver-trip-head{border-radius:20px}.app-driver .driver-action{border-radius:16px}
+/* Tema oscuro coherente */
+body.theme-dark{--ink:#f5f7fa;--muted:#aab0ba;--bg:#0d0f13;--card:#171a20;--line:#30353d;--surface:#171a20;--surface-2:#20242b;color-scheme:dark}
+body.theme-dark .route-composer{background:#080a0d;border:1px solid #272b32}.theme-dark .destination-row{background:#20242b;color:#fff}.theme-dark .destination-input-wrap input{color:#fff!important}.theme-dark .destination-input-wrap input::placeholder{color:#818894}.theme-dark .address-suggestions,.theme-dark .address-suggestion{background:var(--card);color:var(--ink);border-color:var(--line)}.theme-dark .address-loading:before{border-color:#4b515b;border-top-color:#fff}.theme-dark .nav{background:var(--card)}.theme-dark .dev-tools{background:var(--surface-2)}
+@media(max-width:430px){.sheet{height:68dvh;padding-left:13px;padding-right:13px}.headline{font-size:27px}.nav{margin-left:-13px;margin-right:-13px}.brand{max-width:calc(100vw - 124px)}.route-row{min-height:58px}}
+@media(min-width:820px){.sheet{height:calc(100dvh - 116px)!important}.headline{font-size:34px}.route-composer{border-radius:22px}.address-suggestions{max-height:300px}.nav{margin-left:-19px;margin-right:-19px;margin-bottom:calc(-16px - env(safe-area-inset-bottom))}.app-driver .sheet{height:calc(100dvh - 116px)!important}}
+
 </style>
+<link rel="stylesheet" href="v260.css?v=260">
 </head>
 <body data-app-role="driver" class="app-driver">
   <div class="splash" id="brandSplash">
@@ -735,7 +775,7 @@ body.theme-dark .primary-nav{background:#f6c600!important;color:#111!important;b
   <div id="mapConfirm" class="map-confirm hidden"><button class="cancel" id="cancelPin">Cancelar</button><button class="confirm" id="confirmPin">Confirmar destino</button></div>
   <div class="top">
     <button class="round glass" id="menuBtn">☰</button>
-    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS CONDUCTOR<small>CIEGO DE ÁVILA · v2.5.0</small></div></div>
+    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS CONDUCTOR<small>CIEGO DE ÁVILA · v2.6.0</small></div></div>
     <button class="round glass" id="profileBtn">👤</button>
   </div>
 
@@ -750,10 +790,25 @@ body.theme-dark .primary-nav{background:#f6c600!important;color:#111!important;b
     <div id="homePanel">
       <p class="hello">Hola, <span id="helloName">viajero</span> 👋</p>
       <h1 class="headline">¿A dónde vas hoy?</h1>
-      <div class="search"><span class="dot"></span><input id="destination" value="Hospital Provincial Antonio Luaces" placeholder="Escribe tu destino"><button id="locateBtn">⌖</button></div>
+      <div class="route-composer" aria-label="Planificar viaje">
+        <div class="route-row pickup-row">
+          <span class="route-symbol pickup-symbol"></span>
+          <div class="route-copy"><small>Punto de recogida</small><strong id="pickupHomeText">Parque José Martí</strong></div>
+          <button id="locateBtn" class="route-icon-btn" aria-label="Centrar ubicación">⌖</button>
+        </div>
+        <div class="route-connector"></div>
+        <div class="route-row destination-row">
+          <span class="route-symbol destination-symbol"></span>
+          <div class="destination-input-wrap">
+            <small>Destino</small>
+            <input id="destination" autocomplete="off" inputmode="search" placeholder="Escribe una calle, lugar o dirección">
+          </div>
+          <button id="searchAddressBtn" class="route-icon-btn search-action" aria-label="Buscar dirección">⌕</button>
+        </div>
+      </div>
+      <div id="addressSuggestions" class="address-suggestions hidden" role="listbox" aria-label="Resultados de direcciones"></div>
       <div class="address-tools">
-        <button id="searchAddressBtn">🔎 Buscar dirección cubana</button>
-        <button id="pickMapBtn">📍 Marcar en mapa</button>
+        <button id="pickMapBtn">📍 Elegir directamente en el mapa</button>
       </div>
       <div class="route-status" id="routeStatus"><span class="spin"></span><div><strong id="routeStatusTitle">Buscando dirección…</strong><small id="routeStatusText" style="display:block;color:var(--muted);margin-top:3px">Interpretando calles e intersecciones.</small></div></div>
       <div class="confirm-location" id="confirmLocation">
@@ -764,16 +819,21 @@ body.theme-dark .primary-nav{background:#f6c600!important;color:#111!important;b
           <button class="use" id="useLocationBtn">Usar este punto</button>
         </div>
       </div>
-      <div class="gps-warning" id="gpsWarning">Modo de prueba: puedes cambiar el punto de salida manualmente sin activar el GPS.</div>
-      <div class="live-banner"><div><span class="live-dot"></span><strong>Modo de prueba activo</strong><small style="display:block;color:#4d7b65;margin-top:2px">Salida temporal editable dentro de Ciego de Ávila</small></div><button id="refreshLocation" class="chip">Restaurar</button></div>
-      <div class="dev-pill">🧪 Modo desarrollo · GPS real desactivado</div>
-      <div class="demo-location">
-        <div><strong>📍 Ubicación de prueba</strong><small id="demoLocationText">Parque José Martí, Ciego de Ávila</small></div>
-        <div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end">
-          <button id="changeDemoLocation">Cambiar</button>
-          <button id="resetDemoLocation">Restaurar</button>
+      <details class="dev-tools">
+        <summary><span>Herramientas de prueba</span><small>Ubicación simulada</small></summary>
+        <div class="dev-tools-body">
+          <div class="gps-warning" id="gpsWarning">Modo de prueba: puedes cambiar el punto de salida manualmente sin activar el GPS.</div>
+          <div class="live-banner"><div><span class="live-dot"></span><strong>Modo de prueba activo</strong><small style="display:block;color:#4d7b65;margin-top:2px">Salida temporal editable dentro de Ciego de Ávila</small></div><button id="refreshLocation" class="chip">Restaurar</button></div>
+          <div class="dev-pill">🧪 GPS real desactivado durante las pruebas</div>
+          <div class="demo-location">
+            <div><strong>📍 Ubicación de prueba</strong><small id="demoLocationText">Parque José Martí, Ciego de Ávila</small></div>
+            <div class="demo-actions">
+              <button id="changeDemoLocation">Cambiar</button>
+              <button id="resetDemoLocation">Restaurar</button>
+            </div>
+          </div>
         </div>
-      </div>
+      </details>
       <div class="quick"><button class="chip" data-dest="Casa">🏠 Casa</button><button class="chip" data-dest="Trabajo">💼 Trabajo</button><button class="chip" data-dest="Terminal de Ómnibus">🚌 Terminal</button><button class="chip" data-dest="Hospital Provincial">🏥 Hospital</button></div>
       <div class="section-title"><h3>Elige cómo viajar</h3><button id="scheduleBtn">Programar</button></div>
       <div class="vehicles">
@@ -840,7 +900,7 @@ body.theme-dark .primary-nav{background:#f6c600!important;color:#111!important;b
       <div class="notice-card"><strong>Última alerta</strong><small style="display:block;margin-top:4px" id="lastNotice">No tienes alertas nuevas.</small></div><div class="setting"><span>💳 Método de pago</span><span>Efectivo ›</span></div>
       <div class="account-separation-note"><strong>Panel independiente</strong><br>Esta sesión pertenece únicamente a Sobre Ruedas Conductor. Los controles de pasajero no se muestran aquí.</div>
       <p class="muted" id="roleStatus" style="font-size:12px;margin-top:9px">Cuenta activa.</p>
-      <button id="switchPassenger" class="hidden"></button><button id="switchDriver" class="hidden"></button><button id="roleInfoBtn" class="hidden"></button><button class="logout" id="logoutBtn">🚪 Cerrar sesión</button><p class="muted" style="text-align:center;font-size:11px;margin-top:8px">Sobre Ruedas Conductor v2.5.0 · Ciego de Ávila</p></div>
+      <button id="switchPassenger" class="hidden"></button><button id="switchDriver" class="hidden"></button><button id="roleInfoBtn" class="hidden"></button><button class="logout" id="logoutBtn">🚪 Cerrar sesión</button><p class="muted" style="text-align:center;font-size:11px;margin-top:8px">Sobre Ruedas Conductor v2.6.0 · Ciego de Ávila</p></div>
 
     <nav class="nav"><button class="active" data-page="home"><span>⌂</span>Inicio</button><button data-page="history"><span>◷</span>Viajes</button><button data-page="saved"><span>♡</span>Guardados</button><button data-page="account"><span>☻</span>Cuenta</button></nav>
     </div>
@@ -873,7 +933,7 @@ window.SOBRE_RUEDAS_DEV = {
 <script>
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
 const APP_ROLE=document.body.dataset.appRole==='driver'?'driver':'passenger';
-const APP_VERSION='2.5.0';
+const APP_VERSION='2.6.0';
 const AUTH=APP_ROLE==='driver'?'rueda_driver_user':'rueda_passenger_user';
 const DEVICE_KEY=APP_ROLE==='driver'?'rueda_driver_device_id':'rueda_passenger_device_id';
 const legacyUser=(()=>{try{return JSON.parse(localStorage.getItem('rueda_v1_user')||'null')}catch{return null}})();
@@ -1325,7 +1385,7 @@ try{
     startMarker.setLatLng(currentStart).bindPopup('Ubicación temporal de prueba');
     map.setView(currentStart,16);
     $('#demoLocationText').textContent=`Punto personalizado · ${currentStart[0].toFixed(5)}, ${currentStart[1].toFixed(5)}`;
-    $('#pickupText').textContent='Ubicación temporal seleccionada en el mapa';
+    $('#pickupText').textContent='Ubicación temporal seleccionada en el mapa';if($('#pickupHomeText'))$('#pickupHomeText').textContent='Ubicación seleccionada en el mapa';
   }
 }catch(e){
   localStorage.removeItem('sobre_ruedas_test_location');
@@ -1392,12 +1452,117 @@ async function nominatimSearch(query){
     addressdetails:'1',
     'accept-language':'es',
     viewbox:'-78.90,21.95,-78.60,21.70',
-    bounded:'1'
+    bounded:'0'
   });
   return fetchJSON('https://nominatim.openstreetmap.org/search?'+params.toString(),{
     headers:{'Accept':'application/json'}
   });
 }
+
+let addressSearchTimer=null;
+let addressSearchSequence=0;
+let addressSearchCache=new Map();
+let addressCandidates=[];
+let lastNominatimRequest=0;
+
+function compactAddressLabel(parts){
+  return parts.filter(Boolean).map(x=>String(x).trim()).filter((x,i,a)=>x&&a.indexOf(x)===i).join(', ');
+}
+function candidateKey(c){return `${c.point[0].toFixed(5)},${c.point[1].toFixed(5)}`}
+function distanceFromStart(point){try{return haversineKm(currentStart,point)}catch(e){return null}}
+function localAddressCandidates(text){
+  const q=(text||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+  const places=[
+    {label:'Parque José Martí',detail:'Centro de Ciego de Ávila',point:[21.842038,-78.759973],icon:'★'},
+    {label:'Centro de Ciego de Ávila',detail:'Zona del Parque José Martí',point:[21.842038,-78.759973],icon:'◎'}
+  ];
+  return places.filter(p=>(p.label+' '+p.detail).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().includes(q)).map(p=>({...p,source:'local',confidence:'high'}));
+}
+async function photonSearch(query){
+  const params=new URLSearchParams({q:query,limit:'8',lang:'es',lat:'21.842038',lon:'-78.759973',bbox:'-78.90,21.70,-78.60,21.95'});
+  const data=await fetchJSON('https://photon.komoot.io/api/?'+params.toString(),{headers:{Accept:'application/json'}},12000);
+  return (data.features||[]).map(f=>{
+    const p=f.properties||{},coords=f.geometry?.coordinates||[];
+    return {point:[Number(coords[1]),Number(coords[0])],label:p.name||p.street||query,detail:compactAddressLabel([p.street,p.housenumber,p.district,p.city||p.county,p.state]),source:'Photon/OSM',icon:p.osm_value==='hospital'?'✚':p.osm_value==='bus_station'?'▣':'⌖',confidence:'medium'};
+  }).filter(c=>insideCiego(c.point));
+}
+function nominatimJSONP(query){
+  return new Promise((resolve,reject)=>{
+    const callback='srNominatim'+Date.now()+Math.random().toString(36).slice(2);
+    const params=new URLSearchParams({q:query,format:'jsonv2',limit:'8',countrycodes:'cu',addressdetails:'1','accept-language':'es',viewbox:'-78.90,21.95,-78.60,21.70',bounded:'0',json_callback:callback});
+    const script=document.createElement('script');
+    const timer=setTimeout(()=>cleanup(new Error('Tiempo de búsqueda agotado')),12000);
+    function cleanup(err,data){clearTimeout(timer);delete window[callback];script.remove();err?reject(err):resolve(data)}
+    window[callback]=data=>cleanup(null,data);
+    script.onerror=()=>cleanup(new Error('Geocodificador no disponible'));
+    script.src='https://nominatim.openstreetmap.org/search?'+params.toString();
+    document.head.appendChild(script);
+  });
+}
+async function nominatimCandidates(query){
+  const wait=Math.max(0,1050-(Date.now()-lastNominatimRequest));
+  if(wait)await new Promise(r=>setTimeout(r,wait));
+  lastNominatimRequest=Date.now();
+  let data;
+  try{data=await nominatimSearch(query)}catch(e){data=await nominatimJSONP(query)}
+  return (data||[]).map(r=>({point:[Number(r.lat),Number(r.lon)],label:(r.name||r.display_name?.split(',')[0]||query),detail:r.display_name||query,source:'Nominatim/OSM',icon:r.type==='hospital'?'✚':r.type==='bus_station'?'▣':'⌖',confidence:'medium'})).filter(c=>insideCiego(c.point));
+}
+async function searchAddressCandidates(text,{silent=false}={}){
+  const clean=(text||'').trim();
+  if(clean.length<3)return [];
+  const cacheKey=clean.toLocaleLowerCase('es');
+  if(addressSearchCache.has(cacheKey))return addressSearchCache.get(cacheKey);
+  let results=[...localAddressCandidates(clean)];
+  const fullQuery=/ciego de [áa]vila|cuba/i.test(clean)?clean:`${clean}, Ciego de Ávila, Cuba`;
+  try{results.push(...await photonSearch(fullQuery))}catch(e){console.warn('Photon:',e.message)}
+  if(results.length<5){try{results.push(...await nominatimCandidates(fullQuery))}catch(e){console.warn('Nominatim:',e.message)}}
+  const unique=[];const seen=new Set();
+  for(const c of results){if(!insideCiego(c.point))continue;const key=candidateKey(c);if(seen.has(key))continue;seen.add(key);c.distance=distanceFromStart(c.point);unique.push(c)}
+  unique.sort((a,b)=>(a.distance??99)-(b.distance??99));
+  addressSearchCache.set(cacheKey,unique.slice(0,8));
+  return unique.slice(0,8);
+}
+function hideAddressSuggestions(){const box=$('#addressSuggestions');if(box){box.classList.add('hidden');box.innerHTML=''}}
+function renderAddressSuggestions(items,state='results'){
+  const box=$('#addressSuggestions');if(!box)return;
+  box.innerHTML='';box.classList.remove('hidden');
+  if(state==='loading'){const d=document.createElement('div');d.className='address-loading';d.textContent='Buscando calles y lugares en Ciego de Ávila…';box.appendChild(d);return}
+  if(!items.length){const d=document.createElement('div');d.className='address-empty';d.innerHTML='<strong>No encontré esa dirección escrita.</strong><br>Prueba con el nombre de la calle, un lugar conocido o selecciónala en el mapa.';box.appendChild(d);return}
+  items.forEach((c,i)=>{
+    const b=document.createElement('button');b.type='button';b.className='address-suggestion';b.dataset.index=String(i);b.setAttribute('role','option');
+    const icon=document.createElement('span');icon.className='place-icon';icon.textContent=c.icon||'⌖';
+    const copy=document.createElement('span');const title=document.createElement('strong');title.textContent=c.label;const detail=document.createElement('small');detail.textContent=c.detail||'Ciego de Ávila';copy.append(title,detail);
+    const dist=document.createElement('span');dist.className='distance-hint';dist.textContent=Number.isFinite(c.distance)?`${c.distance.toFixed(1)} km`:'';
+    b.append(icon,copy,dist);b.onclick=()=>chooseAddressCandidate(c);box.appendChild(b);
+  });
+}
+async function chooseAddressCandidate(c){
+  addressSearchSequence++;
+  destinationPoint=c.point;pendingDestination=null;
+  $('#destination').value=c.label;
+  setDestinationPoint(c.point,c.label);
+  hideAddressSuggestions();
+  map.setView(c.point,17);
+  setRouteStatus('Dirección seleccionada',c.detail||c.label,'ok');
+  const ok=await prepareRealRoute(true);
+  if(ok){toast('Dirección y ruta listas');setSheetHeight(sheetLimits().mid,true)}
+}
+async function runAddressSearch({autoSelect=false}={}){
+  const input=$('#destination');const text=input.value.trim();
+  if(text.length<3){renderAddressSuggestions([]);return false}
+  const seq=++addressSearchSequence;
+  destinationPoint=null;pendingDestination=null;clearRoute();
+  renderAddressSuggestions([],'loading');
+  setRouteStatus('Buscando dirección','Consultando calles y lugares de Ciego de Ávila.');
+  const items=await searchAddressCandidates(text);
+  if(seq!==addressSearchSequence)return false;
+  addressCandidates=items;renderAddressSuggestions(items);
+  if(!items.length){setRouteStatus('No encontré esa dirección','Escribe otra referencia o elígela directamente en el mapa.','warn');return false}
+  setRouteStatus(`${items.length} resultado${items.length===1?'':'s'} encontrado${items.length===1?'':'s'}`,'Selecciona la dirección correcta en la lista.','ok');
+  if(autoSelect&&items.length===1){await chooseAddressCandidate(items[0]);return true}
+  return true;
+}
+
 async function overpassIntersection(main,cross){
   const a=escapeOverpass(main), b=escapeOverpass(cross);
   const q=`[out:json][timeout:20];
@@ -1451,6 +1616,14 @@ async function geocodeCubanAddress(text){
       return null;
     }catch(e){}
   }
+
+  try{
+    const candidates=await searchAddressCandidates(text,{silent:true});
+    if(candidates.length){
+      const best=candidates[0];
+      return {point:best.point,label:best.label,source:best.source||'geocoder',confidence:best.confidence||'medium'};
+    }
+  }catch(e){console.warn('Búsqueda combinada:',e.message)}
 
   const city='Ciego de Ávila, Cuba';
   const attempts=[
@@ -1638,19 +1811,30 @@ $('#resetDemoLocation').onclick=()=>{
   map.setView(currentStart,16);
   $('#demoLocationText').textContent='Parque José Martí, Ciego de Ávila';
   $('#demoLocationText').textContent='Parque José Martí, Ciego de Ávila';
-  $('#pickupText').textContent='Parque José Martí, Ciego de Ávila';
+  $('#pickupText').textContent='Parque José Martí, Ciego de Ávila';if($('#pickupHomeText'))$('#pickupHomeText').textContent='Parque José Martí';
   clearRoute();
   toast('Ubicación restaurada al Parque José Martí');
 }
+const destinationInput=$('#destination');
+destinationInput.addEventListener('input',()=>{
+  destinationPoint=null;pendingDestination=null;clearRoute();clearRouteStatus();
+  clearTimeout(addressSearchTimer);
+  const text=destinationInput.value.trim();
+  if(text.length<3){hideAddressSuggestions();return}
+  addressSearchTimer=setTimeout(()=>runAddressSearch(),650);
+});
+destinationInput.addEventListener('keydown',async e=>{
+  if(e.key!=='Enter')return;e.preventDefault();
+  const first=$('#addressSuggestions .address-suggestion');
+  if(first){first.click();return}
+  await runAddressSearch({autoSelect:true});
+});
+destinationInput.addEventListener('focus',()=>{if(addressCandidates.length&&destinationInput.value.trim().length>=3)renderAddressSuggestions(addressCandidates)});
+document.addEventListener('click',e=>{if(!e.target.closest('.route-composer')&&!e.target.closest('#addressSuggestions'))hideAddressSuggestions()});
 $('#searchAddressBtn').onclick=async()=>{
-  const btn=$('#searchAddressBtn');
-  routeRequestId++;
-  destinationPoint=null;pendingDestination=null;
-  $('#confirmLocation').classList.remove('show');
-  clearRoute();
-  btn.disabled=true;btn.textContent='⏳ Buscando…';
-  try{const ok=await prepareRealRoute();if(ok)toast('Dirección y ruta listas')}
-  finally{btn.disabled=false;btn.textContent='🔎 Buscar dirección cubana'}
+  const btn=$('#searchAddressBtn');btn.disabled=true;btn.textContent='…';
+  try{await runAddressSearch({autoSelect:true})}
+  finally{btn.disabled=false;btn.textContent='⌕'}
 }
 $('#pickMapBtn').onclick=()=>startPinMode('destination');
 $('#fixLocationBtn').onclick=()=>{ $('#confirmLocation').classList.remove('show'); startPinMode('destination'); }
@@ -1673,7 +1857,7 @@ $('#confirmPin').onclick=async()=>{
     localStorage.setItem('sobre_ruedas_test_location',JSON.stringify(currentStart));
     startMarker.setLatLng(currentStart).bindPopup('Ubicación temporal de prueba');
     $('#demoLocationText').textContent=`Punto personalizado · ${center.lat.toFixed(5)}, ${center.lng.toFixed(5)}`;
-    $('#pickupText').textContent='Ubicación temporal seleccionada en el mapa';
+    $('#pickupText').textContent='Ubicación temporal seleccionada en el mapa';if($('#pickupHomeText'))$('#pickupHomeText').textContent='Ubicación seleccionada en el mapa';
     clearRoute();
     stopPinMode();
     map.setView(currentStart,16);
@@ -1698,11 +1882,11 @@ $('#refreshLocation').onclick=()=>{
   localStorage.removeItem('sobre_ruedas_test_location');
   startMarker.setLatLng(currentStart).bindPopup('Ubicación de prueba: Parque José Martí, Ciego de Ávila');
   map.setView(currentStart,16);
-  $('#pickupText').textContent='Parque José Martí, Ciego de Ávila';
+  $('#pickupText').textContent='Parque José Martí, Ciego de Ávila';if($('#pickupHomeText'))$('#pickupHomeText').textContent='Parque José Martí';
   toast('Ubicación de prueba restaurada');
   setNotice('Ubicación de prueba: Parque José Martí, Ciego de Ávila.');
 }
-$$('[data-dest]').forEach(b=>b.onclick=()=>{$('#destination').value=b.dataset.dest;destinationPoint=null;clearRouteStatus();showPage('home');toast('Destino seleccionado')})
+$$('[data-dest]').forEach(b=>b.onclick=()=>{$('#destination').value=b.dataset.dest;destinationPoint=null;clearRouteStatus();showPage('home');setTimeout(()=>runAddressSearch({autoSelect:true}),80)})
 $$('.vehicle').forEach(v=>v.onclick=()=>{$$('.vehicle').forEach(x=>x.classList.remove('active'));v.classList.add('active');selected={type:v.dataset.type,price:0,eta:+v.dataset.eta};updateFare()})
 function renderPerKmLabels(){
   $$('.vehicle[data-type]').forEach(card=>{
@@ -1916,7 +2100,7 @@ const oa=openApp;openApp=function(){oa();if(APP_ROLE==='driver')earnings();setTi
 
 
 
-/* v2.5.0 — interacción profesional y navegación */
+/* v2.6.0 — interacción profesional y navegación */
 let liveRouteRequest=0,lastDriverRouteAt=0,lastDriverRoutePoint=null,lastPassengerRouteAt=0,lastPassengerRoutePoint=null;
 function validCoords(lat,lng){return Number.isFinite(Number(lat))&&Number.isFinite(Number(lng))&&Math.abs(Number(lat))<=90&&Math.abs(Number(lng))<=180}
 function rideTarget(ride,phase){
@@ -1987,7 +2171,7 @@ setTimeout(()=>{
   startMarker.setLatLng(currentStart).bindPopup('Ubicación de prueba: Parque José Martí, Ciego de Ávila');
   map.setView(currentStart,16);
 },400);
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=250').then(r=>r.update()).catch(()=>{}))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=260').then(r=>r.update()).catch(()=>{}))}
 </script>
 
 <script>
@@ -2042,6 +2226,6 @@ window.addEventListener('load', function () {
 });
 </script>
 
-<div style="position:fixed;right:8px;bottom:8px;z-index:9999;background:#111;color:#fff;padding:5px 8px;border-radius:9px;font:700 10px system-ui;opacity:.72">v2.5.0</div>
+<script src="v260.js?v=260"></script>
 </body>
 </html>

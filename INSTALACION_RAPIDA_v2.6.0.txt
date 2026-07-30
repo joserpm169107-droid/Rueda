@@ -1,0 +1,5 @@
+1. Sube todos los archivos del ZIP a GitHub y reemplaza los existentes.
+2. Ejecuta SOLO ACTUALIZAR_SUPABASE_v2.6.0.sql en Supabase.
+3. Espera la publicación de GitHub Pages.
+4. Cierra y vuelve a abrir la app o usa Ctrl + F5.
+5. Prueba: foto de pasajero, foto y vehículo del conductor, suspensión y eliminación definitiva.

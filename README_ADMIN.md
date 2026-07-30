@@ -1,7 +1,18 @@
-# Sobre Ruedas Admin v2.5.0
+# Sobre Ruedas Admin v2.6.0
 
-El panel es el centro de control de pasajeros, conductores, viajes, reportes, tarifas y operación en vivo.
+El panel administrativo es el centro de operaciones de la plataforma.
 
-La tarjeta **Incidencias operativas** detecta solicitudes sin conductor, viajes sin actualización y conductores fuera de línea con un viaje activo. Desde allí el administrador puede abrir, cancelar/liberar o finalizar un viaje atascado, dejando auditoría.
+## Pasajeros y conductores
 
-Ejecuta `ACTUALIZAR_SUPABASE_v2.5.0.sql` antes de probar la nueva versión.
+Cada cuenta permite:
+
+- **Viajes:** historial completo y búsqueda por identificador.
+- **Suspender:** 7 días, 1 mes, 2 meses o fecha personalizada, siempre con motivo.
+- **Levantar suspensión:** reactivación manual antes del vencimiento.
+- **Eliminar definitivamente:** borra perfil, fotos, viajes, reportes y eventos asociados. Requiere escribir `ELIMINAR` para confirmar.
+
+Los conductores mantienen además aprobación, desaprobación, reportes, riesgo e información detallada del vehículo.
+
+## SQL
+
+Ejecuta únicamente `ACTUALIZAR_SUPABASE_v2.6.0.sql` después de publicar los archivos.
