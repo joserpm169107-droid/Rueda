@@ -1,58 +1,41 @@
-# Sobre Ruedas v2.7.0
+# Sobre Ruedas v2.8.0
 
-Actualización enfocada en estabilidad operativa, comunicación y control administrativo.
+Versión de estabilización operativa para pasajero, conductor y administración.
 
-## Pasajero
+## Aplicaciones
 
-- Aplicación separada de la aplicación del conductor.
-- Búsqueda escrita de destinos con sugerencias de Photon/OpenStreetMap, búsqueda explícita con Nominatim y puntos locales de Ciego de Ávila.
-- Alternativa para marcar el destino directamente en el mapa cuando una dirección no aparece.
-- Chat interno con el conductor durante el viaje.
-- Mensajes rápidos y estados de lectura.
-- Llamada de audio por internet sin mostrar los números telefónicos reales.
-- Centro de ayuda para crear casos y conversar con administración.
-- Foto de perfil optimizada antes de subirla.
+- `index.html` — Sobre Ruedas, pasajero.
+- `conductor.html` — Sobre Ruedas Conductor.
+- `admin.html` — Sobre Ruedas Admin.
 
-## Conductor
+## Cambios principales
 
-- Bloqueo operativo cuando el perfil está suspendido, eliminado, desaprobado o no aprobado.
-- Un conductor suspendido se desconecta, no aparece disponible y no puede recibir ni aceptar viajes.
-- Chat y llamada privada por internet con el pasajero.
-- Ayuda contextual para problemas de recogida, navegación, precio, seguridad, averías y finalización.
-- Foto personal, foto del vehículo, identificación y ficha completa del vehículo.
-- Compresión automática de imágenes para reducir consumo de datos.
-
-## Administración
-
-- Finalización o cancelación atómica de viajes activos, liberando pasajero y conductor.
-- Suspensión temporal de pasajeros y conductores con fecha, motivo y reactivación manual o automática.
-- Eliminación definitiva tolerante a diferencias de esquema de versiones anteriores.
-- Historial de viajes y acciones administrativas.
-- Módulo de Soporte e incidencias con prioridades, conversación, estado y acciones sobre el viaje relacionado.
-- Actualización en tiempo real de casos, mensajes, viajes y perfiles.
-
-## Fotografías
-
-- Perfil: recorte cuadrado, máximo aproximado de 512 × 512 px y objetivo de 200 KB.
-- Vehículo: máximo aproximado de 1280 × 960 px y objetivo de 500 KB.
-- Identificación: máximo aproximado de 1600 px y objetivo de 900 KB.
-- Conversión automática a WebP o JPEG, corrección de orientación y vista previa.
+- La pantalla del pasajero cambia automáticamente al seguimiento cuando un conductor acepta.
+- Recuperación del viaje activo al recargar, regresar a la app o recuperar internet.
+- Actualización automática al finalizar o cancelar el viaje.
+- Calificación pendiente recuperable y reportes automáticos para evaluaciones bajas.
+- Chat interno y llamada privada por internet vinculados al viaje.
+- Reportes de Ayuda visibles en Soporte e incidencias del administrador.
+- Finalización o cancelación administrativa de viajes con liberación de ambas cuentas.
+- Suspender, levantar suspensión, desactivar, reactivar y eliminar definitivamente pasajeros y conductores.
+- El conductor suspendido o desactivado queda fuera de línea y no puede aceptar servicios.
+- Ganancias del conductor comienzan en 0 CUP y suman únicamente viajes finalizados.
+- Buscador escrito de direcciones reconstruido, con selección manual en el mapa como alternativa.
+- Compresión automática de fotografías antes de subirlas.
+- Caché renovada para impedir que el teléfono conserve la versión anterior.
 
 ## Instalación
 
-1. Haz una copia de respaldo del repositorio y de Supabase.
-2. Reemplaza en GitHub todos los archivos del proyecto con el contenido de este ZIP.
+1. Haz una copia de seguridad del proyecto y de Supabase.
+2. Sube todos los archivos de esta carpeta a GitHub y reemplaza los existentes.
 3. En Supabase abre **SQL Editor → New query**.
-4. Copia y ejecuta una sola vez `ACTUALIZAR_SUPABASE_v2.7.0.sql`.
-5. No ejecutes los archivos guardados en `SQL_ANTERIORES`.
-6. Espera la publicación de GitHub Pages y recarga completamente la aplicación.
+4. Copia y ejecuta únicamente `ACTUALIZAR_SUPABASE_v2.8.0.sql`.
+5. No ejecutes nuevamente los archivos de `SQL_ANTERIORES`.
+6. Espera la publicación de GitHub Pages.
+7. Cierra por completo las aplicaciones instaladas o el navegador y vuelve a abrirlas.
 
-## Enlaces
+Si Supabase muestra la advertencia de RLS, usa **Run without RLS**. La migración configura sus propias políticas.
 
-- Pasajero: `https://joserpm169107-droid.github.io/Rueda/`
-- Conductor: `https://joserpm169107-droid.github.io/Rueda/conductor.html`
-- Administrador: `https://joserpm169107-droid.github.io/Rueda/admin.html`
+## Validación
 
-## Nota técnica
-
-La llamada privada es audio por internet mediante WebRTC y señalización de Supabase Realtime; no abre la aplicación telefónica ni revela los números. Su funcionamiento puede depender de permisos del micrófono y de la red disponible. La migración y las operaciones deben probarse contra el proyecto real de Supabase después de instalar esta versión.
+Se comprobaron localmente la sintaxis de todos los archivos JavaScript, los scripts incluidos en los tres HTML, las referencias internas y la integridad del ZIP. La prueba definitiva debe realizarse contra tu proyecto real de Supabase usando dos teléfonos y el panel administrativo.

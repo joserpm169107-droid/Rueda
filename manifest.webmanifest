@@ -2,7 +2,7 @@
   "name": "Sobre Ruedas",
   "short_name": "Sobre Ruedas",
   "description": "Aplicación de transporte para pasajeros.",
-  "start_url": "./index.html?v=270",
+  "start_url": "./index.html?v=280",
   "scope": "./",
   "display": "standalone",
   "background_color": "#050505",

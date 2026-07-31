@@ -1,15 +1,15 @@
-/* Sobre Ruedas Admin v2.7.0 — suspensiones temporales y eliminación definitiva */
+/* Sobre Ruedas Admin v2.8.0 — suspensiones temporales y eliminación definitiva */
 (() => {
   const q=s=>document.querySelector(s);
   const qa=s=>[...document.querySelectorAll(s)];
   const ADMIN_CODE='RUEDA2026';
   let suspensionTarget=null;
 
-  document.title='Sobre Ruedas Admin v2.7.0';
-  q('.version').textContent='Admin v2.7.0';
+  document.title='Sobre Ruedas Admin v2.8.0';
+  q('.version').textContent='Admin v2.8.0';
   qa('*').forEach(el=>{
     if(el.childNodes.length===1&&el.firstChild?.nodeType===Node.TEXT_NODE){
-      el.textContent=el.textContent.replace(/v2\.5\.1/g,'v2.7.0').replace(/ACTUALIZAR_SUPABASE_v2\.5\.0\.sql/g,'ACTUALIZAR_SUPABASE_v2.7.0.sql');
+      el.textContent=el.textContent.replace(/v2\.5\.1/g,'v2.8.0').replace(/ACTUALIZAR_SUPABASE_v2\.5\.0\.sql/g,'ACTUALIZAR_SUPABASE_v2.8.0.sql');
     }
   });
 
@@ -130,7 +130,7 @@
     const button=q('#confirmSuspension');button.disabled=true;button.textContent='Aplicando…';
     const {error}=await sb.rpc('admin_suspend_profile',{p_person_id:suspensionTarget.personId,p_role:suspensionTarget.type,p_until:new Date(until).toISOString(),p_reason:reason,p_admin_name:ownerIdentity(),p_admin_code:ADMIN_CODE});
     button.disabled=false;button.textContent='Aplicar suspensión';
-    if(error){console.error(error);return toast('No se pudo suspender. Ejecuta el SQL v2.7.0')}
+    if(error){console.error(error);return toast('No se pudo suspender. Ejecuta el SQL v2.8.0')}
     toast(`${suspensionTarget.type==='driver'?'Conductor':'Pasajero'} suspendido correctamente`);closeSuspension();await refreshOperations();
   };
 
@@ -138,7 +138,7 @@
     const person=uniquePeople(type).find(p=>String(p.id)===String(personId));
     if(!confirm(`¿Levantar ahora la suspensión de ${person?.name||'esta cuenta'}?`))return;
     const {error}=await sb.rpc('admin_unsuspend_profile',{p_person_id:String(personId),p_role:type,p_admin_name:ownerIdentity(),p_admin_code:ADMIN_CODE});
-    if(error){console.error(error);return toast('No se pudo levantar la suspensión. Ejecuta el SQL v2.7.0')}
+    if(error){console.error(error);return toast('No se pudo levantar la suspensión. Ejecuta el SQL v2.8.0')}
     toast('Suspensión levantada');await refreshOperations();
   }
 
@@ -149,7 +149,7 @@
     const confirmation=prompt(`Esta acción borrará el perfil, las fotos y TODOS sus viajes de la base de datos.\n\nEscribe ELIMINAR para borrar definitivamente a ${name}.`,'');
     if(confirmation!=='ELIMINAR')return toast('Eliminación cancelada');
     const {data,error}=await sb.rpc('admin_delete_person_permanently',{p_person_id:String(personId),p_role:type,p_reason:reason.trim(),p_admin_name:ownerIdentity(),p_admin_code:ADMIN_CODE});
-    if(error){console.error(error);return toast('No se pudo eliminar definitivamente. Ejecuta el SQL v2.7.0')}
+    if(error){console.error(error);return toast('No se pudo eliminar definitivamente. Ejecuta el SQL v2.8.0')}
     const result=Array.isArray(data)?data[0]:data;
     toast(`Cuenta eliminada · ${Number(result?.rides_deleted||0)} viaje(s) borrado(s)`);if(!q('#opsModal').classList.contains('hidden'))closeOpsModal();await refreshOperations();
   }
@@ -186,7 +186,7 @@
   if(!q('#app').classList.contains('hidden')){renderPeople();renderDashboard()}
 })();
 
-/* Sobre Ruedas Admin v2.7.0 — soporte, chat y cierre atómico de viajes */
+/* Sobre Ruedas Admin v2.8.0 — soporte, chat y cierre atómico de viajes */
 (() => {
   const q=s=>document.querySelector(s);
   const qa=s=>[...document.querySelectorAll(s)];
@@ -222,14 +222,14 @@
   }
 
   const originalShowPage=showPage;
-  showPage=function(page){originalShowPage(page);if(page==='support'){q('#pageTitle').textContent='Soporte e incidencias';loadSupportData()}};
+  showPage=function(page){originalShowPage(page);if(page==='support'){q('#pageTitle').textContent='Soporte e incidencias'}};
 
   async function loadSupportData(){
     const [casesResult,messagesResult]=await Promise.all([
       sb.from('support_cases').select('*').order('created_at',{ascending:false}).limit(500),
       sb.from('support_messages').select('*').order('created_at',{ascending:true}).limit(3000)
     ]);
-    if(casesResult.error){console.error(casesResult.error);q('#supportCaseList').innerHTML='<div class="empty">No se pudo cargar soporte. Ejecuta el SQL v2.7.0.</div>';return}
+    if(casesResult.error){console.error(casesResult.error);q('#supportCaseList').innerHTML='<div class="empty">No se pudo cargar soporte. Ejecuta el SQL v2.8.0.</div>';return}
     supportCases=casesResult.data||[];supportMessages=messagesResult.data||[];renderSupportList();renderSupportStats();
     if(selectedCase){const updated=supportCases.find(c=>String(c.id)===String(selectedCase.id));if(updated)openSupportCase(updated.id)}
   }
@@ -309,7 +309,7 @@
     supportChannel=sb.channel('admin-support-v270').on('postgres_changes',{event:'*',schema:'public',table:'support_cases'},loadSupportData).on('postgres_changes',{event:'*',schema:'public',table:'support_messages'},loadSupportData).subscribe();
   }
 
-  installSupportSection();setupSupportRealtime();
-  if(localStorage.getItem('sr_admin_beta'))setTimeout(loadSupportData,500);
+  installSupportSection();
+  // v2.8.0 controla la carga y el tiempo real de soporte para evitar renderizados duplicados.
   window.addEventListener('beforeunload',()=>{if(supportChannel)sb.removeChannel(supportChannel)});
 })();

@@ -1,0 +1,12 @@
+SOBRE RUEDAS v2.8.0 — INSTALACIÓN
+
+1. Guarda una copia de la versión actual.
+2. Extrae el ZIP.
+3. Sube TODOS los archivos a GitHub y reemplaza los existentes.
+4. En Supabase abre SQL Editor > New query.
+5. Abre ACTUALIZAR_SUPABASE_v2.8.0.sql, copia todo y pulsa Run.
+6. NO ejecutes los SQL de la carpeta SQL_ANTERIORES.
+7. Espera la publicación de GitHub Pages.
+8. Cierra y vuelve a abrir pasajero, conductor y administrador.
+
+Advertencia RLS de Supabase: pulsa Run without RLS.
