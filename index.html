@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#F6C600">
 <meta name="description" content="Aplicación profesional de transporte para pasajeros de Sobre Ruedas.">
-<title>Sobre Ruedas v2.6.0 · Ciego de Ávila</title>
+<title>Sobre Ruedas v2.7.0 · Ciego de Ávila</title>
 <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-96.png">
 <link rel="preconnect" href="https://unpkg.com">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -595,7 +595,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
 body.theme-dark{--bg:#101114;--card:#191b20;--text:#f7f7f7;--muted:#aeb2ba;--line:#30333a;background:#0b0c0f;color:var(--text)}body.theme-dark .sheet,body.theme-dark .modal,body.theme-dark .setting,body.theme-dark input,body.theme-dark textarea,body.theme-dark select{background:#191b20;color:#fff;border-color:#30333a}.theme-picker{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.theme-picker button{padding:12px 5px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--text);font-weight:900}.theme-picker button.active{background:var(--y);color:#111}.earnings-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.earnings-grid div{padding:12px 8px;border:1px solid var(--line);border-radius:15px}.daily-row{display:flex;justify-content:space-between;padding:10px 2px;border-bottom:1px solid var(--line)}.star-picker{display:flex;justify-content:center}.star-picker button{border:0;background:none;font-size:42px;color:#ccc}.star-picker button.on{color:#f6c600}.rating-modal{text-align:center}.rating-modal textarea{width:100%;min-height:90px;border-radius:14px;padding:12px}.avatar img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
 
 
-/* v2.6.0 — paneles separados, diseño adaptativo y tema oscuro completo */
+/* v2.7.0 — paneles separados, diseño adaptativo y tema oscuro completo */
 :root{
   --surface:#ffffff;--surface-2:#f5f6f8;--surface-3:#eceef2;
   --top-glass:rgba(255,255,255,.94);--map-filter:none;
@@ -662,7 +662,7 @@ body.theme-dark .primary-nav{background:#f6c600!important;color:#111!important;b
 @media(orientation:landscape) and (max-height:620px){.sheet{top:76px!important;bottom:10px!important;height:calc(100dvh - 86px)!important}.top{padding-top:10px}.headline{font-size:21px}}
 
 
-/* v2.6.0 — rediseño operativo y buscador de direcciones */
+/* v2.7.0 — rediseño operativo y buscador de direcciones */
 :root{
   --accent:#ffd400;--accent-strong:#f2c900;--ink:#111318;--muted:#6d737d;
   --bg:#eef1f4;--card:#fff;--line:#e3e6ea;--surface:#fff;--surface-2:#f4f6f8;
@@ -701,7 +701,7 @@ body.theme-dark .route-composer{background:#080a0d;border:1px solid #272b32}.the
 @media(min-width:820px){.sheet{height:calc(100dvh - 116px)!important}.headline{font-size:34px}.route-composer{border-radius:22px}.address-suggestions{max-height:300px}.nav{margin-left:-19px;margin-right:-19px;margin-bottom:calc(-16px - env(safe-area-inset-bottom))}.app-driver .sheet{height:calc(100dvh - 116px)!important}}
 
 </style>
-<link rel="stylesheet" href="v260.css?v=260">
+<link rel="stylesheet" href="v270.css?v=270">
 </head>
 <body data-app-role="passenger" class="app-passenger">
   <div class="splash" id="brandSplash">
@@ -775,7 +775,7 @@ body.theme-dark .route-composer{background:#080a0d;border:1px solid #272b32}.the
   <div id="mapConfirm" class="map-confirm hidden"><button class="cancel" id="cancelPin">Cancelar</button><button class="confirm" id="confirmPin">Confirmar destino</button></div>
   <div class="top">
     <button class="round glass" id="menuBtn">☰</button>
-    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS<small>CIEGO DE ÁVILA · v2.6.0</small></div></div>
+    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS<small>CIEGO DE ÁVILA · v2.7.0</small></div></div>
     <button class="round glass" id="profileBtn">👤</button>
   </div>
 
@@ -900,7 +900,7 @@ body.theme-dark .route-composer{background:#080a0d;border:1px solid #272b32}.the
       <div class="notice-card"><strong>Última alerta</strong><small style="display:block;margin-top:4px" id="lastNotice">No tienes alertas nuevas.</small></div><div class="setting"><span>💳 Método de pago</span><span>Efectivo ›</span></div>
       <div class="account-separation-note"><strong>Panel independiente</strong><br>Esta sesión pertenece únicamente a Sobre Ruedas. Los controles de conductor no se muestran aquí.</div>
       <p class="muted" id="roleStatus" style="font-size:12px;margin-top:9px">Cuenta activa.</p>
-      <button id="switchPassenger" class="hidden"></button><button id="switchDriver" class="hidden"></button><button id="roleInfoBtn" class="hidden"></button><button class="logout" id="logoutBtn">🚪 Cerrar sesión</button><p class="muted" style="text-align:center;font-size:11px;margin-top:8px">Sobre Ruedas v2.6.0 · Ciego de Ávila</p></div>
+      <button id="switchPassenger" class="hidden"></button><button id="switchDriver" class="hidden"></button><button id="roleInfoBtn" class="hidden"></button><button class="logout" id="logoutBtn">🚪 Cerrar sesión</button><p class="muted" style="text-align:center;font-size:11px;margin-top:8px">Sobre Ruedas v2.7.0 · Ciego de Ávila</p></div>
 
     <nav class="nav"><button class="active" data-page="home"><span>⌂</span>Inicio</button><button data-page="history"><span>◷</span>Viajes</button><button data-page="saved"><span>♡</span>Guardados</button><button data-page="account"><span>☻</span>Cuenta</button></nav>
     </div>
@@ -933,7 +933,7 @@ window.SOBRE_RUEDAS_DEV = {
 <script>
 const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
 const APP_ROLE=document.body.dataset.appRole==='driver'?'driver':'passenger';
-const APP_VERSION='2.6.0';
+const APP_VERSION='2.7.0';
 const AUTH=APP_ROLE==='driver'?'rueda_driver_user':'rueda_passenger_user';
 const DEVICE_KEY=APP_ROLE==='driver'?'rueda_driver_device_id':'rueda_passenger_device_id';
 const legacyUser=(()=>{try{return JSON.parse(localStorage.getItem('rueda_v1_user')||'null')}catch{return null}})();
@@ -1204,7 +1204,7 @@ function listenDriverRequests(){
           incomingRide=row;
           if(['accepted','arrived','in_progress'].includes(row.status))drawDriverNavigation(incomingRide,row.status==='accepted'?'to_pickup':row.status,false);
           if(row.status==='canceled')resetDriverAfterRemoteClose('El viaje fue cancelado por '+(row.canceled_by||'el sistema'));
-          if(row.status==='finished'&&driverTripState!=='in_progress')resetDriverAfterRemoteClose('El viaje fue cerrado por administración');
+          if(row.status==='finished')resetDriverAfterRemoteClose('El viaje fue cerrado por administración');
         }else{incomingRide=null;setTimeout(findWaitingRide,500)}
       }
     })
@@ -2104,7 +2104,7 @@ const oa=openApp;openApp=function(){oa();if(APP_ROLE==='driver')earnings();setTi
 
 
 
-/* v2.6.0 — interacción profesional y navegación */
+/* v2.7.0 — interacción profesional y navegación */
 let liveRouteRequest=0,lastDriverRouteAt=0,lastDriverRoutePoint=null,lastPassengerRouteAt=0,lastPassengerRoutePoint=null;
 function validCoords(lat,lng){return Number.isFinite(Number(lat))&&Number.isFinite(Number(lng))&&Math.abs(Number(lat))<=90&&Math.abs(Number(lng))<=180}
 function rideTarget(ride,phase){
@@ -2120,7 +2120,11 @@ $('#centerDriverRoute').onclick=()=>{if(routeLine)map.fitBounds(routeLine.getBou
 function resetDriverAfterRemoteClose(message){
   clearInterval(driverTimer);localStorage.removeItem(ARK);incomingRide=null;currentRideId=null;activeRidePrice=0;driverTripState='idle';driverTripStartedAt=null;
   $('#driverRequest').classList.add('hidden');$('#driverActiveTrip').classList.add('hidden');$('#driverSummary').classList.remove('hidden');
-  driverOnline=true;$('#onlineToggle').classList.add('on');$('#onlineText').textContent='Disponible';setDriverPresence(true,currentStart);listenDriverRequests();toast(message);
+  const suspended=currentProfile?.suspended_until&&new Date(currentProfile.suspended_until)>new Date();
+  const blocked=suspended||currentProfile?.status!=='active'||currentProfile?.approval_status!=='approved';
+  driverOnline=!blocked;$('#onlineToggle').classList.toggle('on',driverOnline);$('#onlineText').textContent=suspended?'Suspendido':driverOnline?'Disponible':'Bloqueado';
+  if(driverOnline){setDriverPresence(true,currentStart);listenDriverRequests()}else{setDriverPresence(false,currentStart);stopDriverChannel()}
+  toast(message);
 }
 async function drawDriverNavigation(ride,phase=driverTripState,force=false){
   if(!ride)return;if(ride.vehicle_type)selected.type=ride.vehicle_type;const target=rideTarget(ride,phase);if(!target)return;
@@ -2175,7 +2179,7 @@ setTimeout(()=>{
   startMarker.setLatLng(currentStart).bindPopup('Ubicación de prueba: Parque José Martí, Ciego de Ávila');
   map.setView(currentStart,16);
 },400);
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=260').then(r=>r.update()).catch(()=>{}))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=270').then(r=>r.update()).catch(()=>{}))}
 </script>
 
 <script>
@@ -2230,6 +2234,6 @@ window.addEventListener('load', function () {
 });
 </script>
 
-<script src="v260.js?v=260"></script>
+<script src="v270.js?v=270"></script>
 </body>
 </html>
