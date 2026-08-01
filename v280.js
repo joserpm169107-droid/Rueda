@@ -1,4 +1,4 @@
-/* Sobre Ruedas v2.8.0 — controlador operativo final */
+/* Sobre Ruedas v2.9.0 — controlador operativo final */
 (() => {
   'use strict';
 
@@ -127,7 +127,7 @@
     }
     const result = await sb.from('profiles').select('*').eq('device_id', deviceId).eq('role', ROLE).maybeSingle();
     if (result.error) {
-      console.warn('Perfil v2.8.0:', result.error.message);
+      console.warn('Perfil v2.9.0:', result.error.message);
       return currentProfile;
     }
     if (!result.data) {
@@ -496,7 +496,7 @@
         const sum = start => rows.filter(row => time(row) >= start).reduce((total, row) => total + Number(row.price || 0), 0);
         Object.assign(summary, { today: sum(day), week: sum(week), month: sum(month), trips_today: rows.filter(row => time(row) >= day).length });
       }
-    } catch (error) { console.warn('Ganancias v2.8.0:', error); }
+    } catch (error) { console.warn('Ganancias v2.9.0:', error); }
     const cup = value => `${Math.round(Number(value) || 0)} CUP`;
     ['earnToday', 'earnTodayPage', 'earnTodayHero'].forEach(id => { if (q('#' + id)) q('#' + id).textContent = cup(summary.today); });
     ['earnWeek', 'earnWeekPage'].forEach(id => { if (q('#' + id)) q('#' + id).textContent = cup(summary.week); });
@@ -722,7 +722,7 @@
       if (!results.length && explicit) toast('No encontramos esa dirección. Puedes marcarla directamente en el mapa.');
     } catch (error) {
       if (request !== addressRequestV280) return;
-      console.warn('Buscador v2.8.0:', error);
+      console.warn('Buscador v2.9.0:', error);
       renderAddressV280([], term);
       if (explicit) toast('No se pudo consultar el buscador. Marca el punto en el mapa.');
     }

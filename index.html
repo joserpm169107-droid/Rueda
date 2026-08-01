@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#F6C600">
 <meta name="description" content="Aplicación profesional de transporte para pasajeros de Sobre Ruedas.">
-<title>Sobre Ruedas v2.8.0 · Ciego de Ávila</title>
+<title>Sobre Ruedas v2.9.0 · Cuba</title>
 <link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icon-180.png"><link rel="icon" href="icon-96.png">
 <link rel="preconnect" href="https://unpkg.com">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -595,7 +595,7 @@ h1,h2,h3,p{margin:0}.muted{color:var(--muted)}.hello{font-size:13px;font-weight:
 body.theme-dark{--bg:#101114;--card:#191b20;--text:#f7f7f7;--muted:#aeb2ba;--line:#30333a;background:#0b0c0f;color:var(--text)}body.theme-dark .sheet,body.theme-dark .modal,body.theme-dark .setting,body.theme-dark input,body.theme-dark textarea,body.theme-dark select{background:#191b20;color:#fff;border-color:#30333a}.theme-picker{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.theme-picker button{padding:12px 5px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--text);font-weight:900}.theme-picker button.active{background:var(--y);color:#111}.earnings-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.earnings-grid div{padding:12px 8px;border:1px solid var(--line);border-radius:15px}.daily-row{display:flex;justify-content:space-between;padding:10px 2px;border-bottom:1px solid var(--line)}.star-picker{display:flex;justify-content:center}.star-picker button{border:0;background:none;font-size:42px;color:#ccc}.star-picker button.on{color:#f6c600}.rating-modal{text-align:center}.rating-modal textarea{width:100%;min-height:90px;border-radius:14px;padding:12px}.avatar img{width:100%;height:100%;object-fit:cover;border-radius:inherit}
 
 
-/* v2.8.0 — paneles separados, diseño adaptativo y tema oscuro completo */
+/* v2.9.0 — paneles separados, diseño adaptativo y tema oscuro completo */
 :root{
   --surface:#ffffff;--surface-2:#f5f6f8;--surface-3:#eceef2;
   --top-glass:rgba(255,255,255,.94);--map-filter:none;
@@ -662,7 +662,7 @@ body.theme-dark .primary-nav{background:#f6c600!important;color:#111!important;b
 @media(orientation:landscape) and (max-height:620px){.sheet{top:76px!important;bottom:10px!important;height:calc(100dvh - 86px)!important}.top{padding-top:10px}.headline{font-size:21px}}
 
 
-/* v2.8.0 — rediseño operativo y buscador de direcciones */
+/* v2.9.0 — rediseño operativo y buscador de direcciones */
 :root{
   --accent:#ffd400;--accent-strong:#f2c900;--ink:#111318;--muted:#6d737d;
   --bg:#eef1f4;--card:#fff;--line:#e3e6ea;--surface:#fff;--surface-2:#f4f6f8;
@@ -702,13 +702,14 @@ body.theme-dark .route-composer{background:#080a0d;border:1px solid #272b32}.the
 
 </style>
 <link rel="stylesheet" href="v270.css?v=270">
-<link rel="stylesheet" href="v280.css?v=280">
+<link rel="stylesheet" href="v280.css?v=290">
+<link rel="stylesheet" href="v290.css?v=290">
 </head>
 <body data-app-role="passenger" class="app-passenger">
   <div class="splash" id="brandSplash">
     <img src="logo-oficial.jpg" alt="Sobre Ruedas">
     <strong>Tu viaje, tu camino</strong>
-    <small>Ciego de Ávila</small>
+    <small>Cuba</small>
   </div>
 <div class="app">
   <section class="auth" id="auth">
@@ -776,7 +777,7 @@ body.theme-dark .route-composer{background:#080a0d;border:1px solid #272b32}.the
   <div id="mapConfirm" class="map-confirm hidden"><button class="cancel" id="cancelPin">Cancelar</button><button class="confirm" id="confirmPin">Confirmar destino</button></div>
   <div class="top">
     <button class="round glass" id="menuBtn">☰</button>
-    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS<small>CIEGO DE ÁVILA · v2.8.0</small></div></div>
+    <div class="brand glass"><div class="logo">R</div><div>SOBRE RUEDAS<small>CUBA · v2.9.0</small></div></div>
     <button class="round glass" id="profileBtn">👤</button>
   </div>
 
@@ -824,10 +825,10 @@ body.theme-dark .route-composer{background:#080a0d;border:1px solid #272b32}.the
         <summary><span>Herramientas de prueba</span><small>Ubicación simulada</small></summary>
         <div class="dev-tools-body">
           <div class="gps-warning" id="gpsWarning">Modo de prueba: puedes cambiar el punto de salida manualmente sin activar el GPS.</div>
-          <div class="live-banner"><div><span class="live-dot"></span><strong>Modo de prueba activo</strong><small style="display:block;color:#4d7b65;margin-top:2px">Salida temporal editable dentro de Ciego de Ávila</small></div><button id="refreshLocation" class="chip">Restaurar</button></div>
+          <div class="live-banner"><div><span class="live-dot"></span><strong>Modo de prueba activo</strong><small style="display:block;color:#4d7b65;margin-top:2px">Salida temporal editable dentro de Cuba</small></div><button id="refreshLocation" class="chip">Restaurar</button></div>
           <div class="dev-pill">🧪 GPS real desactivado durante las pruebas</div>
           <div class="demo-location">
-            <div><strong>📍 Ubicación de prueba</strong><small id="demoLocationText">Parque José Martí, Ciego de Ávila</small></div>
+            <div><strong>📍 Ubicación de prueba</strong><small id="demoLocationText">Parque José Martí, Cuba</small></div>
             <div class="demo-actions">
               <button id="changeDemoLocation">Cambiar</button>
               <button id="resetDemoLocation">Restaurar</button>
@@ -901,7 +902,7 @@ body.theme-dark .route-composer{background:#080a0d;border:1px solid #272b32}.the
       <div class="notice-card"><strong>Última alerta</strong><small style="display:block;margin-top:4px" id="lastNotice">No tienes alertas nuevas.</small></div><div class="setting"><span>💳 Método de pago</span><span>Efectivo ›</span></div>
       <div class="account-separation-note"><strong>Panel independiente</strong><br>Esta sesión pertenece únicamente a Sobre Ruedas. Los controles de conductor no se muestran aquí.</div>
       <p class="muted" id="roleStatus" style="font-size:12px;margin-top:9px">Cuenta activa.</p>
-      <button id="switchPassenger" class="hidden"></button><button id="switchDriver" class="hidden"></button><button id="roleInfoBtn" class="hidden"></button><button class="logout" id="logoutBtn">🚪 Cerrar sesión</button><p class="muted" style="text-align:center;font-size:11px;margin-top:8px">Sobre Ruedas v2.8.0 · Ciego de Ávila</p></div>
+      <button id="switchPassenger" class="hidden"></button><button id="switchDriver" class="hidden"></button><button id="roleInfoBtn" class="hidden"></button><button class="logout" id="logoutBtn">🚪 Cerrar sesión</button><p class="muted" style="text-align:center;font-size:11px;margin-top:8px">Sobre Ruedas v2.9.0 · Cuba</p></div>
 
     <nav class="nav"><button class="active" data-page="home"><span>⌂</span>Inicio</button><button data-page="history"><span>◷</span>Viajes</button><button data-page="saved"><span>♡</span>Guardados</button><button data-page="account"><span>☻</span>Cuenta</button></nav>
     </div>
@@ -926,7 +927,7 @@ body.theme-dark .route-composer{background:#080a0d;border:1px solid #272b32}.the
 <script>
 window.SOBRE_RUEDAS_DEV = {
   skipVerification: true,
-  city: "Ciego de Ávila",
+  city: "Cuba",
   realGPS: false
 };
 </script>
@@ -1375,7 +1376,7 @@ window.addEventListener('resize',()=>setSheetHeight(sheetLimits().mid,false));
 
 const map=L.map('map',{zoomControl:false}).setView([21.84206,-78.76000],15);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);
-let startMarker=L.marker(currentStart).addTo(map).bindPopup('Ubicación de prueba: Parque José Martí, Ciego de Ávila');
+let startMarker=L.marker(currentStart).addTo(map).bindPopup('Ubicación de prueba: Parque José Martí, Cuba');
 
 try{
   const savedTestLocation=JSON.parse(localStorage.getItem('sobre_ruedas_test_location')||'null');
@@ -1474,8 +1475,8 @@ function distanceFromStart(point){try{return haversineKm(currentStart,point)}cat
 function localAddressCandidates(text){
   const q=(text||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
   const places=[
-    {label:'Parque José Martí',detail:'Centro de Ciego de Ávila',point:[21.842038,-78.759973],icon:'★'},
-    {label:'Centro de Ciego de Ávila',detail:'Zona del Parque José Martí',point:[21.842038,-78.759973],icon:'◎'}
+    {label:'Parque José Martí',detail:'Centro de Cuba',point:[21.842038,-78.759973],icon:'★'},
+    {label:'Centro de Cuba',detail:'Zona del Parque José Martí',point:[21.842038,-78.759973],icon:'◎'}
   ];
   return places.filter(p=>(p.label+' '+p.detail).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().includes(q)).map(p=>({...p,source:'local',confidence:'high'}));
 }
@@ -1514,7 +1515,7 @@ async function searchAddressCandidates(text,{silent=false}={}){
   const cacheKey=clean.toLocaleLowerCase('es');
   if(addressSearchCache.has(cacheKey))return addressSearchCache.get(cacheKey);
   let results=[...localAddressCandidates(clean)];
-  const fullQuery=/ciego de [áa]vila|cuba/i.test(clean)?clean:`${clean}, Ciego de Ávila, Cuba`;
+  const fullQuery=/ciego de [áa]vila|cuba/i.test(clean)?clean:`${clean}, Cuba, Cuba`;
   try{results.push(...await photonSearch(fullQuery))}catch(e){console.warn('Photon:',e.message)}
   if(results.length<5){try{results.push(...await nominatimCandidates(fullQuery))}catch(e){console.warn('Nominatim:',e.message)}}
   const unique=[];const seen=new Set();
@@ -1527,12 +1528,12 @@ function hideAddressSuggestions(){const box=$('#addressSuggestions');if(box){box
 function renderAddressSuggestions(items,state='results'){
   const box=$('#addressSuggestions');if(!box)return;
   box.innerHTML='';box.classList.remove('hidden');
-  if(state==='loading'){const d=document.createElement('div');d.className='address-loading';d.textContent='Buscando calles y lugares en Ciego de Ávila…';box.appendChild(d);return}
+  if(state==='loading'){const d=document.createElement('div');d.className='address-loading';d.textContent='Buscando calles y lugares en Cuba…';box.appendChild(d);return}
   if(!items.length){const d=document.createElement('div');d.className='address-empty';d.innerHTML='<strong>No encontré esa dirección escrita.</strong><br>Prueba con el nombre de la calle, un lugar conocido o selecciónala en el mapa.';box.appendChild(d);return}
   items.forEach((c,i)=>{
     const b=document.createElement('button');b.type='button';b.className='address-suggestion';b.dataset.index=String(i);b.setAttribute('role','option');
     const icon=document.createElement('span');icon.className='place-icon';icon.textContent=c.icon||'⌖';
-    const copy=document.createElement('span');const title=document.createElement('strong');title.textContent=c.label;const detail=document.createElement('small');detail.textContent=c.detail||'Ciego de Ávila';copy.append(title,detail);
+    const copy=document.createElement('span');const title=document.createElement('strong');title.textContent=c.label;const detail=document.createElement('small');detail.textContent=c.detail||'Cuba';copy.append(title,detail);
     const dist=document.createElement('span');dist.className='distance-hint';dist.textContent=Number.isFinite(c.distance)?`${c.distance.toFixed(1)} km`:'';
     b.append(icon,copy,dist);b.onclick=()=>chooseAddressCandidate(c);box.appendChild(b);
   });
@@ -1554,7 +1555,7 @@ async function runAddressSearch({autoSelect=false}={}){
   const seq=++addressSearchSequence;
   destinationPoint=null;pendingDestination=null;clearRoute();
   renderAddressSuggestions([],'loading');
-  setRouteStatus('Buscando dirección','Consultando calles y lugares de Ciego de Ávila.');
+  setRouteStatus('Buscando dirección','Consultando calles y lugares de Cuba.');
   const items=await searchAddressCandidates(text);
   if(seq!==addressSearchSequence)return false;
   addressCandidates=items;renderAddressSuggestions(items);
@@ -1567,7 +1568,7 @@ async function runAddressSearch({autoSelect=false}={}){
 async function overpassIntersection(main,cross){
   const a=escapeOverpass(main), b=escapeOverpass(cross);
   const q=`[out:json][timeout:20];
-    area["boundary"="administrative"]["name"~"Ciego de Ávila",i]->.searchArea;
+    area["boundary"="administrative"]["name"~"Cuba",i]->.searchArea;
     way(area.searchArea)["highway"]["name"~"${a}",i]->.a;
     way(area.searchArea)["highway"]["name"~"${b}",i]->.b;
     node(w.a)(w.b);
@@ -1626,7 +1627,7 @@ async function geocodeCubanAddress(text){
     }
   }catch(e){console.warn('Búsqueda combinada:',e.message)}
 
-  const city='Ciego de Ávila, Cuba';
+  const city='Cuba, Cuba';
   const attempts=[
     `${text}, ${city}`,
     parsed.type==='block'?`${parsed.main}, ${city}`:'',
@@ -1808,11 +1809,11 @@ $('#resetDemoLocation').onclick=()=>{
   currentStart=[21.84206,-78.76000];
   gpsReady=true;
   localStorage.removeItem('sobre_ruedas_test_location');
-  startMarker.setLatLng(currentStart).bindPopup('Ubicación de prueba: Parque José Martí, Ciego de Ávila');
+  startMarker.setLatLng(currentStart).bindPopup('Ubicación de prueba: Parque José Martí, Cuba');
   map.setView(currentStart,16);
-  $('#demoLocationText').textContent='Parque José Martí, Ciego de Ávila';
-  $('#demoLocationText').textContent='Parque José Martí, Ciego de Ávila';
-  $('#pickupText').textContent='Parque José Martí, Ciego de Ávila';if($('#pickupHomeText'))$('#pickupHomeText').textContent='Parque José Martí';
+  $('#demoLocationText').textContent='Parque José Martí, Cuba';
+  $('#demoLocationText').textContent='Parque José Martí, Cuba';
+  $('#pickupText').textContent='Parque José Martí, Cuba';if($('#pickupHomeText'))$('#pickupHomeText').textContent='Parque José Martí';
   clearRoute();
   toast('Ubicación restaurada al Parque José Martí');
 }
@@ -1881,11 +1882,11 @@ $('#refreshLocation').onclick=()=>{
   currentStart=[21.84206,-78.76000];
   gpsReady=true;
   localStorage.removeItem('sobre_ruedas_test_location');
-  startMarker.setLatLng(currentStart).bindPopup('Ubicación de prueba: Parque José Martí, Ciego de Ávila');
+  startMarker.setLatLng(currentStart).bindPopup('Ubicación de prueba: Parque José Martí, Cuba');
   map.setView(currentStart,16);
-  $('#pickupText').textContent='Parque José Martí, Ciego de Ávila';if($('#pickupHomeText'))$('#pickupHomeText').textContent='Parque José Martí';
+  $('#pickupText').textContent='Parque José Martí, Cuba';if($('#pickupHomeText'))$('#pickupHomeText').textContent='Parque José Martí';
   toast('Ubicación de prueba restaurada');
-  setNotice('Ubicación de prueba: Parque José Martí, Ciego de Ávila.');
+  setNotice('Ubicación de prueba: Parque José Martí, Cuba.');
 }
 $$('[data-dest]').forEach(b=>b.onclick=()=>{$('#destination').value=b.dataset.dest;destinationPoint=null;clearRouteStatus();showPage('home');setTimeout(()=>runAddressSearch({autoSelect:true}),80)})
 $$('.vehicle').forEach(v=>v.onclick=()=>{$$('.vehicle').forEach(x=>x.classList.remove('active'));v.classList.add('active');selected={type:v.dataset.type,price:0,eta:+v.dataset.eta};updateFare()})
@@ -2105,7 +2106,7 @@ const oa=openApp;openApp=function(){oa();if(APP_ROLE==='driver')earnings();setTi
 
 
 
-/* v2.8.0 — interacción profesional y navegación */
+/* v2.9.0 — interacción profesional y navegación */
 let liveRouteRequest=0,lastDriverRouteAt=0,lastDriverRoutePoint=null,lastPassengerRouteAt=0,lastPassengerRoutePoint=null;
 function validCoords(lat,lng){return Number.isFinite(Number(lat))&&Number.isFinite(Number(lng))&&Math.abs(Number(lat))<=90&&Math.abs(Number(lng))<=180}
 function rideTarget(ride,phase){
@@ -2177,10 +2178,10 @@ renderPerKmLabels();updateFare();loadFareSettings();listenFareSettings();openApp
 setTimeout(()=>{
   currentStart=[21.84206,-78.76000];
   gpsReady=true;
-  startMarker.setLatLng(currentStart).bindPopup('Ubicación de prueba: Parque José Martí, Ciego de Ávila');
+  startMarker.setLatLng(currentStart).bindPopup('Ubicación de prueba: Parque José Martí, Cuba');
   map.setView(currentStart,16);
 },400);
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=280').then(r=>r.update()).catch(()=>{}))}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=290').then(r=>r.update()).catch(()=>{}))}
 </script>
 
 <script>
@@ -2236,6 +2237,7 @@ window.addEventListener('load', function () {
 </script>
 
 <script src="v270.js?v=270"></script>
-<script src="v280.js?v=280"></script>
+<script src="v280.js?v=290"></script>
+<script src="v290.js?v=290"></script>
 </body>
 </html>

@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#111317">
-  <title>Sobre Ruedas Admin v2.8.0</title>
+  <title>Sobre Ruedas Admin v2.9.0</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -32,7 +32,7 @@
     @media(max-width:760px){.shell{display:block}.sidebar{position:fixed;width:245px;transform:translateX(-100%);transition:.2s}.sidebar.open{transform:none}.mobile-menu{display:block}.topbar{padding:0 15px}.content{padding:17px 14px 30px}.grid{grid-template-columns:1fr}.cards,.fare-grid{grid-template-columns:1fr}.topbar h2{font-size:18px}.live span:last-child{display:none}.report-summary{grid-template-columns:repeat(2,1fr)}.history-item{grid-template-columns:1fr}.toolbar-group>*{max-width:none!important;flex:1 1 150px}}
   
 
-    /* v2.8.0 — centro de operaciones adaptativo y tema oscuro */
+    /* v2.9.0 — centro de operaciones adaptativo y tema oscuro */
     .top-actions{display:flex;align-items:center;gap:9px}.icon-btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:9px 11px;font-weight:900}.stat.incident{border-color:#fdba74;background:#fff8ed}
     body.admin-dark{--ink:#f7f8fa;--bg:#0d0f13;--card:#171a20;--muted:#abb1bc;--line:#30353e;--shadow:0 4px 18px #0004;color-scheme:dark}
     body.admin-dark .topbar,body.admin-dark .panel,body.admin-dark .stat,body.admin-dark .person,body.admin-dark .fare-card,body.admin-dark .mini-stat,body.admin-dark .modal,body.admin-dark .search,body.admin-dark .clear-btn,body.admin-dark .icon-btn{background:var(--card);color:var(--ink);border-color:var(--line)}
@@ -50,7 +50,8 @@
 
   </style>
 <link rel="stylesheet" href="admin-v270.css?v=270">
-<link rel="stylesheet" href="admin-v280.css?v=280">
+<link rel="stylesheet" href="admin-v280.css?v=290">
+<link rel="stylesheet" href="admin-v290.css?v=290">
 </head>
 <body>
   <section id="login" class="login">
@@ -152,7 +153,7 @@
         <section id="page-fares" class="section-page"><div class="empty" style="margin-bottom:14px">La tarifa se calcula únicamente por distancia: kilómetros recorridos × precio por km.</div><div class="fare-grid" id="fareGrid"></div><div style="margin-top:14px"><button id="saveFares" class="save">Guardar precios por km</button></div></section>
 
         <section id="page-reports" class="section-page">
-          <div id="reportWarning" class="report-warning hidden">El panel está mostrando calificaciones directamente desde los viajes, pero la tabla de reportes no está disponible. Ejecuta <strong>ACTUALIZAR_SUPABASE_v2.8.0.sql</strong> para guardar revisiones e historial.</div>
+          <div id="reportWarning" class="report-warning hidden">El panel está mostrando calificaciones directamente desde los viajes, pero la tabla de reportes no está disponible. Ejecuta <strong>ACTUALIZAR_SUPABASE_v2.9.0.sql</strong> para guardar revisiones e historial.</div>
           <div class="report-summary">
             <div class="mini-stat"><small>PENDIENTES</small><strong id="rPending">0</strong></div>
             <div class="mini-stat"><small>REVISADOS</small><strong id="rReviewed">0</strong></div>
@@ -193,7 +194,7 @@
   </div>
 
   <div id="toast" class="toast"></div>
-  <div class="version">Admin v2.8.0</div>
+  <div class="version">Admin v2.9.0</div>
 
   <script>
     const SUPABASE_URL='https://zrrabfleykuhxyqldxid.supabase.co';
@@ -611,7 +612,7 @@
       const approved=approval==='approved';
       const payload={approval_status:approval,status:approved?'active':'blocked',is_online:approved?Boolean(profile.is_online):false,approved_at:approved?new Date().toISOString():null,approved_by:approved?ownerIdentity():null,rejection_reason:approved?null:reason,updated_at:new Date().toISOString()};
       const {error}=await sb.from('profiles').update(payload).eq('id',profile.id);
-      if(error){console.error(error);return toast('No se pudo actualizar el conductor. Ejecuta SQL v2.8.0')}
+      if(error){console.error(error);return toast('No se pudo actualizar el conductor. Ejecuta SQL v2.9.0')}
       await logAdminAction(approved?'approve_driver':'reject_driver',personId,'driver',reason);
       toast(approved?'Conductor aprobado':'Conductor desaprobado y bloqueado');if(!$('#opsModal').classList.contains('hidden'))closeOpsModal();await refreshOperations();
     }
@@ -774,7 +775,7 @@ No podrá iniciar sesión ni aceptar viajes. El historial se conservará.`))retu
       }else{
         ({error}=await sb.from('driver_reports').update({reviewed,reviewed_at:reviewed?now:null,reviewed_by:reviewed?ownerIdentity():null,updated_at:now}).eq('id',report.id));
       }
-      if(error){console.error(error);return toast('No se pudo guardar. Ejecuta el SQL v2.8.0 y vuelve a intentar')}
+      if(error){console.error(error);return toast('No se pudo guardar. Ejecuta el SQL v2.9.0 y vuelve a intentar')}
       toast(reviewed?'Reporte resuelto':'Reporte reabierto');
       await refreshOperations();
     }
@@ -783,7 +784,7 @@ No podrá iniciar sesión ni aceptar viajes. El historial se conservará.`))retu
       if(!confirm('¿Eliminar este reporte? También se retirará la calificación baja del viaje para que no vuelva a generarse.'))return;
       let error=null;
       if(report.ride_id){({error}=await sb.from('rides').update({rating:null,rating_comment:null,rated_at:null}).eq('id',report.ride_id));if(error){console.error(error);return toast('No se pudo retirar la calificación del viaje')}}
-      if(!report._derived){({error}=await sb.from('driver_reports').delete().eq('id',report.id));if(error){console.error(error);return toast('No se pudo eliminar el reporte. Ejecuta SQL v2.8.0')}}
+      if(!report._derived){({error}=await sb.from('driver_reports').delete().eq('id',report.id));if(error){console.error(error);return toast('No se pudo eliminar el reporte. Ejecuta SQL v2.9.0')}}
       toast('Reporte eliminado');await refreshOperations();
     }
 
@@ -825,6 +826,7 @@ No podrá iniciar sesión ni aceptar viajes. El historial se conservará.`))retu
     if(localStorage.getItem('sr_admin_beta')){openApp();startPeriodicRefresh()}
   </script>
 <script src="admin-v270.js?v=270"></script>
-<script src="admin-v280.js?v=280"></script>
+<script src="admin-v280.js?v=290"></script>
+<script src="admin-v290.js?v=290"></script>
 </body>
 </html>

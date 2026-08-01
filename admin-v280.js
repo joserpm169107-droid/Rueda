@@ -1,4 +1,4 @@
-/* Sobre Ruedas Admin v2.8.0 — cuentas, viajes y soporte operativo */
+/* Sobre Ruedas Admin v2.9.0 — cuentas, viajes y soporte operativo */
 (() => {
   'use strict';
 
@@ -112,7 +112,7 @@
       await refreshOperations();
       await loadSupportV280();
     } catch (error) {
-      console.error('Estado de cuenta v2.8.0:', error);
+      console.error('Estado de cuenta v2.9.0:', error);
       toast('No se pudo completar la acción: ' + exactError(error));
     } finally {
       actionBusyV280 = false;
@@ -149,7 +149,7 @@
       await refreshOperations();
       await loadSupportV280();
     } catch (error) {
-      console.error('Eliminación v2.8.0:', error);
+      console.error('Eliminación v2.9.0:', error);
       toast('No se pudo eliminar la cuenta: ' + exactError(error));
     } finally {
       actionBusyV280 = false;
@@ -233,7 +233,7 @@
       await loadSupportV280();
       return data;
     } catch (error) {
-      console.error('Viaje administrativo v2.8.0:', error);
+      console.error('Viaje administrativo v2.9.0:', error);
       toast('No se pudo procesar el viaje: ' + exactError(error));
     } finally { actionBusyV280 = false; }
   }

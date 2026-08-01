@@ -1,0 +1,11 @@
+SOBRE RUEDAS v2.9.0
+
+1. Guarda una copia de la versión actual.
+2. Extrae el ZIP y reemplaza todos los archivos de GitHub.
+3. En Supabase abre SQL Editor > New query.
+4. Copia y ejecuta solamente ACTUALIZAR_SUPABASE_v2.9.0.sql.
+5. Si Supabase muestra la advertencia de operaciones destructivas, revisa el archivo y pulsa Run without RLS; el SQL configura sus propias políticas.
+6. Espera que GitHub Pages publique.
+7. Cierra completamente la app y vuelve a abrirla. En PC usa Ctrl + F5.
+
+No ejecutes archivos de SQL_ANTERIORES.

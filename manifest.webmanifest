@@ -2,11 +2,11 @@
   "name": "Sobre Ruedas",
   "short_name": "Sobre Ruedas",
   "description": "Aplicación de transporte para pasajeros.",
-  "start_url": "./index.html?v=280",
+  "start_url": "./index.html?v=290",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#050505",
-  "theme_color": "#F6C600",
+  "background_color": "#061522",
+  "theme_color": "#13C7A3",
   "icons": [
     {
       "src": "icon-96.png",

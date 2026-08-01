@@ -1,4 +1,4 @@
-/* Sobre Ruedas v2.8.0 — perfiles, fotos, vehículo y control de suspensiones */
+/* Sobre Ruedas v2.9.0 — perfiles, fotos, vehículo y control de suspensiones */
 (() => {
   const MEDIA_BUCKET='sobre-ruedas-media';
   const q=s=>document.querySelector(s);
@@ -35,9 +35,9 @@
   }
 
   // Actualiza referencias visibles de versión y enlaces entre aplicaciones.
-  document.title=(APP_ROLE==='driver'?'Sobre Ruedas Conductor':'Sobre Ruedas')+' v2.8.0';
-  qa('.brand small').forEach(el=>el.textContent='CIEGO DE ÁVILA · v2.8.0');
-  qa('p.muted').forEach(el=>{if(/Sobre Ruedas.*v2\.5\.1/.test(el.textContent))el.textContent=(APP_ROLE==='driver'?'Sobre Ruedas Conductor':'Sobre Ruedas')+' v2.8.0 · Ciego de Ávila'});
+  document.title=(APP_ROLE==='driver'?'Sobre Ruedas Conductor':'Sobre Ruedas')+' v2.9.0';
+  qa('.brand small').forEach(el=>el.textContent='CIEGO DE ÁVILA · v2.9.0');
+  qa('p.muted').forEach(el=>{if(/Sobre Ruedas.*v2\.5\.1/.test(el.textContent))el.textContent=(APP_ROLE==='driver'?'Sobre Ruedas Conductor':'Sobre Ruedas')+' v2.9.0 · Ciego de Ávila'});
   const authCard=q('.auth-card');
   if(authCard&&!q('#separateAppLink')){
     const a=document.createElement('a');
@@ -397,7 +397,7 @@
       const profile=await saveProfileForUser(data,APP_ROLE==='driver'?'pending':'approved');if(!profile)return;
       await saveSession(data);
       toast(APP_ROLE==='driver'?'Perfil enviado. Espera la aprobación del administrador':'Cuenta creada correctamente');
-    }catch(error){console.error(error);toast('No se pudo subir la foto. Ejecuta el SQL v2.8.0 y vuelve a intentar')}
+    }catch(error){console.error(error);toast('No se pudo subir la foto. Ejecuta el SQL v2.9.0 y vuelve a intentar')}
     finally{button.disabled=false;button.textContent=APP_ROLE==='driver'?'Crear cuenta de conductor':'Crear cuenta de pasajero'}
   };
 
@@ -420,7 +420,7 @@
       const {data,error}=await sb.from('profiles').update(changes).eq('id',profile.id).select().single();
       if(error)throw error;
       currentProfile=data;renderProfile(data);toast('Perfil actualizado correctamente');
-    }catch(error){console.error(error);toast('No se pudo guardar el perfil. Revisa el SQL v2.8.0')}
+    }catch(error){console.error(error);toast('No se pudo guardar el perfil. Revisa el SQL v2.9.0')}
     finally{button.disabled=false;button.textContent='Guardar cambios del perfil'}
   };
 
@@ -491,7 +491,7 @@
   if('serviceWorker' in navigator){navigator.serviceWorker.getRegistration?.().then(r=>r?.update()).catch(()=>{})}
 })();
 
-/* Sobre Ruedas v2.8.0 — buscador reforzado, chat, ayuda y llamada privada por internet */
+/* Sobre Ruedas v2.9.0 — buscador reforzado, chat, ayuda y llamada privada por internet */
 (() => {
   const $=s=>document.querySelector(s);
   const $$=s=>[...document.querySelectorAll(s)];
@@ -611,7 +611,7 @@
       input.addEventListener('focus',()=>{if(addressCandidates?.length)renderSearchV270(addressCandidates)});
     }
     const oldSearch=$('#searchAddressBtn');if(oldSearch){const button=oldSearch.cloneNode(true);oldSearch.replaceWith(button);button.onclick=async()=>{button.disabled=true;const label=button.textContent;button.textContent='…';try{await searchV270($('#destination').value,{explicit:true,autoSelect:true})}finally{button.disabled=false;button.textContent=label||'⌕'}}}
-  }catch(error){console.warn('Buscador v2.8.0:',error)}
+  }catch(error){console.warn('Buscador v2.9.0:',error)}
 
   // ---------- Interfaz de chat, llamadas y soporte ----------
   function installModals(){
@@ -674,7 +674,7 @@
   async function loadMessages(){
     const list=$('#srChatList');if(!list||!currentRideId)return;
     const {data,error}=await sb.from('ride_messages').select('*').eq('ride_id',String(currentRideId)).order('created_at',{ascending:true}).limit(150);
-    if(error){list.innerHTML='<div class="chat-empty">No se pudo cargar el chat. Ejecuta el SQL v2.8.0.</div>';return}
+    if(error){list.innerHTML='<div class="chat-empty">No se pudo cargar el chat. Ejecuta el SQL v2.9.0.</div>';return}
     renderMessages(data||[]);
     try{await sb.rpc('mark_ride_messages_read',{p_ride_id:String(currentRideId),p_reader_id:deviceId,p_reader_role:ROLE})}catch{}
   }
@@ -714,14 +714,14 @@
     const button=$('#srHelpSubmit');button.disabled=true;button.textContent='Enviando…';
     const {data,error}=await sb.rpc('create_support_case',{p_creator_id:deviceId,p_creator_role:ROLE,p_ride_id:currentRideId?String(currentRideId):'',p_category:selectedHelpCategory,p_subject:selectedHelpCategory,p_description:description,p_priority:selectedHelpPriority});
     button.disabled=false;button.textContent='Enviar a soporte';
-    if(error){console.error(error);return toast('No se pudo crear el caso. Ejecuta el SQL v2.8.0')}
+    if(error){console.error(error);return toast('No se pudo crear el caso. Ejecuta el SQL v2.9.0')}
     closeModal('srHelpModal');toast(`Caso #${data?.case_number||''} enviado al administrador`);loadSupportCases();
   }
   async function loadSupportCases(){
     const list=$('#v270CaseList');if(!list)return;
     list.innerHTML='<div class="chat-empty">Actualizando casos…</div>';
     const {data,error}=await sb.from('support_cases').select('*').eq('created_by_id',deviceId).order('created_at',{ascending:false}).limit(30);
-    if(error){list.innerHTML='<div class="chat-empty">No se pudieron cargar los casos. Ejecuta el SQL v2.8.0.</div>';return}
+    if(error){list.innerHTML='<div class="chat-empty">No se pudieron cargar los casos. Ejecuta el SQL v2.9.0.</div>';return}
     list.innerHTML=(data||[]).map(c=>`<button type="button" class="support-case-card" data-user-case-id="${escapeHtml(c.id)}"><strong>#${escapeHtml(c.case_number)} · ${escapeHtml(c.subject)}</strong><small>${escapeHtml(c.description)}</small><span class="case-status ${escapeHtml(c.status)}">${escapeHtml(statusLabel(c.status))} · ${escapeHtml(c.priority)}</span><span class="case-open-hint">Abrir conversación ›</span></button>`).join('')||'<div class="chat-empty">No has abierto casos de soporte.</div>';
     list.onclick=e=>{const card=e.target.closest('[data-user-case-id]');if(card)openSupportCaseUser(card.dataset.userCaseId)};
   }
